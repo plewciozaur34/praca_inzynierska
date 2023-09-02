@@ -1,0 +1,2 @@
+iteration,R,chord_x,chord_t,ugt,beta_in,half_wedge_in,Rle,beta_out,Rte,Nb,throat
+check,5.5,1.102,0.591,6.3,35,9,0.031,-57,0.016,51,0.337
