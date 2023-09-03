@@ -63,7 +63,7 @@ def main():
     WS_rotor.cx = turbine_assum.cx
     
     
-    mean_calc()
+    mean_calc(WS_rotor)
     return c_u2, c_u3
 
 def  mean_calc(U: vector_of_state.VectorOfState):

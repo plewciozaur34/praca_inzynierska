@@ -1,10 +1,9 @@
 import numpy as np
-
-from turbine_2D.airfoil_geometry.point import Point
+from .point import Point
 
 class GeometryParameters:
-    def __init__(self, R: float, chord_x: float, chord_t: float, ugt: float, beta_in: float, half_wedge_in: float,
-                  Rle: float, beta_out: float, Rte: float, Nb: float, throat: float) -> None:
+    def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
+                 half_wedge_in: float = 0, Rle: float = 0, beta_out: float = 0, Rte: float = 0, Nb: float = 0, throat: float = 0) -> None:
         self.R: float = R
         self.chord_x: float = chord_x
         self.chord_t: float = chord_t
@@ -24,47 +23,45 @@ class GeometryParameters:
         for attribute in attributes:
             setattr(self, attribute, geo_data[attribute][index_name])
 
-
-    def find_half_wedge_out(self) -> float:
-        return self.ugt/2
-    
-    def find_pitch(self) -> float:
-        return (2*np.pi*self.R)/self.Nb
-    
-    def find_stagger_angle(self) -> float:
-        return np.arctan(self.chord_t/self.chord_x)
-    
-    #trzeba najpierw wyliczyć te trójkąty powierzchni appendix D
-    def find_airfoil_csa (self) -> float: #cross sectional area
-        return 0
-    
-    def find_chord (self) -> float:
-        return np.sqrt(self.chord_x**2 + self.chord_t**2)
-    
-    def find_zweifel_coefficient (self) -> float: #INCOMPRESSIBLE ZWEIFEL LOADING COEFFICIENT 
-        return ((4*np.pi*self.R)/(self.Nb*self.chord_x))*np.sin(self.beta_in-self.beta_out)*(np.cos(self.beta_in)/np.cos(self.beta_out))
-    
-    def find_solidity (self) -> float: 
-        return self.find_chord()/self.find_pitch()
-    
-    # def find_xcg / ycg #trzeba najpierw ogarnąć airfoil_csa
-
-    def find_blockage_in (self) -> float:
-        return (2*self.Rle/(self.find_pitch()*np.cos(self.beta_in)))*100
-    
-    def find_blockage_out (self) -> float:
-        return (2*self.Rte/(self.find_pitch()*np.cos(self.beta_out)))*100
-    
-    def find_camber_angle (self) -> float:
-        return self.beta_in - self.beta_out
-    
-    def find_lift_coefficient (self) -> float:
-        return ((2*self.find_pitch())/self.find_chord()) * (np.cos(self.beta_in) + np.cos(self.beta_out)) * (np.tan(self.beta_in) - np.tan(self.beta_out))
+    def find_half_wedge_out(self) -> float: #first guess, trzeba go jeszcze wcześniej iterować? do doczytania w artykule
+        return self.ugt/2 
     
     def find_suction_surface_trailing_edge_tangency_point (self) -> Point:
-            b1 = self.beta_out - self.half_wedge_in
-            x1 = self.chord_x - self.Rte * (1+np.sin(b1))
-            y1 = self.Rte * np.cos(b1)
+        b1 = self.beta_out - self.half_wedge_in
+        x1 = self.chord_x - self.Rte * (1+np.sin(b1))
+        y1 = self.Rte * np.cos(b1)
             
-            return Point(b1, x1, y1)
+        return Point(b1, x1, y1)
     
+    def find_suction_surface_throat_point (self) -> Point:
+        b2 = self.beta_out + self.find_half_wedge_out() + self.ugt
+        x2 = self.chord_x - self.Rte + (self.throat + self.Rte) * np.sin(b2)
+        y2 = (2*np.pi*self.R) / self.Nb - (self.throat + self.Rte) * np.cos(b2)
+        
+        return Point(b2, x2, y2)
+    
+    def find_suction_surface_leading_edge_tangency_point (self) -> Point:
+        b3 = self.beta_in + self.half_wedge_in
+        x3 = self.Rle*(1-np.sin(b3))
+        y3 = self.chord_t + self.Rle*np.cos(b3)
+        
+        return Point(b3, x3, y3)
+    
+    def find_pressure_surface_leading_edge_tangency_point (self) -> Point:
+        b4 = self.beta_in - self.half_wedge_in
+        x4 = self.Rle*(1+np.sin(b4))
+        y4 = self.chord_t - self.Rle*np.cos(b4)
+        
+        return Point(b4, x4, y4)
+    
+    def find_pressure_surface_trailing_edge_tangency_point (self) -> Point:
+        b5 = self.beta_out + self.find_half_wedge_out()
+        x5 = self.chord_x - self.Rte * (1-np.sin(b5))
+        y5 = -self.Rte * np.cos(b5)
+
+        return Point(b5, x5, y5)
+    
+    
+    
+    
+   
