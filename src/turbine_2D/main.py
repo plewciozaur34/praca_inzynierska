@@ -4,7 +4,6 @@ from airfoil_geometry import geometry_dep_params as gdp
 import pandas as pd
 import numpy as np
 
-
 geo_params = gp.GeometryParameters()
 operations = gdp.GeometryDependentParameters(geo_params)
 

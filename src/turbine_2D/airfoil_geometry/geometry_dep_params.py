@@ -1,8 +1,7 @@
 import numpy as np
-from geometry_parameters import GeometryParameters  
-
+from . import geometry_parameters as gep
 class GeometryDependentParameters:
-    def __init__(self, geom_params: GeometryParameters):
+    def __init__(self, geom_params: gep.GeometryParameters):
         self.gp = geom_params
 
     #czy ona tu powinna zostać, skoro jest w geometry_parameters? z termodynamicznego punktu widzenia

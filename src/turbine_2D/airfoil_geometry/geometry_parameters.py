@@ -1,5 +1,5 @@
 import numpy as np
-from .point import Point
+from . import point as p
 
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
@@ -26,40 +26,40 @@ class GeometryParameters:
     def find_half_wedge_out(self) -> float: #first guess, trzeba go jeszcze wcześniej iterować? do doczytania w artykule
         return self.ugt/2 
     
-    def find_suction_surface_trailing_edge_tangency_point (self) -> Point:
+    def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.half_wedge_in
         x1 = self.chord_x - self.Rte * (1+np.sin(b1))
         y1 = self.Rte * np.cos(b1)
             
-        return Point(b1, x1, y1)
+        return p.Point(b1, x1, y1)
     
-    def find_suction_surface_throat_point (self) -> Point:
+    def find_suction_surface_throat_point (self) -> p.Point:
         b2 = self.beta_out + self.find_half_wedge_out() + self.ugt
         x2 = self.chord_x - self.Rte + (self.throat + self.Rte) * np.sin(b2)
         y2 = (2*np.pi*self.R) / self.Nb - (self.throat + self.Rte) * np.cos(b2)
         
-        return Point(b2, x2, y2)
+        return p.Point(b2, x2, y2)
     
-    def find_suction_surface_leading_edge_tangency_point (self) -> Point:
+    def find_suction_surface_leading_edge_tangency_point (self) -> p.Point:
         b3 = self.beta_in + self.half_wedge_in
         x3 = self.Rle*(1-np.sin(b3))
         y3 = self.chord_t + self.Rle*np.cos(b3)
         
-        return Point(b3, x3, y3)
+        return p.Point(b3, x3, y3)
     
-    def find_pressure_surface_leading_edge_tangency_point (self) -> Point:
+    def find_pressure_surface_leading_edge_tangency_point (self) -> p.Point:
         b4 = self.beta_in - self.half_wedge_in
         x4 = self.Rle*(1+np.sin(b4))
         y4 = self.chord_t - self.Rle*np.cos(b4)
         
-        return Point(b4, x4, y4)
+        return p.Point(b4, x4, y4)
     
-    def find_pressure_surface_trailing_edge_tangency_point (self) -> Point:
+    def find_pressure_surface_trailing_edge_tangency_point (self) -> p.Point:
         b5 = self.beta_out + self.find_half_wedge_out()
         x5 = self.chord_x - self.Rte * (1-np.sin(b5))
         y5 = -self.Rte * np.cos(b5)
 
-        return Point(b5, x5, y5)
+        return p.Point(b5, x5, y5)
     
     
     
