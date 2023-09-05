@@ -38,7 +38,7 @@ def main():
     pressure_surf = np.poly1d([pressure_surf_params.d, pressure_surf_params.c, pressure_surf_params.b, pressure_surf_params.a])
     x_pressure = np.linspace(point4.x, point5.x, 200)
     suction_surf_upthroat = np.poly1d([suction_surf_upthroat_params.d, suction_surf_upthroat_params.c, suction_surf_upthroat_params.b, suction_surf_upthroat_params.a])
-    x_suction_upthroat = np.linspace(point3.x, point2.x, 2 00)
+    x_suction_upthroat = np.linspace(point3.x, point2.x, 200)
 
     fig, ax = plt.subplots(1,1, figsize = (6,5))
     ax.add_patch(leading_edge)
