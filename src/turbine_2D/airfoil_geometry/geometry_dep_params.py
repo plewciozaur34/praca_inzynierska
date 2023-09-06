@@ -22,7 +22,7 @@ class GeometryDependentParameters:
         return np.sqrt(self.gp.chord_x**2 + self.gp.chord_t**2)
     
     def find_zweifel_coefficient (self) -> float: #INCOMPRESSIBLE ZWEIFEL LOADING COEFFICIENT 
-        return ((4*np.pi*self.gp.R)/(self.Nb*self.gp.chord_x))*np.sin(self.gp.beta_in-self.gp.beta_out)*(np.cos(self.gp.beta_in)/np.cos(self.gp.beta_out))
+        return ((4*np.pi*self.gp.R)/(self.gp.Nb*self.gp.chord_x))*np.sin(self.gp.beta_in-self.gp.beta_out)*(np.cos(self.gp.beta_in)/np.cos(self.gp.beta_out))
     
     def find_solidity (self) -> float: 
         return self.find_chord()/self.find_pitch()
