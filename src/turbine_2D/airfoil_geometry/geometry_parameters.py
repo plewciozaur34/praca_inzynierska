@@ -80,6 +80,10 @@ class GeometryParameters:
 
         return poly.Polynomial(a, b, c, d)
         
+
+
+        
+        
     
     
     

@@ -32,3 +32,7 @@ class TempHelpers:
     @staticmethod
     def p_p0(M: float, kappa: float) -> float:
         return (TempHelpers.T_T0(M, kappa))**(kappa/(kappa-1))
+    
+    @staticmethod
+    def rpm_to_rad_s(rpm: float) -> float:
+        return (rpm*2*np.pi)/60

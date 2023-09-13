@@ -10,7 +10,7 @@ dep_params = gdp.GeometryDependentParameters(geo_params)
 
 #dane z artykułu do sparwdzenia poprawności kodu
 geo_data_r = pd.read_csv('./data/geometry_data_rotor.csv', index_col=0)
-print(geo_data_r)
+#print(geo_data_r)
 
 geo_params.get_data(geo_data_r, 'check')
 
@@ -58,7 +58,7 @@ def main():
 
     exes = [point1.x, point2.x, point3.x, point4.x, point5.x]
     whys = [point1.y, point2.y, point3.y, point4.y, point5.y]
-    colors = ['red', 'blue', 'green', 'black', 'pink']
+    colors = ['red', 'blue', 'green', 'grey', 'pink']
     legend = ['point1', 'point2', 'point3', 'point4', 'point5']
 
     figs, axs = plt.subplots(1,1, figsize = (6,5))

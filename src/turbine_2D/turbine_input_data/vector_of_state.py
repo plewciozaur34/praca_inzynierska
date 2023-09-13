@@ -1,4 +1,5 @@
 import numpy as np
+from ..helpers import temp_helpers as thpyt
 
 class VectorOfState:
     def __init__(self, cx: float = 0, cr: float = 0, cu: float = 0, p: float = 0, 
@@ -17,10 +18,15 @@ class VectorOfState:
         return beta
     
     def find_alfa(self) -> float:
-        return 0
+        c = np.sqrt(self.cx**2 + self.cu**2)
+        alfa = np.arccos(self.cx / c)
+        return alfa
     
-    def find_work(self, omega: int) -> float:
-        return 0
+    def find_work(self, second_vector, omega: int) -> float:
+        omega_rs = th.rpm_to_rad_s(omega)
+        u = omega_rs * self.r
+        l = u * (self.c_u - second_vector.c_u)
+        return l
 
     def find_Mach(self) -> float:
         return 0

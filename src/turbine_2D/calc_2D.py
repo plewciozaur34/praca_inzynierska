@@ -5,6 +5,7 @@ from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
+from turbine_input_data import data_calc as dc
 
 #ogólna idea: na początek wyliczamy wektor stanu dla statora i wirnika i korzystając z niego wyliczamy inne 
 #parametry, które będą nam potrzebne
@@ -18,13 +19,13 @@ WS_rotor = vector_of_state.VectorOfState()
 
 #crusing altitude = 10,700 m #silnik GE CF6, samolot A300
 #temp=-54.3 C; p=23800 Pa; M=0.78
-T_01 = th.celsius_to_kelvin(1297) #K
-M_1 = 0.78
+T_01 = th.celsius_to_kelvin(dc.TIT_celsius) #K
+M_1 = dc.M_1
 
 #turbine_input = [m_dot [kg/s], p01 [Pa], T01 [K], tpr [-], eta_is [-], omega [rpm]] for LP
-turbine_input = ti.TurbineInput(658, 0, T_01, 30.2, 0.9, 3800)
+turbine_input = ti.TurbineInput(dc.M_DOT, 0, T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
 
-p_1 = 23800 #Pa #yy, nie, trzeba wyliczyć dla wejścia do turbiny
+p_1 = dc.P_WEJ #Pa 
 p_2 = turbine_input.tpr * p_1
 p_3 = p_2 #baardzo proste założenie przemiany izobarycznej w komorze spalania, docelowo do zmiany
 turbine_input.p01 = p_3 / th.p_p0(M_1, kappa)
@@ -33,7 +34,7 @@ turbine_input.p01 = p_3 / th.p_p0(M_1, kappa)
 #c_x - na podstawie danych z examples z principles of turbomachinery...
 
 #turbine_assum = [alfa1, alfa3, phi, c_x ..]
-turbine_assum = ta.TurbineAssum(0,0,0.8,230)
+turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
 
 def main():
 
@@ -69,26 +70,22 @@ def main():
 def  mean_calc(U: vector_of_state.VectorOfState):
     print('entering mean_calc')
     
-    #liczymy prace z temp.spietrz., liczbymy kinemtyke z Eulera
-    U_stator = np.zeros(6)
-    U_rotor = np.zeros(6)
-    #założenia początkowe - 2D
-    U_stator[0] = turbine_assum.cx
-    U_rotor[0] = turbine_assum.cx
-    U_stator[1] = 0
-    U_rotor[1] = 0
-    U_stator[5] = 0
-    U_rotor[5] = 0
-    U_stator[2] = 476 #c_u2
-    U_rotor[2] = 0 #c_u3
-    #U_stator = [56,4,78,9,6,7]
-    
     beta = U.find_beta(turbine_assum.phi)
     print("beta="+str(round(beta, 2)))
     
     beta_deg = th.deg(beta)
     print("beta_deg="+str(round(beta_deg, 2)))
+
+    alfa = U.find_alfa()
+    print("alfa="+str(round(alfa, 2)))
     
+
+    if U == WS_rotor:
+        work = U.find_work(WS_stator, turbine_input.omega)
+        print("work="+str(round(work, 2)))
+
+    
+
 
     #zapisac zewnetrzny plik z danymi do profilu
 
