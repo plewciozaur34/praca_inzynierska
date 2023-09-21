@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from combustion_params import fuel_parameters as fp
 from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
@@ -39,24 +40,18 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
 def main():
 
     u=turbine_assum.cx/turbine_assum.phi
-    print("u="+str(round(u, 2)))
 
     T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, kappa)
-    print("T_03=%"+str(round(T_03, 2)))
 
     D_T0 = T_03 - T_01
     #print("D_T0="+str(round(D_T0, 2)))
     d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
-    print("d_T0="+str(round(d_T0, 2)))
     
     d_T0_prim=-120 #z danych literatrowych, 120 to tak typowo, ale i 150K tam widziałam chyba
     l=cp*d_T0
-    print("l="+str(round(l, 2)))
     d_c = l/u
-    print("d_c="+str(round(d_c, 2)))
     c_u3=0
     c_u2=c_u3-d_c
-    print("c_u2="+str(round(c_u2, 2)))
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
@@ -71,21 +66,13 @@ def  mean_calc(U: vector_of_state.VectorOfState):
     print('entering mean_calc')
     
     beta = U.find_beta(turbine_assum.phi)
-    print("beta="+str(round(beta, 2)))
     
     beta_deg = th.deg(beta)
-    print("beta_deg="+str(round(beta_deg, 2)))
 
     alfa = U.find_alfa()
-    print("alfa="+str(round(alfa, 2)))
-    
 
     if U == WS_rotor:
         work = U.find_work(WS_stator, turbine_input.omega)
-        print("work="+str(round(work, 2)))
-
-    
-
 
     #zapisac zewnetrzny plik z danymi do profilu
 
@@ -93,7 +80,7 @@ def  mean_calc(U: vector_of_state.VectorOfState):
     # dane = pd.concat([dane, dane2])
     # dane.index = range(1,)
     
-    return beta, beta_deg
+    return beta, beta_deg, alfa, work
 
 if __name__ == "__main__":
     main()

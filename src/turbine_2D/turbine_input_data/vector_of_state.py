@@ -1,5 +1,6 @@
 import numpy as np
-from ..helpers import temp_helpers as thpyt
+
+from ..helpers import temp_helpers as th
 
 class VectorOfState:
     def __init__(self, cx: float = 0, cr: float = 0, cu: float = 0, p: float = 0, 
