@@ -43,10 +43,6 @@ class VectorOfState:
         beta = self.find_beta(turbine_assum.phi)
         beta_deg = th.deg(beta)
         alfa = self.find_alfa()
-
-        if self == WS_rotor:
-            work = self.find_work(WS_stator, turbine_input.omega)
-
-        return beta, beta_deg, alfa, work
+        return beta, beta_deg, alfa
 
    

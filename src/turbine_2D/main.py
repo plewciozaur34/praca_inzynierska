@@ -76,6 +76,8 @@ def main():
     WS_rotor.cx = turbine_assum.cx
     
     WS_rotor.mean_calc()
+    WS_rotor.work(WS_stator, turbine_input.omega)
+
     WS_stator.mean_calc()
 
     #zapisac zewnetrzny plik z danymi do profilu
@@ -137,6 +139,9 @@ def main():
     plt.show()
 
     dep_params.find_geometry_dependent_parameters()
+
+    geo_dep_params = pd.read_csv('./data/geometry_dep_params.csv', index_col=0)
+    calculated_parameters = pd.read_csv('./data/calculated_parameters.csv', index_col=0)
 
 if __name__ == "__main__":
     main()
