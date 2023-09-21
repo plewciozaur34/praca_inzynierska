@@ -23,7 +23,7 @@ class VectorOfState:
         alfa = np.arccos(self.cx / c)
         return alfa
     
-    def find_work(self, second_vector, omega: int) -> float:
+    def find_work(self, second_vector: 'VectorOfState', omega: float) -> float:
         omega_rs = th.rpm_to_rad_s(omega)
         u = omega_rs * self.r
         l = u * (self.c_u - second_vector.c_u)

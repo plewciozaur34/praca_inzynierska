@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
 
 from airfoil_geometry import geometry_parameters as gp
 from airfoil_geometry import geometry_dep_params as gdp
-from matplotlib.patches import Circle
+
 
 geo_params = gp.GeometryParameters()
 dep_params = gdp.GeometryDependentParameters(geo_params)
@@ -21,11 +22,11 @@ def main():
     point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
     point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
 
-    leading_edge_params = geo_params.circle(point3.x, point4.x, point3.y, point3.b, point4.b)
-    trailing_edge_params = geo_params.circle(point1.x, point5.x, point1.y, point1.b, point5.b)
+    leading_edge_params = point3.circle(point4)
+    trailing_edge_params = point1.circle(point5)
 
-    pressure_surf_params = geo_params.polynomial(point4.x, point5.x, point4.y, point5.y, point4.b, point5.b)
-    suction_surf_upthroat_params = geo_params.polynomial(point3.x, point2.x, point3.y, point2.y, point3.b, point2.b)
+    pressure_surf_params = point4.polynomial(point5)
+    suction_surf_upthroat_params = point3.polynomial(point2)
     
     #suction_surf_downthroat_params = bezier()
 
