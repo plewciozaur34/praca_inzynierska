@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..helpers import temp_helpers as th
+from helpers import temp_helpers as th
 from . import turbine_assum 
 from . import turbine_input
 

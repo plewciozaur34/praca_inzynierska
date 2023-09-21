@@ -1,5 +1,5 @@
-import data_calc as dc
-import turbine_input as turbine_input
+from . import data_calc as dc
+from . import turbine_input as turbine_input
 
 class CalcOperations:
     @staticmethod
