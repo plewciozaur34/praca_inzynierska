@@ -36,3 +36,5 @@ class TempHelpers:
     @staticmethod
     def rpm_to_rad_s(rpm: float) -> float:
         return (rpm*2*np.pi)/60
+    
+   

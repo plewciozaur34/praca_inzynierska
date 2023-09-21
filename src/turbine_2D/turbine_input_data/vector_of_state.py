@@ -1,6 +1,8 @@
 import numpy as np
 
 from ..helpers import temp_helpers as th
+from . import turbine_assum 
+from . import turbine_input
 
 class VectorOfState:
     def __init__(self, cx: float = 0, cr: float = 0, cu: float = 0, p: float = 0, 
@@ -34,3 +36,17 @@ class VectorOfState:
 
     def find_Mach_rel(self) -> float:
         return 0
+
+    def  mean_calc(self):
+        print('entering mean_calc')
+        
+        beta = self.find_beta(turbine_assum.phi)
+        beta_deg = th.deg(beta)
+        alfa = self.find_alfa()
+
+        if self == WS_rotor:
+            work = self.find_work(WS_stator, turbine_input.omega)
+
+        return beta, beta_deg, alfa, work
+
+   

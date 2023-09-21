@@ -24,5 +24,5 @@ class Point:
 
         return cir.Circle(x_0, y_0, r)
     
-    def bezier(self):    
+    def bezier(self, second_point: 'Point'):    
         return 0

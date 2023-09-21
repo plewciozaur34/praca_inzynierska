@@ -7,6 +7,7 @@ from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from turbine_input_data import data_calc as dc
+from turbine_input_data.calc_operations import CalcOperations as co
 
 #ogólna idea: na początek wyliczamy wektor stanu dla statora i wirnika i korzystając z niego wyliczamy inne 
 #parametry, które będą nam potrzebne
@@ -26,10 +27,7 @@ M_1 = dc.M_1
 #turbine_input = [m_dot [kg/s], p01 [Pa], T01 [K], tpr [-], eta_is [-], omega [rpm]] for LP
 turbine_input = ti.TurbineInput(dc.M_DOT, 0, T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
 
-p_1 = dc.P_WEJ #Pa 
-p_2 = turbine_input.tpr * p_1
-p_3 = p_2 #baardzo proste założenie przemiany izobarycznej w komorze spalania, docelowo do zmiany
-turbine_input.p01 = p_3 / th.p_p0(M_1, kappa)
+turbine_input.p01 = co.turbine_input_pressure() / th.p_p0(M_1, kappa)
 
 #0.5<phi<1.0
 #c_x - na podstawie danych z examples z principles of turbomachinery...
@@ -58,21 +56,13 @@ def main():
     WS_stator.cx = turbine_assum.cx
     WS_rotor.cx = turbine_assum.cx
     
+    WS_rotor.mean_calc()
+    WS_stator.mean_calc()
     
-    mean_calc(WS_rotor)
     return c_u2, c_u3
-
-def  mean_calc(U: vector_of_state.VectorOfState):
-    print('entering mean_calc')
     
-    beta = U.find_beta(turbine_assum.phi)
+   
     
-    beta_deg = th.deg(beta)
-
-    alfa = U.find_alfa()
-
-    if U == WS_rotor:
-        work = U.find_work(WS_stator, turbine_input.omega)
 
     #zapisac zewnetrzny plik z danymi do profilu
 
@@ -80,7 +70,6 @@ def  mean_calc(U: vector_of_state.VectorOfState):
     # dane = pd.concat([dane, dane2])
     # dane.index = range(1,)
     
-    return beta, beta_deg, alfa, work
 
 if __name__ == "__main__":
     main()
