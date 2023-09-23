@@ -1,3 +1,5 @@
+from typing import Dict, Union
+
 class GeometryDependentParameters:
     def __init__(self, half_wedge_out: float = 0, pitch: float = 0, stagger_angle: float = 0, airfoil_csa: float = 0,
                  chord: float = 0, zweifel_coefficient: float = 0, solidity: float = 0, xcg: float = 0, 
@@ -16,5 +18,11 @@ class GeometryDependentParameters:
         self.blockage_out: float = blockage_out
         self.camber_angle: float = camber_angle
         self.lift_coefficient: float = lift_coefficient
+
+    def to_dict(self: float) -> Dict[str, Union[float, str]]:
+        return {'half_wedge_out': self.half_wedge_out, 'pitch': self.pitch, 'stagger_angle': self.stagger_angle, 
+                'airfoil_csa': self.airfoil_csa, 'chord': self.chord, 'zweifel_coefficient': self.zweifel_coefficient, 
+                'solidity': self.solidity, 'xcg': self.xcg, 'ycg': self.ycg, 'blockage_in': self.blockage_in, 
+                'blockage_out': self.blockage_out, 'camber_angle': self.camber_angle, 'lift_coefficient': self.lift_coefficient}
         
         

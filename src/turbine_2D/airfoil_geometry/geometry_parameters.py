@@ -27,6 +27,26 @@ class GeometryParameters:
     def find_half_wedge_out(self) -> float: #first guess, trzeba go jeszcze wcześniej iterować? do doczytania w artykule
         return self.ugt/2 
     
+    def def_values(self):
+        if self.Rle >= 2:
+            self.Rle = (self.Rle/100) * 2 * np.pi * (self.R / self.Nb) * np.cos(self.beta_in * np.pi / 180) / 2 
+        if self.Rte >= 2:
+            self.Rte = (self.Rte/100) * 2 * np.pi * (self.R / self.Nb) * np.cos(self.beta_out * np.pi / 180) / 2 
+        if self.chord_x <= 0:
+            self.chord_x = 4 * np.pi * self.R / self.Nb * np.sin((self.beta_in - self.beta_out) * np.pi / 180)
+        if self.throat <= 0:
+            self.throat = 2* np.pi * self.R / self.Nb * np.cos(self.beta_out * np.pi / 180) - 2 * self.Rte
+        if self.ugt <= 0:
+            self.ugt = 0.0001
+        half_wedge_out = self.find_half_wedge_out()
+        if self.chord_t < 20:
+            #IF<CT.GE.4.l ITER=.TRUE.
+            #IF<CT .GE.4.1 TTC=CT/100.
+            #if self.chord_t >= 4: 
+                self.chord_t = 0
+        self.chord_t = self.chord.x * np.tan(self.chord_t * np.pi / 180)
+
+    
     def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.find_half_wedge_out()
         x1 = self.chord_x - self.Rte * (1 + np.sin(b1))

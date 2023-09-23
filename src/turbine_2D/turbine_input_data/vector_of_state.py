@@ -1,8 +1,6 @@
 import numpy as np
 
-from helpers import temp_helpers as th
-from . import turbine_assum 
-from . import turbine_input
+from helpers.temp_helpers import TempHelpers as th
 
 class VectorOfState:
     def __init__(self, cx: float = 0, cr: float = 0, cu: float = 0, p: float = 0, 
@@ -28,7 +26,7 @@ class VectorOfState:
     def find_work(self, second_vector: 'VectorOfState', omega: float) -> float:
         omega_rs = th.rpm_to_rad_s(omega)
         u = omega_rs * self.r
-        l = u * (self.c_u - second_vector.c_u)
+        l = u * (self.cu - second_vector.cu)
         return l
 
     def find_Mach(self) -> float:
@@ -37,10 +35,10 @@ class VectorOfState:
     def find_Mach_rel(self) -> float:
         return 0
 
-    def  mean_calc(self):
+    def  mean_calc(self, phi: float):
         print('entering mean_calc')
         
-        beta = self.find_beta(turbine_assum.phi)
+        beta = self.find_beta(phi)
         beta_deg = th.deg(beta)
         alfa = self.find_alfa()
         return beta, beta_deg, alfa

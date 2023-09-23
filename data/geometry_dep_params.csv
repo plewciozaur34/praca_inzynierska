@@ -1,1 +1,2 @@
-iteration,half_wedge_out, pitch, stagger_angle,airfoil_csa,chord, zweifel_coefficient,solidity,xcg,ycg,blockage_in,blockage_out,camber_angle,lift_coefficient
+,half_wedge_out,pitch,stagger_angle,airfoil_csa,chord,zweifel_coefficient,solidity,xcg,ycg,blockage_in,blockage_out,camber_angle,lift_coefficient
+0,3.25,0.6775984154801514,0.4922623367542349,0,1.2504739101636628,0.9626319944863336,1.8454498735472507,0,0,-10.125087184677499,5.248066801593425,92.0,-0.003973750071604863

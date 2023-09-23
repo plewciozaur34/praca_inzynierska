@@ -14,22 +14,13 @@ from turbine_input_data.calc_operations import CalcOperations as co
 
 # część obliczeniowa
 
-#ogólna idea: na początek wyliczamy wektor stanu dla statora i wirnika i korzystając z niego wyliczamy inne 
-
 #WEKTOR STANU: [c_axial, c_radial, c_u, p, T, r]
 WS_stator = vector_of_state.VectorOfState()
 WS_rotor = vector_of_state.VectorOfState()
 
-#crusing altitude = 10,700 m #silnik GE CF6, samolot A300
-#temp=-54.3 C; p=23800 Pa; M=0.78
-T_01 = th.celsius_to_kelvin(dc.TIT_celsius) #K
-M_1 = dc.M_1
-
 #turbine_input = [m_dot [kg/s], p01 [Pa], T01 [K], tpr [-], eta_is [-], omega [rpm]] for LP
-turbine_input = ti.TurbineInput(dc.M_DOT, 0, T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
-
-turbine_input.p01 = co.turbine_input_pressure() / th.p_p0(M_1, dc.KAPPA)
-
+turbine_input = ti.TurbineInput(dc.M_DOT, 0, dc.T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
+turbine_input.p01 = co.turbine_input_pressure(turbine_input.tpr) / th.p_p0(dc.M_1, dc.KAPPA)
 
 #turbine_assum = [alfa1, alfa3, phi, c_x ..]
 turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
@@ -40,7 +31,6 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
 geo_params = gp.GeometryParameters()
 dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-#dane z artykułu do sprawdzenia poprawności kodu
 geo_data_r = pd.read_csv('./data/geometry_data_rotor.csv', index_col=0)
 
 geo_params.get_data(geo_data_r, 'check')
@@ -48,36 +38,19 @@ geo_params.get_data(geo_data_r, 'check')
 def main():
 
     #część obliczeniowa 
-
-    u=turbine_assum.cx/turbine_assum.phi
-
-    T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
-
-    D_T0 = T_03 - T_01
-    #print("D_T0="+str(round(D_T0, 2)))
-    d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
-    
-    d_T0_prim=-120 #z danych literatrowych, 120 to tak typowo, ale i 150K tam widziałam chyba
-    l=dc.CP*d_T0
-    d_c = l/u
-    c_u3=0
-    c_u2=c_u3-d_c
+    c_u2, c_u3 = co.find_cu2(turbine_assum.cx, turbine_assum.phi, turbine_input.tpr, turbine_input.T01)
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
     WS_stator.cx = turbine_assum.cx
     WS_rotor.cx = turbine_assum.cx
     
-    WS_rotor.mean_calc()
-    WS_rotor.work(WS_stator, turbine_input.omega)
+    WS_rotor.mean_calc(turbine_assum.phi)
+    WS_rotor.find_work(WS_stator, turbine_input.omega)
 
-    WS_stator.mean_calc()
+    WS_stator.mean_calc(turbine_assum.phi)
 
     #zapisac zewnetrzny plik z danymi do profilu
-
-    # dane2 = pd.DataFrame({'beta':[round(beta_3,2), round(beta_2,2), round(beta_3, 2)]})
-    # dane = pd.concat([dane, dane2])
-    # dane.index = range(1,)
 
     #----------------------------------------------------------------------------------------------------
     #część geometria
@@ -131,10 +104,20 @@ def main():
     axs.plot(x_pressure, pressure_surf(x_pressure), color = 'blue')
     plt.show()
 
-    dep_params.find_geometry_dependent_parameters()
+    get_params = dep_params.find_geometry_dependent_parameters()
 
-    geo_dep_params = pd.read_csv('./data/geometry_dep_params.csv', index_col=0)
-    calculated_parameters = pd.read_csv('./data/calculated_parameters.csv', index_col=0)
+# Convert the obtained parameters to DataFrame
+    params_dictionary = pd.DataFrame([get_params.to_dict()])
+    geo_dep_params = pd.DataFrame(columns=['half_wedge_out', 'pitch', 'stagger_angle', 'airfoil_csa', 'chord', 
+          'zweifel_coefficient', 'solidity', 'xcg', 'ycg', 'blockage_in', 
+          'blockage_out', 'camber_angle', 'lift_coefficient'])
+    geo_dep_params = pd.concat([geo_dep_params, params_dictionary], ignore_index=True)
+    geo_dep_params.to_csv('./data/geometry_dep_params.csv')
+    print(geo_dep_params)
+
+
+    calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
+    print(calculated_parameters)
 
 if __name__ == "__main__":
     main()
