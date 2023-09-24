@@ -29,6 +29,8 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
 # część geometria
 
 geo_params = gp.GeometryParameters()
+geo_params.def_values()
+
 dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
 geo_data_r = pd.read_csv('./data/geometry_data_rotor.csv', index_col=0)
@@ -60,6 +62,7 @@ def main():
     point3 = geo_params.find_suction_surface_leading_edge_tangency_point()
     point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
     point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
+    point6, point7, point8, point9 = geo_params.find_points_six_seven_eight_nine()
 
     leading_edge_params = point3.circle(point4)
     trailing_edge_params = point1.circle(point5)
@@ -105,8 +108,6 @@ def main():
     plt.show()
 
     get_params = dep_params.find_geometry_dependent_parameters()
-
-# Convert the obtained parameters to DataFrame
     params_dictionary = pd.DataFrame([get_params.to_dict()])
     geo_dep_params = pd.DataFrame(columns=['half_wedge_out', 'pitch', 'stagger_angle', 'airfoil_csa', 'chord', 
           'zweifel_coefficient', 'solidity', 'xcg', 'ycg', 'blockage_in', 

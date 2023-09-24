@@ -1,6 +1,6 @@
 import numpy as np
 from . import point as p
-
+from . import point_no_beta as pnb
 
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
@@ -42,11 +42,10 @@ class GeometryParameters:
         if self.chord_t < 20:
             #IF<CT.GE.4.l ITER=.TRUE.
             #IF<CT .GE.4.1 TTC=CT/100.
-            #if self.chord_t >= 4: 
+            if self.chord_t >= 4: 
                 self.chord_t = 0
         self.chord_t = self.chord.x * np.tan(self.chord_t * np.pi / 180)
 
-    
     def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.find_half_wedge_out()
         x1 = self.chord_x - self.Rte * (1 + np.sin(b1))
@@ -82,6 +81,17 @@ class GeometryParameters:
 
         return p.Point(b5, x5, y5)
 
+    def find_points_six_seven_eight_nine(self) -> pnb.PointNoBeta:
+        x6 = self.chord_x
+        y6 = 0
+        x7 = self.chord_x - self.Rte
+        y7 = 0
+        x8 = 0
+        y8 = self.chord_t
+        x9 = self.Rle
+        y9 = self.chord_t
+
+        return pnb.PointNoBeta(x6, y6), pnb.PointNoBeta(x7, y7), pnb.PointNoBeta(x8, y8), pnb.PointNoBeta(x9, y9)
     
     
         
