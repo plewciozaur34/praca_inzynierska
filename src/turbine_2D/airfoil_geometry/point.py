@@ -18,11 +18,13 @@ class Point:
         return poly.Polynomial(a, b, c, d)
     
     def circle(self, second_point: 'Point') -> cir.Circle:
-        r = (second_point.x - self.x) / (np.sin(second_point.b) + np.sin(self.b))
-        x_0 = self.x - r * np.sin(self.b)
-        y_0 = self.y + r * np.cos(self.b)
+        x = ((self.y - second_point.y) * np.tan(self.b * np.pi / 180) * np.tan(second_point.b * np.pi /180) + 
+             self.x * np.tan(second_point.b * np.pi /180) - second_point.x * np.tan(self.b * np.pi / 180))/(np.tan(second_point.b * np.pi /180)
+            - np.tan(self.b * np.pi / 180))
+        y = - (x - self.x) / np.tan(self.b * np.pi / 180) + self.y
+        r = np.sqrt((self.x - x)**2 + (self.y - y)**2)
 
-        return cir.Circle(x_0, y_0, r)
+        return cir.Circle(x, y, r)
     
     def bezier(self, second_point: 'Point'):    
         return 0

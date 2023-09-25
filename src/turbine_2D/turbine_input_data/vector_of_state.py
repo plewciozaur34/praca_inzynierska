@@ -1,6 +1,7 @@
 import numpy as np
 
 from helpers.temp_helpers import TempHelpers as th
+from . import calculated_params as cp
 
 class VectorOfState:
     def __init__(self, cx: float = 0, cr: float = 0, cu: float = 0, p: float = 0, 
@@ -35,12 +36,12 @@ class VectorOfState:
     def find_Mach_rel(self) -> float:
         return 0
 
-    def  mean_calc(self, phi: float):
+    def  mean_calc(self, phi: float) -> cp.CalcParams:
         print('entering mean_calc')
         
         beta = self.find_beta(phi)
         beta_deg = th.deg(beta)
         alfa = self.find_alfa()
-        return beta, beta_deg, alfa
+        return cp.CalcParams(beta, beta_deg, alfa)
 
    

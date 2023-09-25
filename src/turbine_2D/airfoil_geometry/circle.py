@@ -1,5 +1,5 @@
 class Circle:
-    def __init__(self, x_0: float, y_0: float, r: float) -> None:
-        self.x_0: float = x_0
-        self.y_0: float = y_0
+    def __init__(self, x: float, y: float, r: float) -> None:
+        self.x: float = x
+        self.y: float = y
         self.r: float = r

@@ -1,5 +1,5 @@
-from . import data_calc as dc
-from . import turbine_input as turbine_input
+from turbine_input_data import data_calc as dc
+from turbine_input_data import turbine_input as turbine_input
 from helpers.temp_helpers import TempHelpers as th
 
 class CalcOperations:
