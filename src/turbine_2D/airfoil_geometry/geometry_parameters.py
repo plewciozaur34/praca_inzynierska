@@ -26,6 +26,10 @@ class GeometryParameters:
 
         for attribute in attributes:
             setattr(self, attribute, geo_data[attribute][index_name])
+
+    def print_attributes(self):
+        for attr, value in self.__dict__.items():
+            print(f"{attr}: {value}")
     
     def def_values(self):
         if self.Rle >= 2:
@@ -38,26 +42,43 @@ class GeometryParameters:
             self.throat = 2* np.pi * self.R / self.Nb * np.cos(self.beta_out * np.pi / 180) - 2 * self.Rte
         if self.ugt <= 0:
             self.ugt = 0.0001
-        half_wedge_out = self.ugt/2
+        self.half_wedge_out = self.ugt/2
         if self.chord_t < 20:
             #IF<CT.GE.4.l ITER=.TRUE.
             #IF<CT .GE.4.1 TTC=CT/100.
             if self.chord_t >= 4: 
                 self.chord_t = 0
-        self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180)
+        else:
+            self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180)
 
     #trzeba tu wstawić odwołania do funkcji, które mają się wykonać dalej
-    def remove_throat_discontinuity(self, point0: 'p.Point', point2: 'p.Point'):
+    def remove_throat_discontinuity(self, geo_params, point0: 'p.Point', point2: 'p.Point', point3: 'p.Point', point4: 'p.Point', point5: 'p.Point', count=[0]):
+        count[0] += 1
+
+        point1 = geo_params.find_suction_surface_trailing_edge_tangency_point()
+        point2 = geo_params.find_suction_surface_throat_point()
+        point3 = geo_params.find_suction_surface_leading_edge_tangency_point()
+        point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
+        point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
+        point0 = point1.circle(point2)
+
         yy2 = point0.y + np.sqrt(point0.r**2 - (point2.x - point0.x)**2)
         if np.abs(point2.y - yy2) < 0.00001:
             print('Throat discontinuity removed')
+            pressure_surf_params = point4.polynomial(point5)
+            suction_surf_upthroat_params = point3.polynomial(point2)
+            return pressure_surf_params, suction_surf_upthroat_params
         else:
             self.half_wedge_out = self.half_wedge_out * (point2.y / yy2)**4
+            print("going with first else")
+            print(self.half_wedge_out)
             if self.half_wedge_out > 0.001:
                 print('Throat discontinuity NOT removed, calculate points again')
-                print("O THE EXIT WEDGE ANGLE ITERATION FAILED"
-                        + "THE EXIT WEDGE ANGLE WANTS TO GO NEGATIVE"
-                        + "REDUCE THE EXIT BLADE ANGLE OR DECREASE THE THROAT")
+                geo_params.remove_throat_discontinuity(geo_params, point0, point2, point3, point4, point5)
+            else:
+                print("THE EXIT WEDGE ANGLE ITERATION FAILED."
+                        + "THE EXIT WEDGE ANGLE WANTS TO GO NEGATIVE."
+                        + "REDUCE THE EXIT BLADE ANGLE OR DECREASE THE THROAT.")
 
     def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.half_wedge_out

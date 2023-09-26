@@ -34,13 +34,13 @@ dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
 geo_data_r = pd.read_csv('./data/geometry_data_rotor.csv', index_col=0)
 
-geo_params.get_data(geo_data_r, 'check')
+geo_params.get_data(geo_data_r, 'check2')
 
 
 def main():
 
     #część obliczeniowa 
-    c_u2, c_u3 = co.find_cu2(turbine_assum.cx, turbine_assum.phi, turbine_input.tpr, turbine_input.T01)
+    c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
@@ -60,6 +60,7 @@ def main():
     i = 0
     for i in range(0,N):
         geo_params.def_values()
+        geo_params.print_attributes()
 
         point1 = geo_params.find_suction_surface_trailing_edge_tangency_point()
         point2 = geo_params.find_suction_surface_throat_point()
@@ -68,7 +69,8 @@ def main():
         point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
         point0 = point1.circle(point2)
 
-        geo_params.remove_throat_discontinuity(point0, point2)
+        geo_params.remove_throat_discontinuity(geo_params, point0, point2, point3, point4, point5)
+        print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
 
         #leading_edge_params = point3.circle(point4)
         #trailing_edge_params = point1.circle(point5)
@@ -103,10 +105,10 @@ def main():
         #plt.show()
         #fig.savefig('./data/airfoils', dpi=300)
 
-        exes = [point0.x, point1.x, point2.x, point3.x, point4.x, point5.x]
-        whys = [point0.y, point1.y, point2.y, point3.y, point4.y, point5.y]
-        colors = ['orange', 'red', 'blue', 'green', 'grey', 'pink']
-        legend = ['point0', 'point1', 'point2', 'point3', 'point4', 'point5']
+        exes = [point1.x, point2.x, point3.x, point4.x, point5.x]
+        whys = [point1.y, point2.y, point3.y, point4.y, point5.y]
+        colors = ['red', 'blue', 'green', 'grey', 'pink']
+        legend = ['point1', 'point2', 'point3', 'point4', 'point5']
 
         figs, axs = plt.subplots(1,1, figsize = (6,5))
         axs.scatter(exes, whys, color = colors, s=10)

@@ -1,5 +1,4 @@
 from turbine_input_data import data_calc as dc
-from turbine_input_data import turbine_input as turbine_input
 from helpers.temp_helpers import TempHelpers as th
 
 class CalcOperations:
@@ -11,10 +10,10 @@ class CalcOperations:
         return p_1 
     
     @staticmethod
-    def find_cu2(cx: float, phi: float, tpr: float, T01: float) -> (float, float):
-         u=cx/phi
-         T_03 = T01/th.T2_T1_is(tpr, dc.KAPPA)
-         D_T0 = T_03 - T01
+    def find_cu2(turbine_assum: float, turbine_input: float) -> (float, float):
+         u=turbine_assum.cx/turbine_assum.phi
+         T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
+         D_T0 = T_03 - turbine_input.T01
          d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
          d_T0_prim=-120 #z danych literatrowych, 120 to tak typowo, ale i 150K tam widziałam chyba
          l=dc.CP*d_T0 
