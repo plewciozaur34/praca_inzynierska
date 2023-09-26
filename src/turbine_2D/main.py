@@ -69,7 +69,7 @@ def main():
         point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
         point0 = point1.circle(point2)
 
-        geo_params.remove_throat_discontinuity(geo_params, point0, point2, point3, point4, point5)
+        geo_params.remove_throat_discontinuity(geo_params, point0)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
 
         #leading_edge_params = point3.circle(point4)
