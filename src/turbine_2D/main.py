@@ -1,7 +1,5 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-#from matplotlib.patches import Circle
 
 from airfoil_geometry import geometry_parameters as gp
 from airfoil_geometry import geometry_dep_params_calc as gdpc
@@ -52,8 +50,6 @@ def main():
 
     WS_stator.mean_calc(turbine_assum.phi)
 
-    #zapisac zewnetrzny plik z danymi do profilu
-
     #----------------------------------------------------------------------------------------------------
     #część geometria
     N = 1
@@ -62,62 +58,24 @@ def main():
         geo_params.def_values()
         geo_params.print_attributes()
 
-        point1 = geo_params.find_suction_surface_trailing_edge_tangency_point()
-        point2 = geo_params.find_suction_surface_throat_point()
-        point3 = geo_params.find_suction_surface_leading_edge_tangency_point()
-        point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
-        point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
-        point0 = point1.circle(point2)
-
-        geo_params.remove_throat_discontinuity(geo_params, point0)
+        rtd = geo_params.remove_throat_discontinuity(geo_params)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
 
-        #leading_edge_params = point3.circle(point4)
-        #trailing_edge_params = point1.circle(point5)
+        pressure_and_suction_up = sp.SurfacePoints()
+        pressure_and_suction_up.surface_points(geo_params, rtd)
 
-        pressure_surf_params = point4.polynomial(point5)
-        suction_surf_upthroat_params = point3.polynomial(point2)
-        suction_surf_downthroat_params = point2.bezier(point1)
-
-        pressure_and_suction_up = sp.SurfacePoints(list(np.zeros(50)), list(np.zeros(50)), list(np.zeros(50)), list(np.zeros(50)))
-        pressure_and_suction_up.surface_points(pressure_surf_params, suction_surf_upthroat_params, geo_params, point0, point1, point2, point3, point4, point5)
-
-        #leading_edge = Circle((leading_edge_params.x, leading_edge_params.y), leading_edge_params.r, fill = False, color = 'red')
-        #trailing_edge = Circle((trailing_edge_params.x, trailing_edge_params.y), trailing_edge_params.r, fill = False, color = 'green')
-
-        pressure_surf_coeff = [pressure_surf_params.d, pressure_surf_params.c, pressure_surf_params.b, pressure_surf_params.a]
-        pressure_surf = np.poly1d(pressure_surf_coeff)
-        x_pressure = np.linspace(point4.x, point5.x, 200)
-
-        suction_surf_upthroat_coeff = [suction_surf_upthroat_params.d, suction_surf_upthroat_params.c, suction_surf_upthroat_params.b, suction_surf_upthroat_params.a]
-        suction_surf_upthroat = np.poly1d(suction_surf_upthroat_coeff)
-        x_suction_upthroat = np.linspace(point3.x, point2.x, 200)
-
-
-        #fig, ax = plt.subplots(1,1, figsize = (6,5))
-        #ax.add_patch(leading_edge)
-        #ax.add_patch(trailing_edge)
-        #ax.plot(x_pressure, pressure_surf(x_pressure), color = 'blue')
-        #ax.plot(x_suction_upthroat, suction_surf_upthroat(x_suction_upthroat), color = 'black')
-        #ax.set_xlim(-0.5, 1.5)
-        #ax.set_ylim(-0.5, 2)
-        #ax.set_aspect('equal')
-        #plt.show()
-        #fig.savefig('./data/airfoils', dpi=300)
-
-        exes = [point1.x, point2.x, point3.x, point4.x, point5.x]
-        whys = [point1.y, point2.y, point3.y, point4.y, point5.y]
+        exes = [rtd.point1.x, rtd.point2.x, rtd.point3.x, rtd.point4.x, rtd.point5.x]
+        whys = [rtd.point1.y, rtd.point2.y, rtd.point3.y, rtd.point4.y, rtd.point5.y]
         colors = ['red', 'blue', 'green', 'grey', 'pink']
         legend = ['point1', 'point2', 'point3', 'point4', 'point5']
 
-        figs, axs = plt.subplots(1,1, figsize = (6,5))
-        axs.scatter(exes, whys, color = colors, s=10)
-        #axs.add_patch(leading_edge)
-        #axs.add_patch(trailing_edge)
-        #axs.plot(x_suction_upthroat, suction_surf_upthroat(x_suction_upthroat), color = 'black')
-        #axs.plot(x_pressure, pressure_surf(x_pressure), color = 'blue')
+        fig, axs = plt.subplots(1,1, figsize = (6,5))
+        for x, y, color, legend in zip(exes, whys, colors, legend):
+            axs.scatter(x, y, color=color, s=10, label=legend)
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
+        axs.set_title('Airfoil geometry')
+        axs.legend()
         plt.show()
 
         get_params = dep_params.find_geometry_dependent_parameters()
@@ -126,7 +84,6 @@ def main():
             'zweifel_coefficient', 'solidity', 'blockage_in', 
             'blockage_out', 'camber_angle', 'lift_coefficient'])
         geo_dep_params = pd.concat([geo_dep_params, params_dictionary], ignore_index=True)
-        #z jakiegoś powodu mec_props wyrzuca tylko nan
         mechanical_props = pressure_and_suction_up.mec_props()
         mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
         mechanical_props_df = pd.DataFrame(columns=['airfoil_csa', 'xcg', 'ycg'])
@@ -134,7 +91,6 @@ def main():
         geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
         geo_dep_params.to_csv('./data/geometry_dep_params.csv')
         print(geo_dep_params)
-
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
         print(calculated_parameters)

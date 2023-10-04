@@ -3,6 +3,7 @@ import sys
 
 from . import point as p
 from . import point_no_beta as pnb
+from . import throat_dicontinuity as td
 
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
@@ -53,7 +54,7 @@ class GeometryParameters:
             self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180)
 
     #trzeba tu wstawić odwołania do funkcji, które mają się wykonać dalej
-    def remove_throat_discontinuity(self, geo_params, point0: 'p.Point', count=[0]):
+    def remove_throat_discontinuity(self, geo_params, count=[0]) -> 'td.RemoveThroatDiscontinuity':
         count[0] += 1
 
         point1 = geo_params.find_suction_surface_trailing_edge_tangency_point()
@@ -61,20 +62,20 @@ class GeometryParameters:
         point3 = geo_params.find_suction_surface_leading_edge_tangency_point()
         point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
         point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
-        point0 = point1.circle(point2) #muszę znaleźć sposób, żeby go tutaj policzyć, bo on też musi się zmieniać
+        point0 = point1.circle(point2) 
 
         yy2 = point0.y + np.sqrt(point0.r**2 - (point2.x - point0.x)**2)
         if np.abs(point2.y - yy2) < 0.00001:
             print('Throat discontinuity removed')
-            pressure_surf_params = point4.polynomial(point5)
-            suction_surf_upthroat_params = point3.polynomial(point2)
-            return pressure_surf_params, suction_surf_upthroat_params
+            pressure_surf = point4.polynomial(point5)
+            suction_surf = point3.polynomial(point2)
+            return td.RemoveThroatDiscontinuity(pressure_surf, suction_surf, point0, point1, point2, point3, point4, point5)
         else:
             self.half_wedge_out = self.half_wedge_out * (point2.y / yy2)**4
             print(f"half wegde out={self.half_wedge_out}")
             if self.half_wedge_out > 0.001:
-                print('Throat discontinuity NOT removed, calculate points again')
-                geo_params.remove_throat_discontinuity(geo_params, point0)
+                print('Throat discontinuity NOT removed, calculating points again')
+                geo_params.remove_throat_discontinuity(geo_params)
             else:
                 print("THE EXIT WEDGE ANGLE ITERATION FAILED.THE EXIT WEDGE ANGLE WANTS TO GO NEGATIVE.REDUCE THE EXIT BLADE ANGLE OR DECREASE THE THROAT.")
                 print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
