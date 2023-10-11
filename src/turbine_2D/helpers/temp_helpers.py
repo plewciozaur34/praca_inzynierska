@@ -39,10 +39,21 @@ class TempHelpers:
     @staticmethod
     def area_calc(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float):
         return np.abs(x1 * y2 + y1 * x3 + y3 * x2 - y2 * x3 - y1 * x2 - x1 * y3)/2
+    
+    @staticmethod
+    def plot_line_through_point(ax, point, angle_deg, length, **kwargs):
+        angle_rad = np.deg2rad(angle_deg)
+        dx = np.cos(angle_rad)
+        dy = np.sin(angle_rad)
+        start_x = point[0] - length * dx
+        start_y = point[1] - length * dy
+        end_x = point[0] + length * dx
+        end_y = point[1] + length * dy
+        ax.plot([start_x, end_x], [start_y, end_y], **kwargs)
    
     #może kiedyś jak będzie czas to to zrobię
     #@staticmethod
     #def make_csv(class_name, function, columns):
-        dataframe_name = class_name.function()
-        params_dictionary = pd.DataFrame([dataframe_name.to_dict()])
-        dataframe_name = pd.DataFrame(columns=columns)
+        #dataframe_name = class_name.function()
+        #params_dictionary = pd.DataFrame([dataframe_name.to_dict()])
+        #dataframe_name = pd.DataFrame(columns=columns)

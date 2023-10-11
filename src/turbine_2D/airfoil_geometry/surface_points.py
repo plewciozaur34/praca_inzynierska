@@ -100,6 +100,7 @@ class SurfacePoints:
             if self.xs[i] > geo_params.chord_x:
                 self.xs[i] = geo_params.chord_x
             self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
+
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
     
     def mec_props(self) -> mp.MechanicalProps:

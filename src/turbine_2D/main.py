@@ -72,6 +72,10 @@ def main():
         fig, axs = plt.subplots(1,1, figsize = (6,5))
         for x, y, color, legend in zip(exes, whys, colors, legend):
             axs.scatter(x, y, color=color, s=10, label=legend)
+
+        #th.plot_line_through_point(axs, [rtd.point3.x, rtd.point3.y], rtd.point3.b, length=0.1, color='green', linestyle='--')
+        #th.plot_line_through_point(axs, [rtd.point4.x, rtd.point4.y], rtd.point4.b, length=0.1, color='grey', linestyle='--')
+        
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
         axs.set_title('Airfoil geometry')

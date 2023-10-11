@@ -11,8 +11,7 @@ class Point:
         self.y: float = y
 
     def polynomial(self, second_point: 'Point') -> poly.Polynomial:
-        d = ((np.tan(th.rad(self.b)) + np.tan(th.rad(second_point.b))) / ((second_point.x - self.x)**2))
-        - ((2 * (self.y - second_point.y)) / (self.x - second_point.x)**3)
+        d = ((np.tan(th.rad(self.b)) + np.tan(th.rad(second_point.b))) / ((second_point.x - self.x)**2)) - ((2 * (self.y - second_point.y)) / (self.x - second_point.x)**3)
         c = ((self.y - second_point.y) / (self.x - second_point.x)**2) - (np.tan(th.rad(second_point.b)) / (self.x - second_point.x)) - (d * (self.x + 2 * second_point.x))
         b = np.tan(th.rad(second_point.b)) - 2 * c * second_point.x - 3 * d * second_point.x**2
         a = second_point.y - b * second_point.x - c * second_point.x**2 - d * second_point.x**3
@@ -20,9 +19,9 @@ class Point:
         return poly.Polynomial(d, c, b, a)
     
     def circle(self, second_point: 'Point') -> cir.Circle:
-        x = ((self.y - second_point.y) * np.tan(th.rad(self.b)) * np.tan(th.rad(second_point.b)) + 
-             self.x * np.tan(th.rad(second_point.b)) - second_point.x * np.tan(th.rad(self.b)))/(np.tan(th.rad(second_point.b))
-            - np.tan(th.rad(self.b)))
+        x_nominator = ((self.y - second_point.y) * np.tan(th.rad(self.b)) * np.tan(th.rad(second_point.b)) + self.x * np.tan(th.rad(second_point.b)) - second_point.x * np.tan(th.rad(self.b)))
+        x_denominator = (np.tan(th.rad(second_point.b)) - np.tan(th.rad(self.b)))
+        x = x_nominator / x_denominator
         y = - (x - self.x) / np.tan(th.rad(self.b)) + self.y
         r = np.sqrt((self.x - x)**2 + (self.y - y)**2)
 
