@@ -45,7 +45,6 @@ class GeometryParameters:
             self.throat = 2* np.pi * self.R / self.Nb * np.cos(self.beta_out * np.pi / 180) - 2 * self.Rte
         if self.ugt <= 0:
             self.ugt = 0.0001
-        #self.half_wedge_out = 3.31
         self.half_wedge_out = self.ugt/2
         if self.chord_t < 20:
             #IF<CT.GE.4.l ITER=.TRUE.
@@ -55,7 +54,6 @@ class GeometryParameters:
         else:
             self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180)
 
-    #trzeba tu wstawić odwołania do funkcji, które mają się wykonać dalej
     def remove_throat_discontinuity(self, count=[0]) -> 'td.RemoveThroatDiscontinuity':
         count[0] += 1
 
@@ -70,7 +68,7 @@ class GeometryParameters:
         if np.abs(point2.y - yy2) < 0.00001:
             print('Throat discontinuity removed.')
             pressure_surf = point4.polynomial(point5)
-            suction_surf = point3.polynomial(point2)
+            suction_surf = point2.polynomial(point3)
             return td.RemoveThroatDiscontinuity(pressure_surf, suction_surf, point0, point1, point2, point3, point4, point5)
         
         self.half_wedge_out = self.half_wedge_out * (point2.y / yy2)**4
@@ -82,21 +80,6 @@ class GeometryParameters:
         print("THE EXIT WEDGE ANGLE ITERATION FAILED. THE EXIT WEDGE ANGLE WANTS TO GO NEGATIVE. REDUCE THE EXIT BLADE ANGLE OR DECREASE THE THROAT.")
         print(f"Remove throat discontinuity was iterated {self.remove_throat_discontinuity.__defaults__[0][0]} times.")
         sys.exit()
-
-    def insted_of_throat(self, geo_params, count=[0]) -> 'td.RemoveThroatDiscontinuity':
-        count[0] += 1
-
-        point1 = geo_params.find_suction_surface_trailing_edge_tangency_point()
-        point2 = geo_params.find_suction_surface_throat_point()
-        point3 = geo_params.find_suction_surface_leading_edge_tangency_point()
-        point4 = geo_params.find_pressure_surface_leading_edge_tangency_point()
-        point5 = geo_params.find_pressure_surface_trailing_edge_tangency_point()
-        point0 = point1.circle(point2) 
-
-        print('Throat discontinuity removed')
-        pressure_surf = point4.polynomial(point5)
-        suction_surf = point3.polynomial(point2)
-        return td.RemoveThroatDiscontinuity(pressure_surf, suction_surf, point0, point1, point2, point3, point4, point5)
     
     def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.half_wedge_out

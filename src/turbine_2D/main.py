@@ -53,14 +53,12 @@ def main():
     #----------------------------------------------------------------------------------------------------
     #część geometria
     N = 1
-    i = 0
     for i in range(0,N):
         
         geo_params.def_values()
         geo_params.print_attributes()
 
         rtd = geo_params.remove_throat_discontinuity()
-        #rtd = geo_params.insted_of_throat(geo_params)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
 
         pressure_and_suction_up = sp.SurfacePoints()
@@ -96,8 +94,6 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
         print(calculated_parameters)
-
-        i += 1
         
 
 if __name__ == "__main__":

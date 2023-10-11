@@ -12,7 +12,7 @@ class SurfacePoints:
         self.yp: list = yp
 
     @staticmethod
-    def Parametric1(X1, X2, nEL = 9, endpoint = False):
+    def Parametric1(X1, X2, nEL = 10, endpoint = False):
         tanFi1 = math.tan(X1[2])
         npts = nEL+1
         #print(X2)
@@ -59,7 +59,7 @@ class SurfacePoints:
             Y[0,2] = Y[1,2] + (Y[1,2]-Y[2,2])
         return Y
 
-    def surface_points(self, geo_params, rtd) -> 'SurfacePoints':
+    def surface_points(self, geo_params, rtd, nEL = 50) -> 'SurfacePoints':
         point6, point7, point8, point9 = geo_params.find_points_six_seven_eight_nine()
         self.xs[0] = point8.x
         self.ys[0] = point8.y
@@ -80,11 +80,13 @@ class SurfacePoints:
             self.xs[i] = self.xs[i-1] + dxs
             self.ys[i] = rtd.suction_surf.a + self.xs[i] * (rtd.suction_surf.b + self.xs[i] * (rtd.suction_surf.c + self.xs[i] * rtd.suction_surf.d))
         dxs = (rtd.point1.x - rtd.point2.x)/10
-        ys_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point5.x, rtd.point5.y, th.rad(rtd.point5.b)])[:,2]
+        ys_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,1]
+        xs_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,0]
         for i in range(30, 40):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (rtd.pressure_surf.b + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d))
             self.xs[i] = self.xs[i-1] + dxs
+            #self.xs[i] = xs_parametric[i-30]
             #self.ys[i] = ys_parametric[i-30]
             self.ys[i] = rtd.point0.y + np.sqrt(rtd.point0.r**2 - (self.xs[i] - rtd.point0.x)**2)
         dxp = (point6.x - rtd.point5.x)/10
