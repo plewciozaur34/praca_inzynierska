@@ -27,6 +27,3 @@ class Point:
         r = np.sqrt((self.x - x)**2 + (self.y - y)**2)
 
         return cir.Circle(x, y, r)
-    
-    def bezier(self, second_point: 'Point'):    
-        return 0
