@@ -18,6 +18,7 @@ class GeometryDependentParameters:
         return {'pitch': self.pitch, 'stagger_angle': self.stagger_angle, 
                 'chord': self.chord, 'zweifel_coefficient': self.zweifel_coefficient, 
                 'solidity': self.solidity, 'blockage_in': self.blockage_in, 
-                'blockage_out': self.blockage_out, 'camber_angle': self.camber_angle, 'lift_coefficient': self.lift_coefficient}
+                'blockage_out': self.blockage_out, 'camber_angle': self.camber_angle,
+                'lift_coefficient': self.lift_coefficient}
         
         

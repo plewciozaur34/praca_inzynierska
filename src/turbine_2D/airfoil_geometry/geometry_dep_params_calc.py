@@ -34,6 +34,7 @@ class GeometryDependentParametersCalculation:
     def find_lift_coefficient (self) -> float:
         return ((self.find_pitch())/self.find_chord()) * (np.cos(th.rad(self.gp.beta_in)) + np.cos(th.rad(self.gp.beta_out))) * (np.tan(th.rad(self.gp.beta_in)) - np.tan(th.rad(self.gp.beta_out)))
     
+    
     def find_geometry_dependent_parameters(self) -> gdp.GeometryDependentParameters:
         pitch = self.find_pitch()
         stagger_angle = self.find_stagger_angle()

@@ -88,11 +88,19 @@ def main():
             'zweifel_coefficient', 'solidity', 'blockage_in', 
             'blockage_out', 'camber_angle', 'lift_coefficient'])
         geo_dep_params = pd.concat([geo_dep_params, params_dictionary], ignore_index=True)
+
         mechanical_props = pressure_and_suction_up.mec_props()
         mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
         mechanical_props_df = pd.DataFrame(columns=['airfoil_csa', 'xcg', 'ycg'])
         mechanical_props_df = pd.concat([mechanical_props_df, mechanical_props_dict], ignore_index=True)
+
+        max_thickness = pressure_and_suction_up.find_thickness_max()
+        max_thickness_dict = pd.DataFrame([max_thickness.to_dict()])
+        max_thickness_df = pd.DataFrame(columns=['max_thickness'])
+        max_thickness_df = pd.concat([max_thickness_df, max_thickness_dict], ignore_index=True)
+
         geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
+        geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
         geo_dep_params.to_csv('./data/geometry_dep_params.csv')
         print(geo_dep_params)
 

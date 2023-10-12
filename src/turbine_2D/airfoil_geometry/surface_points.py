@@ -2,6 +2,7 @@ import numpy as np
 import math
 
 from . import mechanical_props as mp
+from . import thickness as tc
 from helpers.temp_helpers import TempHelpers as th
 
 class SurfacePoints: 
@@ -15,7 +16,6 @@ class SurfacePoints:
     def Parametric1(X1, X2, nEL = 10, endpoint = False):
         tanFi1 = math.tan(X1[2])
         npts = nEL+1
-        #print(X2)
         tanFi2 = math.tan(X2[2])
         bx =2*((X2[0]-X1[0])*tanFi2-(X2[1]-X1[1]))/(tanFi2-tanFi1)
         by = bx*tanFi1
@@ -123,3 +123,13 @@ class SurfacePoints:
         xcg = xcg/area
         ycg = ycg/area
         return mp.MechanicalProps(area, xcg, ycg) 
+    
+    def find_thickness_max (self) -> tc.MaxThickness:
+        t_max = 0
+        for i in range(0,50):
+            tm = 999
+            for j in range(0,50):
+                tm = min(tm, np.sqrt((self.xs[i] - self.xp[j])**2+(self.ys[i]-self.yp[j])**2))
+            t_max = max(t_max, tm)
+        return tc.MaxThickness(t_max)
+    
