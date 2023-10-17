@@ -21,8 +21,8 @@ WS_rotor = vector_of_state.VectorOfState()
 turbine_input = ti.TurbineInput(dc.M_DOT, 0, dc.T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
 turbine_input.p01 = co.turbine_input_pressure(turbine_input.tpr) / th.p_p0(dc.M_1, dc.KAPPA)
 
-#turbine_assum = [alfa1, alfa3, phi, c_x ..]
-turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X)
+#turbine_assum = [alfa1, alfa3, phi, c_x, r_hub/r_tip]
+turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.RH_RT)
 
 #-----------------------------------------------------------------------------------------
 # część geometria

@@ -1,3 +1,5 @@
+import numpy as np
+
 from turbine_input_data import data_calc as dc
 from helpers.temp_helpers import TempHelpers as th
 
@@ -29,4 +31,16 @@ class CalcOperations:
     @staticmethod
     def find_temperature() -> float:
         return 0
+    
+    @staticmethod
+    def find_mean_radious(u: float, omega: float) -> float:
+        return u/omega
+    
+    #trzeba to jeszcze dobrze sprawdzić
+    def find_rtip_rhub(self, c_x1: float, rho_1: float, m_dot: float, u: float, omega: float) -> (float, float):
+        r_mean = self.find_mean_radious(u, omega)
+        A = m_dot/(c_x1*rho_1)
+        r_hub = A/(np.pi*4*r_mean) + r_mean
+        r_tip = 2*r_mean - r_hub
+        return r_tip, r_hub
     

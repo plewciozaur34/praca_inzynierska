@@ -11,6 +11,7 @@ OMEGA = 3800
 P_INPUT = 23800
 PHI = 0.8
 C_X = 230
+RH_RT = 0.8
 
 KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
