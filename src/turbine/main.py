@@ -10,8 +10,10 @@ from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from turbine_input_data import data_calc as dc
 from helpers.calc_helpers import CalcOperations as co
+from turbine_3D import sre_input as sre_in
 
 # część obliczeniowa
+calc_op = co()
 
 #WEKTOR STANU: [c_axial, c_radial, c_u, p, T, r]
 WS_stator = vector_of_state.VectorOfState()
@@ -30,7 +32,7 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.RH_RT)
 geo_params = gp.GeometryParameters()
 dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-geo_data_r = pd.read_csv('./data/geometry_data_rotor.csv', index_col=0)
+geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor.csv', index_col=0)
 
 geo_params.get_data(geo_data_r, 'check2')
 
@@ -101,12 +103,20 @@ def main():
 
         geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
         geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
-        geo_dep_params.to_csv('./data/geometry_dep_params.csv')
+        geo_dep_params.to_csv('./data/csv/geometry_dep_params.csv')
         print(geo_dep_params)
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
-        print(calculated_parameters)
-        
+        #print(calculated_parameters)
+
+        rp_list_check = [0.75, 0.9, 1.0, 1.1, 1.25]
+        rp_list = calc_op.radious_list(1.2, turbine_assum, turbine_input)
+        print("rp_list = {rp_list}")
+        sre_input = sre_in.SimRadEquiInput()
+        sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
+        sre_input.get_data(sre_data)
+        sre_output = sre_input.simple_radial_equi(rp_list_check)
+        sre_output.to_csv('./data/csv/sre_output_check.csv')
 
 if __name__ == "__main__":
     main()

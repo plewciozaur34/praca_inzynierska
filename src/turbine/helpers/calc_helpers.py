@@ -13,7 +13,7 @@ class CalcOperations:
     
     @staticmethod
     def find_cu2(turbine_assum: float, turbine_input: float) -> (float, float):
-         u=turbine_assum.cx/turbine_assum.phi
+         u = th.find_tangential_velocity(turbine_assum)
          T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
          D_T0 = T_03 - turbine_input.T01
          d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
@@ -32,15 +32,19 @@ class CalcOperations:
     def find_temperature() -> float:
         return 0
     
-    @staticmethod
-    def find_mean_radious(u: float, omega: float) -> float:
-        return u/omega
-    
     #trzeba to jeszcze dobrze sprawdzić
-    def find_rtip_rhub(self, c_x1: float, rho_1: float, m_dot: float, u: float, omega: float) -> (float, float):
-        r_mean = self.find_mean_radious(u, omega)
-        A = m_dot/(c_x1*rho_1)
+    def find_rtip_rhub_rmean(self, rho_1: float, turbine_assum, turbine_input) -> (float, float):
+        u = th.find_tangential_velocity(turbine_assum)
+        r_mean = th.find_mean_radious(u, turbine_input.omega)
+        A = turbine_input.m_dot/(turbine_assum.cx*rho_1)
         r_hub = A/(np.pi*4*r_mean) + r_mean
         r_tip = 2*r_mean - r_hub
-        return r_tip, r_hub
+        return r_tip, r_mean, r_hub
+    
+    def radious_list(self, rho, turbine_assum, turbine_input) -> list:
+        r_tip, r_mean, r_hub = self.find_rtip_rhub_rmean(rho, turbine_assum, turbine_input)
+        first = np.linspace(r_tip, r_mean, 3)
+        second = np.linspace(r_mean, r_hub, 3)
+        combined = np.concatenate((first, second[1:]))
+        return combined.tolist()
     

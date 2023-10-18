@@ -50,6 +50,17 @@ class TempHelpers:
         end_x = point[0] + length * dx
         end_y = point[1] + length * dy
         ax.plot([start_x, end_x], [start_y, end_y], **kwargs)
+
+    @staticmethod
+    def find_tangential_velocity(turbine_assum) -> float:
+        return turbine_assum.cx/turbine_assum.phi
+
+    @staticmethod
+    def find_mean_radious(u: float, omega: float) -> float:
+        return u/omega
+    
+    
+        
    
     #może kiedyś jak będzie czas to to zrobię
     #@staticmethod
