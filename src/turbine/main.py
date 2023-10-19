@@ -1,9 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from airfoil_geometry import geometry_parameters as gp
-from airfoil_geometry import geometry_dep_params_calc as gdpc
-from airfoil_geometry import surface_points  as sp
+from airfoil_geometry.geom_parameters import geometry_parameters as gp
+from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc
+from airfoil_geometry.dep_geom_parameters import surface_points  as sp
 from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
@@ -110,8 +110,8 @@ def main():
         #print(calculated_parameters)
 
         rp_list_check = [0.75, 0.9, 1.0, 1.1, 1.25]
-        rp_list = calc_op.radious_list(1.2, turbine_assum, turbine_input)
-        print("rp_list = {rp_list}")
+        rp_list = calc_op.radious_list(turbine_assum, turbine_input)
+        print(f"rp_list = {rp_list}")
         sre_input = sre_in.SimRadEquiInput()
         sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
         sre_input.get_data(sre_data)

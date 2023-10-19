@@ -32,19 +32,27 @@ class CalcOperations:
     def find_temperature() -> float:
         return 0
     
-    #trzeba to jeszcze dobrze sprawdzić
-    def find_rtip_rhub_rmean(self, rho_1: float, turbine_assum, turbine_input) -> (float, float):
+    def find_inlet_density(self) -> float:
+        p1 = self.turbine_input_pressure(dc.TPR)
+        return p1/(dc.R_COMB*dc.T_01)
+    
+    #coś jest nie tak, promienie wychodzą na minusie
+    def find_rtip_rhub_rmean(self, turbine_assum, turbine_input) -> (float, float, float):
+        rho1 = self.find_inlet_density()
         u = th.find_tangential_velocity(turbine_assum)
         r_mean = th.find_mean_radious(u, turbine_input.omega)
-        A = turbine_input.m_dot/(turbine_assum.cx*rho_1)
+        A = turbine_input.m_dot/(turbine_assum.cx*rho1)
         r_hub = A/(np.pi*4*r_mean) + r_mean
         r_tip = 2*r_mean - r_hub
         return r_tip, r_mean, r_hub
     
-    def radious_list(self, rho, turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = self.find_rtip_rhub_rmean(rho, turbine_assum, turbine_input)
-        first = np.linspace(r_tip, r_mean, 3)
-        second = np.linspace(r_mean, r_hub, 3)
+    def radious_list(self, turbine_assum, turbine_input) -> list:
+        r_tip, r_mean, r_hub = self.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        r_tip_p = r_tip / r_mean
+        r_mean_p = r_mean / r_mean
+        r_hub_p = r_hub / r_mean
+        first = np.linspace(r_tip_p, r_mean_p, 3)
+        second = np.linspace(r_mean_p, r_hub_p, 3)
         combined = np.concatenate((first, second[1:]))
         return combined.tolist()
     

@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import geometry_parameters as gep
+from ..geom_parameters import geometry_parameters as gep
 from . import geo_dep_params as gdp
 from helpers.temp_helpers import TempHelpers as th
 class GeometryDependentParametersCalculation:

@@ -1,4 +1,5 @@
 import numpy as np
+
 class TempHelpers:
     @staticmethod
     def celsius_to_kelvin(celsius: float) -> float:
