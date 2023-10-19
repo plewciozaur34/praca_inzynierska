@@ -40,7 +40,7 @@ geo_params.get_data(geo_data_r, 'check2')
 def main():
 
     #część obliczeniowa 
-    c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
+    c_u2, c_u3 = calc_op.find_cu2(turbine_assum, turbine_input)
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
@@ -114,8 +114,9 @@ def main():
         print(f"rp_list = {rp_list}")
         sre_input = sre_in.SimRadEquiInput()
         sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
-        sre_input.get_data(sre_data)
-        sre_output = sre_input.simple_radial_equi(rp_list_check)
+        sre_input.calculate_data(turbine_assum, turbine_input)
+        #sre_input.get_data(sre_data)
+        sre_output = sre_input.simple_radial_equi(rp_list, turbine_assum)
         sre_output.to_csv('./data/csv/sre_output_check.csv')
 
 if __name__ == "__main__":

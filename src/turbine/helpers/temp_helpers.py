@@ -56,9 +56,7 @@ class TempHelpers:
     def find_tangential_velocity(turbine_assum) -> float:
         return turbine_assum.cx/turbine_assum.phi
 
-    @staticmethod
-    def find_mean_radious(u: float, omega: float) -> float:
-        return u/omega
+   
     
     
         
