@@ -24,19 +24,23 @@ class VectorOfState:
         alfa = np.arccos(self.cx / c)
         return alfa
     
+#FIXME promień jako zmienna? czy poprostu r_mean? ZMienna może mieć więcej zastowań
     def find_work(self, second_vector: 'VectorOfState', omega: float) -> float:
         omega_rs = th.rpm_to_rad_s(omega)
         u = omega_rs * self.r
         l = u * (self.cu - second_vector.cu)
         return l
 
+#TODO napisać find_Mach, Mach_rel 
     def find_Mach(self) -> float:
         return 0
 
     def find_Mach_rel(self) -> float:
         return 0
 
-    def  mean_calc(self, phi: float) -> cp.CalcParams:
+#TODO więcej funkcji find?? - co jeszcze jest potrzebne
+
+    def mean_calc(self, phi: float) -> cp.CalcParams:
         print('entering mean_calc')
         
         beta = self.find_beta(phi)

@@ -5,6 +5,7 @@ from . import mechanical_props as mp
 from . import thickness as tc
 from helpers.temp_helpers import TempHelpers as th
 
+#FIXME: może pomyśleć nad lepszą formą przypisywania pustych list tutaj
 class SurfacePoints: 
     def __init__(self, xs: list = list(np.zeros(50)), xp: list = list(np.zeros(50)), ys: list = list(np.zeros(50)), yp: list = list(np.zeros(50))) -> None:
         self.xs: list = xs
@@ -12,6 +13,8 @@ class SurfacePoints:
         self.ys: list = ys
         self.yp: list = yp
 
+#TODO: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
+#wszystko zależy od tego jak to będzie wyglądać przy innych danych wejściowych
     @staticmethod
     def Parametric1(X1, X2, nEL = 10, endpoint = False):
         tanFi1 = math.tan(X1[2])
@@ -59,6 +62,9 @@ class SurfacePoints:
             Y[0,2] = Y[1,2] + (Y[1,2]-Y[2,2])
         return Y
 
+#TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii
+#można pomyśleć nad dodaniem nEL do data_calc - wtedy nie ma problemu z wpisaniem innych wartości 
+#do tych tzrech funkcji
     def surface_points(self, geo_params, rtd, nEL = 50) -> 'SurfacePoints':
         point6, point7, point8, point9 = geo_params.find_points_six_seven_eight_nine()
         self.xs[0] = point8.x
@@ -103,6 +109,7 @@ class SurfacePoints:
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
     
+#TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii    
     def mec_props(self) -> mp.MechanicalProps:
         area = th.area_calc(self.xs[0], self.ys[0], self.xs[1], self.ys[1], self.xp[1], self.yp[1])
         xcg = (self.xs[0] + self.xs[1] + self.xp[1])/3 * area
@@ -123,7 +130,8 @@ class SurfacePoints:
         xcg = xcg/area
         ycg = ycg/area
         return mp.MechanicalProps(area, xcg, ycg) 
-    
+
+   #TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii 
     def find_thickness_max (self) -> tc.MaxThickness:
         t_max = 0
         for i in range(0,50):

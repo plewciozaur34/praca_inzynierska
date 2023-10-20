@@ -1,3 +1,7 @@
+#FIXME przejrzeć cały kod i poprawić typowanie zmiennych i wyjść z funkcji - jeśli wystarczy czasu
+#TODO zapisywanie do i z csv - zrobić poprządek z danymi check i faktycznymi danymi do obliczeń
+#TODO do sprawdzenia - w jakiej formie zwracać dane o geometrii do TurboGrida
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -16,6 +20,7 @@ from turbine_3D import sre_input as sre_in
 calc_op = co()
 
 #WEKTOR STANU: [c_axial, c_radial, c_u, p, T, r]
+#FIXME zmiana nazwy na coś z mean? bo muszą jeszcze być WS dla innych promieni!
 WS_stator = vector_of_state.VectorOfState()
 WS_rotor = vector_of_state.VectorOfState()
 
@@ -32,6 +37,7 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.RH_RT)
 geo_params = gp.GeometryParameters()
 dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
+#TODO reasearch - dane prawdziwe do projektu (obliczenia plus literatura)
 geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor.csv', index_col=0)
 
 geo_params.get_data(geo_data_r, 'check2')
@@ -54,6 +60,7 @@ def main():
 
     #----------------------------------------------------------------------------------------------------
     #część geometria
+#FIXME czy ta pętla jest tu potzrebna - albo usunąć albo dac mozliwość zmiany danych pomiędzy iteracjami
     N = 1
     for i in range(0,N):
         
@@ -78,6 +85,7 @@ def main():
         #th.plot_line_through_point(axs, [rtd.point3.x, rtd.point3.y], rtd.point3.b, length=0.1, color='green', linestyle='--')
         #th.plot_line_through_point(axs, [rtd.point4.x, rtd.point4.y], rtd.point4.b, length=0.1, color='grey', linestyle='--')
         
+#TODO zapis do png - tworzący nowe pliki a nie nadpisujący stare iteracje
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
         axs.set_title('Airfoil geometry')
@@ -107,7 +115,6 @@ def main():
         print(geo_dep_params)
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
-        #print(calculated_parameters)
 
         rp_list_check = [0.75, 0.9, 1.0, 1.1, 1.25]
         rp_list = calc_op.radious_list(turbine_assum, turbine_input)

@@ -1,3 +1,5 @@
+#TODO przejrzeć temp_helpers i calc_helpers i poprawić to gdzie jest która funkcja - czytelny podział!
+
 import numpy as np
 
 class TempHelpers:
@@ -55,13 +57,8 @@ class TempHelpers:
     @staticmethod
     def find_tangential_velocity(turbine_assum) -> float:
         return turbine_assum.cx/turbine_assum.phi
-
-   
-    
-    
-        
-   
-    #może kiedyś jak będzie czas to to zrobię
+ 
+    #TODO funcja do zapisywania do csv? - może kiedyś jak będzie czas to to zrobię
     #@staticmethod
     #def make_csv(class_name, function, columns):
         #dataframe_name = class_name.function()

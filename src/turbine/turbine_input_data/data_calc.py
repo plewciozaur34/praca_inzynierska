@@ -1,3 +1,5 @@
+#FIXME zastanowić się czy to nie powinno iść do helpers 
+
 from combustion_params import fuel_parameters as fp
 from helpers.temp_helpers import TempHelpers as th
 

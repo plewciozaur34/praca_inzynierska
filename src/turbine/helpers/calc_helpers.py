@@ -8,12 +8,13 @@ class CalcOperations:
     def turbine_input_pressure(tpr) -> float:
         p_comp_in = dc.P_INPUT #Pa 
         p_comp_out = tpr * p_comp_in
-        p_1 = p_comp_out #baardzo proste założenie przemiany izobarycznej w komorze spalania, docelowo do zmiany
+        p_1 = p_comp_out #FIXME baardzo proste założenie przemiany izobarycznej w komorze spalania, docelowo do zmiany
         return p_1 
     
     def find_work_temperature(self, turbine_input) -> float:
          T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
          D_T0 = T_03 - turbine_input.T01
+#FIXME podział tmeperatury na stopnie ze względu na podział TPR na stopnie - znaleźć w literaturze
          d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
          d_T0_prim=-120 #z danych literatrowych, 120 to tak typowo, ale i 150K tam widziałam chyba
          return dc.CP*d_T0
@@ -26,13 +27,17 @@ class CalcOperations:
          c_u2=c_u3-d_c
          return c_u2, c_u3
     
+    #TODO napisać funkcję zwracającą wartości ciśnienia p2 i p3
     @staticmethod
     def find_pressure() -> float:
         return 0
     
+    #TODO napisać funkcję zwracającą wartości temperatury T2 i T3
     @staticmethod
     def find_temperature() -> float:
         return 0
+    
+#FIXME przepisać te selfy na wzór fuel_parameters - wtedy nadal jest @staticmethod
     
     def find_inlet_density(self) -> float:
         p1 = self.turbine_input_pressure(dc.TPR)
@@ -41,7 +46,7 @@ class CalcOperations:
     def find_mean_radious(self, u: float, omega: float) -> float:
         return u/th.rpm_to_rad_s(omega)
     
-    #TODO: sprawdzić co tu wypluwa funckcja 
+    #FIXME: sprawdzić co tu zwraca funkcja 
     def find_rtip_rhub_rmean(self, turbine_assum, turbine_input) -> (float, float, float):
         rho1 = self.find_inlet_density()
         u = th.find_tangential_velocity(turbine_assum)

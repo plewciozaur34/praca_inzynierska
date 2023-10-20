@@ -26,7 +26,6 @@ class GeometryParameters:
     def get_data(self, geo_data, index_name):
         attributes = ['R','chord_x','chord_t','ugt','beta_in','half_wedge_in','Rle','beta_out','Rte',
             'Nb','throat', 'half_wedge_out']
-
         for attribute in attributes:
             setattr(self, attribute, geo_data[attribute][index_name])
 
@@ -47,6 +46,7 @@ class GeometryParameters:
             self.ugt = 0.0001
         self.half_wedge_out = self.ugt/2
         if self.chord_t < 20:
+#FIXME te założenia do chord_t tzreba poprawić - uwzględnić część kodu z fortrana, który jest w komentarzu
             #IF<CT.GE.4.l ITER=.TRUE.
             #IF<CT .GE.4.1 TTC=CT/100.
             if self.chord_t >= 4: 
