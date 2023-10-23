@@ -12,15 +12,14 @@ from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
-from turbine_input_data import data_calc as dc
+from helpers import data_calc as dc
 from helpers.calc_helpers import CalcOperations as co
 from turbine_3D import sre_input as sre_in
 
 # część obliczeniowa
-calc_op = co()
 
 #WEKTOR STANU: [c_axial, c_radial, c_u, p, T, r]
-#FIXME zmiana nazwy na coś z mean? bo muszą jeszcze być WS dla innych promieni!
+#wektory stanu dla palisady płaskiej (r_mean)
 WS_stator = vector_of_state.VectorOfState()
 WS_rotor = vector_of_state.VectorOfState()
 
@@ -46,15 +45,21 @@ geo_params.get_data(geo_data_r, 'check2')
 def main():
 
     #część obliczeniowa 
-    c_u2, c_u3 = calc_op.find_cu2(turbine_assum, turbine_input)
+    c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
+    T_2, T_3 = co.find_temperature(turbine_input, turbine_assum)
+    p_2, p_3 = co.find_pressure()
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
     WS_stator.cx = turbine_assum.cx
     WS_rotor.cx = turbine_assum.cx
+    WS_stator.T = T_2
+    WS_rotor.T = T_3
+    WS_stator.p = p_2
+    WS_rotor.p = p_3
     
     WS_rotor.mean_calc(turbine_assum.phi)
-    WS_rotor.find_work(WS_stator, turbine_input.omega)
+    #WS_rotor.find_work(WS_stator, turbine_input.omega)
 
     WS_stator.mean_calc(turbine_assum.phi)
 
@@ -117,11 +122,12 @@ def main():
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
         rp_list_check = [0.75, 0.9, 1.0, 1.1, 1.25]
-        rp_list = calc_op.radious_list(turbine_assum, turbine_input)
+        rp_list = co.radious_list(turbine_assum, turbine_input)
         print(f"rp_list = {rp_list}")
         sre_input = sre_in.SimRadEquiInput()
-        sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
+        #sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
         sre_input.calculate_data(turbine_assum, turbine_input)
+        sre_input.print_attributes()
         #sre_input.get_data(sre_data)
         sre_output = sre_input.simple_radial_equi(rp_list, turbine_assum)
         sre_output.to_csv('./data/csv/sre_output_check.csv')

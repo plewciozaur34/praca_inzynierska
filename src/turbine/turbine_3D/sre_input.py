@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
 class SimRadEquiInput:
     def __init__(self, phi_mean: float = 0, psi_mean: float = 0, Rn_mean: float = 0,
@@ -16,21 +15,23 @@ class SimRadEquiInput:
         attributes = ['phi_mean', 'psi_mean', 'Rn_mean', 'Rnp_hub', 'rp_hub']
         for attribute in attributes:
             setattr(self, attribute, sre_data[attribute])
+
+    def print_attributes(self):
+        for attr, value in self.__dict__.items():
+            print(f"{attr}: {value}")
     
-    #FIXME poprawić trzeba wszystko poza phi_mean XD
-    #TODO: wzór na Rnp_hub??
+    #TODO: wzór na Rnp_hub?? czy po prostu zakładamy wartość?
     def calculate_data(self, turbine_assum, turbine_input) -> 'SimRadEquiInput':
         self.phi_mean = turbine_assum.phi
-        calc_op = co()
-        r_tip, r_mean, r_hub = calc_op.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        r_tip, r_mean, r_hub = co.find_rtip_rhub_rmean(turbine_assum, turbine_input)
         self.rp_hub = r_hub/r_mean
-        self.psi_mean = calc_op.find_psi_mean(turbine_assum, turbine_input)
-        self.Rn_mean = calc_op.find_reaction_mean(turbine_assum, turbine_input)
+        self.psi_mean = co.find_psi_mean(turbine_assum, turbine_input)
+        self.Rn_mean = co.find_reaction_mean(turbine_assum, turbine_input)
         self.Rnp_hub = 0.25
  
     def simple_radial_equi(self, rp_list, turbine_assum) -> pd.DataFrame:
         radious_df = pd.DataFrame({'r_p':[],'C_x1':[], 'C_x2':[], 'C_u1':[], 'C_u2':[], 'Rn_prim':[], 'Rn':[]})
-        u_mean = th.find_tangential_velocity(turbine_assum)
+        u_mean = co.find_tangential_velocity(turbine_assum)
         a_p = 1- self.Rn_mean
         b_p = -self.psi_mean/2
         n = np.log((1-self.Rnp_hub)/a_p)/np.log(self.rp_hub) + 1
@@ -47,7 +48,7 @@ class SimRadEquiInput:
             C_u1 = Cp_u1*u_mean
             Cp_u2 = a_p*r_p**n + b_p/r_p
             C_u2 = Cp_u2*u_mean
-            rad_data = pd.DataFrame({'r_p':r_p,'C_x1':C_x1, 'C_x2':C_x2, 'C_u1':C_u1, 'C_u2':C_u2, 'Rn_prim':Rn_prim, 'Rn':Rn})
+            rad_data = pd.DataFrame({'r_p':[r_p],'C_x1':[C_x1], 'C_x2':[C_x2], 'C_u1':[C_u1], 'C_u2':[C_u2], 'Rn_prim':[Rn_prim], 'Rn':[Rn]})
             radious_df = pd.concat([radious_df, rad_data])
         radious_df.set_index('r_p', inplace=True)
 

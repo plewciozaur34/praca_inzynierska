@@ -4,6 +4,8 @@ import math
 from . import mechanical_props as mp
 from . import thickness as tc
 from helpers.temp_helpers import TempHelpers as th
+from helpers.calc_helpers import CalcOperations as co
+from helpers import data_calc as dc
 
 #FIXME: może pomyśleć nad lepszą formą przypisywania pustych list tutaj
 class SurfacePoints: 
@@ -62,10 +64,7 @@ class SurfacePoints:
             Y[0,2] = Y[1,2] + (Y[1,2]-Y[2,2])
         return Y
 
-#TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii
-#można pomyśleć nad dodaniem nEL do data_calc - wtedy nie ma problemu z wpisaniem innych wartości 
-#do tych tzrech funkcji
-    def surface_points(self, geo_params, rtd, nEL = 50) -> 'SurfacePoints':
+    def surface_points(self, geo_params, rtd, nEL = dc.N_EL) -> 'SurfacePoints':
         point6, point7, point8, point9 = geo_params.find_points_six_seven_eight_nine()
         self.xs[0] = point8.x
         self.ys[0] = point8.y
@@ -73,14 +72,14 @@ class SurfacePoints:
         self.yp[0] = point8.y
         dxp = (rtd.point4.x-point8.x)/9
         dxs = (rtd.point3.x-point8.x)/9
-        for i in range(1, 10):
+        for i in range(1, round(nEL/5)):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = point9.y - np.sqrt(geo_params.Rle**2 - (self.xp[i] - point9.x)**2)
             self.xs[i] = self.xs[i-1] + dxs
             self.ys[i] = point9.y + np.sqrt(geo_params.Rle**2 - (self.xs[i] - point9.x)**2)
         dxp = (rtd.point5.x-rtd.point4.x)/30
         dxs = (rtd.point2.x-rtd.point3.x)/20
-        for i in range(10, 30):
+        for i in range(round(nEL/5), round(3*(nEL/5))):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (rtd.pressure_surf.b + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d))
             self.xs[i] = self.xs[i-1] + dxs
@@ -88,7 +87,7 @@ class SurfacePoints:
         dxs = (rtd.point1.x - rtd.point2.x)/10
         ys_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,1]
         xs_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,0]
-        for i in range(30, 40):
+        for i in range(round(3*(nEL/5)), round(4*(nEL/5))):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (rtd.pressure_surf.b + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d))
             self.xs[i] = self.xs[i-1] + dxs
@@ -97,7 +96,8 @@ class SurfacePoints:
             self.ys[i] = rtd.point0.y + np.sqrt(rtd.point0.r**2 - (self.xs[i] - rtd.point0.x)**2)
         dxp = (point6.x - rtd.point5.x)/10
         dxs = (point6.x - rtd.point1.x)/10
-        for i in range(40, 50):
+#FIXME występuję tu jakaś nieciągłość, którą trzeba naprawić
+        for i in range(round(4*(nEL/5)), nEL):
             self.xp[i] = self.xp[i-1] + dxp
             if self.xp[i] > geo_params.chord_x:
                 self.xp[i] = geo_params.chord_x 
@@ -108,35 +108,33 @@ class SurfacePoints:
             self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
-    
-#TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii    
-    def mec_props(self) -> mp.MechanicalProps:
-        area = th.area_calc(self.xs[0], self.ys[0], self.xs[1], self.ys[1], self.xp[1], self.yp[1])
+     
+    def mec_props(self, nEL = dc.N_EL) -> mp.MechanicalProps:
+        area = co.area_calc(self.xs[0], self.ys[0], self.xs[1], self.ys[1], self.xp[1], self.yp[1])
         xcg = (self.xs[0] + self.xs[1] + self.xp[1])/3 * area
         ycg = (self.ys[0] + self.ys[1] + self.yp[1])/3 * area
-        for i in range(1, 48):
-            a1 = th.area_calc(self.xs[i], self.ys[i], self.xs[i+1], self.ys[i+1], self.xp[i], self.yp[i])
+        for i in range(1, nEL-2):
+            a1 = co.area_calc(self.xs[i], self.ys[i], self.xs[i+1], self.ys[i+1], self.xp[i], self.yp[i])
             area += a1
             xcg = xcg + (self.xs[i] + self.xs[i+1] + self.xp[i])/3 * a1
             ycg = ycg + (self.ys[i] + self.ys[i+1] + self.yp[i])/3 * a1
-            a2 = th.area_calc(self.xs[i], self.ys[i], self.xp[i], self.yp[i], self.xp[i+1], self.yp[i+1])
+            a2 = co.area_calc(self.xs[i], self.ys[i], self.xp[i], self.yp[i], self.xp[i+1], self.yp[i+1])
             area += a2
             xcg = xcg + (self.xs[i] + self.xp[i] + self.xp[i+1])/3 * a2
             ycg = ycg + (self.ys[i] + self.yp[i] + self.yp[i+1])/3 * a2
-        a1 = th.area_calc(self.xs[48], self.ys[48], self.xs[49], self.ys[49], self.xp[48], self.yp[48])
+        a1 = co.area_calc(self.xs[nEL-2], self.ys[nEL-2], self.xs[nEL-1], self.ys[nEL-1], self.xp[nEL-2], self.yp[nEL-2])
         area += a1
-        xcg = xcg + (self.xs[48] + self.xs[49] + self.xp[48])/3 * a1
-        ycg = ycg + (self.ys[48] + self.ys[49] + self.yp[48])/3 * a1
+        xcg = xcg + (self.xs[nEL-2] + self.xs[nEL-1] + self.xp[nEL-2])/3 * a1
+        ycg = ycg + (self.ys[nEL-2] + self.ys[nEL-1] + self.yp[nEL-2])/3 * a1
         xcg = xcg/area
         ycg = ycg/area
         return mp.MechanicalProps(area, xcg, ycg) 
 
-   #TODO przepisać kod na przyjmujący argument nEL - liczba punktów geometrii 
-    def find_thickness_max (self) -> tc.MaxThickness:
+    def find_thickness_max (self, nEL = dc.N_EL) -> tc.MaxThickness:
         t_max = 0
-        for i in range(0,50):
+        for i in range(0,nEL):
             tm = 999
-            for j in range(0,50):
+            for j in range(0,nEL):
                 tm = min(tm, np.sqrt((self.xs[i] - self.xp[j])**2+(self.ys[i]-self.yp[j])**2))
             t_max = max(t_max, tm)
         return tc.MaxThickness(t_max)

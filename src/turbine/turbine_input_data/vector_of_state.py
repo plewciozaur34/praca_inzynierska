@@ -25,9 +25,9 @@ class VectorOfState:
         return alfa
     
 #FIXME promień jako zmienna? czy poprostu r_mean? ZMienna może mieć więcej zastowań
-    def find_work(self, second_vector: 'VectorOfState', omega: float) -> float:
+    def find_work(self, second_vector: 'VectorOfState', omega: float, r: float) -> float:
         omega_rs = th.rpm_to_rad_s(omega)
-        u = omega_rs * self.r
+        u = omega_rs * r
         l = u * (self.cu - second_vector.cu)
         return l
 

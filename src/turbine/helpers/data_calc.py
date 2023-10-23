@@ -1,5 +1,3 @@
-#FIXME zastanowić się czy to nie powinno iść do helpers 
-
 from combustion_params import fuel_parameters as fp
 from helpers.temp_helpers import TempHelpers as th
 
@@ -18,6 +16,8 @@ RH_RT = 0.8
 KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
 R_COMB = fp.CombustionHelpers.find_R_combust()
+
+N_EL = 50
 
 T_01 = th.celsius_to_kelvin(TIT_celsius) #K
 

@@ -1,5 +1,3 @@
-#TODO przejrzeć temp_helpers i calc_helpers i poprawić to gdzie jest która funkcja - czytelny podział!
-
 import numpy as np
 
 class TempHelpers:
@@ -40,10 +38,6 @@ class TempHelpers:
         return (rpm*2*np.pi)/60
     
     @staticmethod
-    def area_calc(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float):
-        return np.abs(x1 * y2 + y1 * x3 + y3 * x2 - y2 * x3 - y1 * x2 - x1 * y3)/2
-    
-    @staticmethod
     def plot_line_through_point(ax, point, angle_deg, length, **kwargs):
         angle_rad = np.deg2rad(angle_deg)
         dx = np.cos(angle_rad)
@@ -53,10 +47,6 @@ class TempHelpers:
         end_x = point[0] + length * dx
         end_y = point[1] + length * dy
         ax.plot([start_x, end_x], [start_y, end_y], **kwargs)
-
-    @staticmethod
-    def find_tangential_velocity(turbine_assum) -> float:
-        return turbine_assum.cx/turbine_assum.phi
  
     #TODO funcja do zapisywania do csv? - może kiedyś jak będzie czas to to zrobię
     #@staticmethod

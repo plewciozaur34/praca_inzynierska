@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from combustion_params import combust_constants as cc
 
 class CombustionHelpers:
