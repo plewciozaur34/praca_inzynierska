@@ -23,7 +23,7 @@ class CalcOperations:
     def find_work_temperature(turbine_input) -> float:
          T_03 = turbine_input.T01/th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
          D_T0 = T_03 - turbine_input.T01
-#FIXME podział tmeperatury na stopnie ze względu na podział TPR na stopnie - znaleźć w literaturze
+    #FIXME podział tmeperatury na stopnie ze względu na podział TPR na stopnie - znaleźć w literaturze
          d_T0 = D_T0/6 #2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
          d_T0_prim=-120 #z danych literatrowych, 120 to tak typowo, ale i 150K tam widziałam chyba
          return dc.CP*d_T0
@@ -36,7 +36,7 @@ class CalcOperations:
          c_u2=c_u3-d_c
          return c_u2, c_u3
     
-    #TODO napisać funkcję zwracającą wartości ciśnienia p2
+    #TODO napisać funkcję zwracającą wartości ciśnienia p2, brak pewności co do p3
     #(czy tu na pewno powinny być statyczne z tego TPR?)
     @staticmethod
     def find_pressure() -> float:

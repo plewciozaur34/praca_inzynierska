@@ -4,6 +4,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import datetime
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
 from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc
@@ -48,6 +49,7 @@ def main():
     c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
     T_2, T_3 = co.find_temperature(turbine_input, turbine_assum)
     p_2, p_3 = co.find_pressure()
+    
 
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
@@ -90,12 +92,15 @@ def main():
         #th.plot_line_through_point(axs, [rtd.point3.x, rtd.point3.y], rtd.point3.b, length=0.1, color='green', linestyle='--')
         #th.plot_line_through_point(axs, [rtd.point4.x, rtd.point4.y], rtd.point4.b, length=0.1, color='grey', linestyle='--')
         
-#TODO zapis do png - tworzący nowe pliki a nie nadpisujący stare iteracje
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
-        axs.set_title('Airfoil geometry')
+        axs.set_title(f'Airfoil geometry for {dc.part} on stage {dc.stage}')
         axs.legend()
         plt.show()
+
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'./data/airfoils/airfoil_{dc.stage_part}_{timestamp}.png'
+        fig.savefig(filename)
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])

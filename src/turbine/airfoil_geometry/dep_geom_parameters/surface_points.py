@@ -7,15 +7,14 @@ from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
 from helpers import data_calc as dc
 
-#FIXME: może pomyśleć nad lepszą formą przypisywania pustych list tutaj
 class SurfacePoints: 
-    def __init__(self, xs: list = list(np.zeros(50)), xp: list = list(np.zeros(50)), ys: list = list(np.zeros(50)), yp: list = list(np.zeros(50))) -> None:
+    def __init__(self, xs: list = list(np.zeros(dc.N_EL)), xp: list = list(np.zeros(dc.N_EL)), ys: list = list(np.zeros(dc.N_EL)), yp: list = list(np.zeros(dc.N_EL))) -> None:
         self.xs: list = xs
         self.xp: list = xp
         self.ys: list = ys
         self.yp: list = yp
 
-#TODO: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
+#todo jeśli pojawią się problemy: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
 #wszystko zależy od tego jak to będzie wyglądać przy innych danych wejściowych
     @staticmethod
     def Parametric1(X1, X2, nEL = 10, endpoint = False):
@@ -65,43 +64,47 @@ class SurfacePoints:
         return Y
 
     def surface_points(self, geo_params, rtd, nEL = dc.N_EL) -> 'SurfacePoints':
+        one_fifth = round(nEL/5)
+        three_fifths = round(3*(nEL/5))
+        four_fifths = round(4*(nEL/5))
         point6, point7, point8, point9 = geo_params.find_points_six_seven_eight_nine()
         self.xs[0] = point8.x
         self.ys[0] = point8.y
         self.xp[0] = point8.x
         self.yp[0] = point8.y
-        dxp = (rtd.point4.x-point8.x)/9
-        dxs = (rtd.point3.x-point8.x)/9
-        for i in range(1, round(nEL/5)):
+        dxp = (rtd.point4.x-point8.x)/(one_fifth-1)
+        dxs = (rtd.point3.x-point8.x)/(one_fifth-1)
+        for i in range(1, one_fifth):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = point9.y - np.sqrt(geo_params.Rle**2 - (self.xp[i] - point9.x)**2)
             self.xs[i] = self.xs[i-1] + dxs
             self.ys[i] = point9.y + np.sqrt(geo_params.Rle**2 - (self.xs[i] - point9.x)**2)
-        dxp = (rtd.point5.x-rtd.point4.x)/30
-        dxs = (rtd.point2.x-rtd.point3.x)/20
-        for i in range(round(nEL/5), round(3*(nEL/5))):
+        dxp = (rtd.point5.x-rtd.point4.x)/(four_fifths - one_fifth)
+        dxs = (rtd.point2.x-rtd.point3.x)/(three_fifths - one_fifth)
+        for i in range(one_fifth, three_fifths):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (rtd.pressure_surf.b + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d))
             self.xs[i] = self.xs[i-1] + dxs
             self.ys[i] = rtd.suction_surf.a + self.xs[i] * (rtd.suction_surf.b + self.xs[i] * (rtd.suction_surf.c + self.xs[i] * rtd.suction_surf.d))
-        dxs = (rtd.point1.x - rtd.point2.x)/10
+        dxs = (rtd.point1.x - rtd.point2.x)/(four_fifths - three_fifths)
         ys_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,1]
         xs_parametric = self.Parametric1([rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)], [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)])[:,0]
-        for i in range(round(3*(nEL/5)), round(4*(nEL/5))):
+        for i in range(three_fifths, four_fifths):
             self.xp[i] = self.xp[i-1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (rtd.pressure_surf.b + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d))
             self.xs[i] = self.xs[i-1] + dxs
             #self.xs[i] = xs_parametric[i-30]
             #self.ys[i] = ys_parametric[i-30]
             self.ys[i] = rtd.point0.y + np.sqrt(rtd.point0.r**2 - (self.xs[i] - rtd.point0.x)**2)
-        dxp = (point6.x - rtd.point5.x)/10
-        dxs = (point6.x - rtd.point1.x)/10
-#FIXME występuję tu jakaś nieciągłość, którą trzeba naprawić
-        for i in range(round(4*(nEL/5)), nEL):
+        dxp = (point6.x - rtd.point5.x)/(nEL - four_fifths)
+        dxs = (point6.x - rtd.point1.x)/(nEL - four_fifths) 
+        for i in range(four_fifths, nEL):
             self.xp[i] = self.xp[i-1] + dxp
             if self.xp[i] > geo_params.chord_x:
                 self.xp[i] = geo_params.chord_x 
-            self.yp[i] = point7.y - np.sqrt(geo_params.Rte**2 - (self.xp[i] - point7.x)**2)
+                self.yp[i] = 0
+            else:
+                self.yp[i] = point7.y - np.sqrt(geo_params.Rte**2 - (self.xp[i] - point7.x)**2)
             self.xs[i] = self.xs[i-1] + dxs
             if self.xs[i] > geo_params.chord_x:
                 self.xs[i] = geo_params.chord_x

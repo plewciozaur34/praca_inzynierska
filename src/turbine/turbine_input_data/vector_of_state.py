@@ -23,8 +23,7 @@ class VectorOfState:
         c = np.sqrt(self.cx**2 + self.cu**2)
         alfa = np.arccos(self.cx / c)
         return alfa
-    
-#FIXME promień jako zmienna? czy poprostu r_mean? ZMienna może mieć więcej zastowań
+     
     def find_work(self, second_vector: 'VectorOfState', omega: float, r: float) -> float:
         omega_rs = th.rpm_to_rad_s(omega)
         u = omega_rs * r
