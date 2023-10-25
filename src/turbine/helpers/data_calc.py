@@ -21,7 +21,8 @@ R_COMB = fp.CombustionHelpers.find_R_combust()
 N_EL = 50
 stage = 1
 part = 'rotor'
-stage_part = str(stage) + part[0]
+radius = 'r_mean'
+stage_part = str(stage) + part[0] + '_' + str(radius[0]) + str(radius[2:])
 
 T_01 = th.celsius_to_kelvin(TIT_celsius) #K
 

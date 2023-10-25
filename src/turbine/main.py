@@ -1,6 +1,8 @@
 #FIXME przejrzeć cały kod i poprawić typowanie zmiennych i wyjść z funkcji - jeśli wystarczy czasu
 #TODO zapisywanie do i z csv - zrobić poprządek z danymi check i faktycznymi danymi do obliczeń
+#TODO jak rzeczy z sre będą gotowe tzreba zabrać sie za redesign maina()
 #TODO do sprawdzenia - w jakiej formie zwracać dane o geometrii do TurboGrida
+
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,6 +18,7 @@ from turbine_input_data import turbine_assum as ta
 from helpers import data_calc as dc
 from helpers.calc_helpers import CalcOperations as co
 from turbine_3D import sre_input as sre_in
+from turbine_3D.vector_3D import Vector3D as v3d
 
 # część obliczeniowa
 
@@ -38,7 +41,7 @@ geo_params = gp.GeometryParameters()
 dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
 #TODO reasearch - dane prawdziwe do projektu (obliczenia plus literatura)
-geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor.csv', index_col=0)
+geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor_check.csv', index_col=0)
 
 geo_params.get_data(geo_data_r, 'check2')
 
@@ -67,7 +70,7 @@ def main():
 
     #----------------------------------------------------------------------------------------------------
     #część geometria
-#FIXME czy ta pętla jest tu potzrebna - albo usunąć albo dac mozliwość zmiany danych pomiędzy iteracjami
+#FIXME czy ta pętla jest tu potzrebna - tak, powinna mieć system przeskakiwania na kolejne promienie dla tej samej łopatki
     N = 1
     for i in range(0,N):
         
@@ -94,13 +97,13 @@ def main():
         
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
-        axs.set_title(f'Airfoil geometry for {dc.part} on stage {dc.stage}')
+        axs.set_title(f'Airfoil geometry for {dc.radius} for {dc.part} on stage {dc.stage}')
         axs.legend()
         plt.show()
 
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f'./data/airfoils/airfoil_{dc.stage_part}_{timestamp}.png'
-        fig.savefig(filename)
+        #fig.savefig(filename)
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])
@@ -126,16 +129,11 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
-        rp_list_check = [0.75, 0.9, 1.0, 1.1, 1.25]
-        rp_list = co.radious_list(turbine_assum, turbine_input)
-        print(f"rp_list = {rp_list}")
-        sre_input = sre_in.SimRadEquiInput()
-        #sre_data = pd.read_csv('./data/csv/sre_check_data.csv')
-        sre_input.calculate_data(turbine_assum, turbine_input)
-        sre_input.print_attributes()
-        #sre_input.get_data(sre_data)
-        sre_output = sre_input.simple_radial_equi(rp_list, turbine_assum)
-        sre_output.to_csv('./data/csv/sre_output_check.csv')
+        
+
+        
+
+#TODO napisać skrypt wyliczający phi_list oraz beta_out i beta_in dla każdego promienia
 
 if __name__ == "__main__":
     main()

@@ -47,6 +47,11 @@ class TempHelpers:
         end_x = point[0] + length * dx
         end_y = point[1] + length * dy
         ax.plot([start_x, end_x], [start_y, end_y], **kwargs)
+
+    
+
+
+
  
     #TODO funcja do zapisywania do csv? - może kiedyś jak będzie czas to to zrobię
     #@staticmethod
