@@ -5,6 +5,7 @@ from . import point as p
 from . import point_no_beta as pnb
 from . import throat_dicontinuity as td
 from helpers.temp_helpers import TempHelpers as th
+from ..dep_geom_parameters import surface_points as sp
 
 #TODO zapis geometrii do csv w postaci punktów
 
@@ -36,6 +37,9 @@ class GeometryParameters:
             print(f"{attr}: {value}")
     
     def def_values(self):
+        itera = False
+        ttc = 0.0
+
         if self.Rle >= 2:
             self.Rle = (self.Rle/100) * 2 * np.pi * (self.R / self.Nb) * np.cos(self.beta_in * np.pi / 180) / 2 
         if self.Rte >= 2:
@@ -48,15 +52,14 @@ class GeometryParameters:
             self.ugt = 0.0001
         self.half_wedge_out = self.ugt/2
         if self.chord_t < 20:
-#FIXME te założenia do chord_t tzreba poprawić - uwzględnić część kodu z fortrana, który jest w komentarzu
-            #IF(CT.GE.4.) ITER=.TRUE.
-            #IF(CT .GE.4.) TTC=CT/100.
             if self.chord_t >= 4: 
-                iter = True
+                itera = True
                 ttc = self.chord_t / 100
-                self.chord_t = 0
+                self.chord_t = 0.0
         else:
             self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180) #chord_t = stagger angle
+        
+        return itera, ttc
 
     def remove_throat_discontinuity(self, count=[0]) -> 'td.RemoveThroatDiscontinuity':
         count[0] += 1
@@ -84,7 +87,27 @@ class GeometryParameters:
         print("THE EXIT WEDGE ANGLE ITERATION FAILED. THE EXIT WEDGE ANGLE WANTS TO GO NEGATIVE. REDUCE THE EXIT BLADE ANGLE OR DECREASE THE THROAT.")
         print(f"Remove throat discontinuity was iterated {self.remove_throat_discontinuity.__defaults__[0][0]} times.")
         sys.exit()
-    
+
+    def chord_t_iteration(self, itera, ttc) -> None:
+        rtd = self.remove_throat_discontinuity()
+        
+        pressure_and_suction_up = sp.SurfacePoints()
+        pressure_and_suction_up.surface_points(self, rtd)
+        t_max_class = pressure_and_suction_up.find_thickness_max()
+        t_max = t_max_class.max_thickness
+        chord = np.sqrt(self.chord_x**2 + self.chord_t**2)
+        if not itera:
+            print("Thickness iteration not required.")
+            return rtd, pressure_and_suction_up
+        elif abs(t_max / chord - ttc) < 0.0001:
+            print("Thickness iteration not required.")
+            return rtd, pressure_and_suction_up
+        else:
+            print("Thickness iteration required.")
+            self.chord_t = self.chord_t * (3 + t_max / (chord * ttc)) / 4
+            print(f"chord_t={self.chord_t}")
+            return self.chord_t_iteration(itera, ttc)
+        
     def find_suction_surface_trailing_edge_tangency_point (self) -> p.Point:
         b1 = self.beta_out - self.half_wedge_out
         x1 = self.chord_x - self.Rte * (1 + np.sin(th.rad(b1)))
@@ -100,8 +123,11 @@ class GeometryParameters:
         return p.Point(b2, x2, y2)
     
     def find_suction_surface_leading_edge_tangency_point (self) -> p.Point:
+        point2 = self.find_suction_surface_throat_point()
         b3 = self.beta_in + self.half_wedge_in
         x3 = self.Rle * (1 - np.sin(th.rad(b3)))
+        if self.chord_t == 0:
+            self.chord_t = point2.y + 180/np.pi * ((point2.x - x3) / (point2.b - b3)) * np.log(np.cos(th.rad(point2.b)) / np.cos(th.rad(b3))) - self.Rle * np.cos(th.rad(b3))
         y3 = self.chord_t + self.Rle * np.cos(th.rad(b3))
         
         return p.Point(b3, x3, y3)

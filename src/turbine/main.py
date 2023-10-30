@@ -54,7 +54,6 @@ def main():
     T_2, T_3 = co.find_temperature(turbine_input, turbine_assum)
     p_2, p_3 = co.find_pressure()
     
-
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
     WS_stator.cx = turbine_assum.cx
@@ -75,14 +74,10 @@ def main():
     N = 1
     for i in range(0,N):
         
-        geo_params.def_values()
-        geo_params.print_attributes()
-
-        rtd = geo_params.remove_throat_discontinuity()
+        itera, ttc = geo_params.def_values()
+        rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
-
-        pressure_and_suction_up = sp.SurfacePoints()
-        pressure_and_suction_up.surface_points(geo_params, rtd)
+        geo_params.print_attributes()
 
         exes = [rtd.point1.x, rtd.point2.x, rtd.point3.x, rtd.point4.x, rtd.point5.x]
         whys = [rtd.point1.y, rtd.point2.y, rtd.point3.y, rtd.point4.y, rtd.point5.y]
