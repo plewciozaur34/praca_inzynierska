@@ -16,6 +16,7 @@ from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from helpers import data_calc as dc
+from helpers import data_geom as dg
 from helpers.calc_helpers import CalcOperations as co
 from turbine_3D import sre_input as sre_in
 from turbine_3D.vector_3D import Vector3D as v3d
@@ -97,12 +98,12 @@ def main():
         
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
-        axs.set_title(f'Airfoil geometry for {dc.radius} for {dc.part} on stage {dc.stage}')
+        axs.set_title(f'Airfoil geometry for {dg.radius} for {dg.part} on stage {dg.stage}')
         axs.legend()
         plt.show()
 
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f'./data/airfoils/airfoil_{dc.stage_part}_{timestamp}.png'
+        filename = f'./data/airfoils/airfoil_{dg.stage_part}_{timestamp}.png'
         #fig.savefig(filename)
 
         get_params = dep_params.find_geometry_dependent_parameters()
@@ -129,11 +130,10 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
-        
+        v3d.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor)
+        v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
 
-        
-
-#TODO napisać skrypt wyliczający phi_list oraz beta_out i beta_in dla każdego promienia
+    
 
 if __name__ == "__main__":
     main()

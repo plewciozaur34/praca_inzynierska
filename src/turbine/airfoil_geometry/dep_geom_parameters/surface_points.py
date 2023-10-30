@@ -6,9 +6,10 @@ from . import thickness as tc
 from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
 from helpers import data_calc as dc
+from helpers import data_geom as dg
 
 class SurfacePoints: 
-    def __init__(self, xs: list = list(np.zeros(dc.N_EL)), xp: list = list(np.zeros(dc.N_EL)), ys: list = list(np.zeros(dc.N_EL)), yp: list = list(np.zeros(dc.N_EL))) -> None:
+    def __init__(self, xs: list = list(np.zeros(dg.N_EL)), xp: list = list(np.zeros(dg.N_EL)), ys: list = list(np.zeros(dg.N_EL)), yp: list = list(np.zeros(dg.N_EL))) -> None:
         self.xs: list = xs
         self.xp: list = xp
         self.ys: list = ys
@@ -63,7 +64,7 @@ class SurfacePoints:
             Y[0,2] = Y[1,2] + (Y[1,2]-Y[2,2])
         return Y
 
-    def surface_points(self, geo_params, rtd, nEL = dc.N_EL) -> 'SurfacePoints':
+    def surface_points(self, geo_params, rtd, nEL = dg.N_EL) -> 'SurfacePoints':
         one_fifth = round(nEL/5)
         three_fifths = round(3*(nEL/5))
         four_fifths = round(4*(nEL/5))
@@ -112,7 +113,7 @@ class SurfacePoints:
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
      
-    def mec_props(self, nEL = dc.N_EL) -> mp.MechanicalProps:
+    def mec_props(self, nEL = dg.N_EL) -> mp.MechanicalProps:
         area = co.area_calc(self.xs[0], self.ys[0], self.xs[1], self.ys[1], self.xp[1], self.yp[1])
         xcg = (self.xs[0] + self.xs[1] + self.xp[1])/3 * area
         ycg = (self.ys[0] + self.ys[1] + self.yp[1])/3 * area
@@ -133,7 +134,7 @@ class SurfacePoints:
         ycg = ycg/area
         return mp.MechanicalProps(area, xcg, ycg) 
 
-    def find_thickness_max (self, nEL = dc.N_EL) -> tc.MaxThickness:
+    def find_thickness_max (self, nEL = dg.N_EL) -> tc.MaxThickness:
         t_max = 0
         for i in range(0,nEL):
             tm = 999

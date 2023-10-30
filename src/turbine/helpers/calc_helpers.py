@@ -76,7 +76,7 @@ class CalcOperations:
         return r_tip, r_mean, r_hub
     
     @staticmethod
-    def radious_list(turbine_assum, turbine_input) -> list:
+    def radious_prim_list(turbine_assum, turbine_input) -> list:
         r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
         r_tip_p = r_tip / r_mean
         r_mean_p = r_mean / r_mean
@@ -85,6 +85,14 @@ class CalcOperations:
         second = np.linspace(r_mean_p, r_tip_p, 3)
         combined = np.concatenate((first, second[1:]))
         return combined.tolist()
+    
+    @staticmethod
+    def radious_list(radious_instance_df, turbine_assum, turbine_input) -> list:
+        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        radious_list = list(np.zeros(5))
+        for idx in range(5):
+            radious_list[idx] = radious_instance_df[idx].r_p * r_mean
+        return radious_list
     
     @staticmethod
     def find_psi_mean(turbine_assum, turbine_input) -> float:

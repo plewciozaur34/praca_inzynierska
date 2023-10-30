@@ -6,6 +6,8 @@ from . import point_no_beta as pnb
 from . import throat_dicontinuity as td
 from helpers.temp_helpers import TempHelpers as th
 
+#TODO zapis geometrii do csv w postaci punktów
+
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
                  half_wedge_in: float = 0, Rle: float = 0, beta_out: float = 0, Rte: float = 0, Nb: float = 0,
@@ -47,12 +49,14 @@ class GeometryParameters:
         self.half_wedge_out = self.ugt/2
         if self.chord_t < 20:
 #FIXME te założenia do chord_t tzreba poprawić - uwzględnić część kodu z fortrana, który jest w komentarzu
-            #IF<CT.GE.4.l ITER=.TRUE.
-            #IF<CT .GE.4.1 TTC=CT/100.
+            #IF(CT.GE.4.) ITER=.TRUE.
+            #IF(CT .GE.4.) TTC=CT/100.
             if self.chord_t >= 4: 
+                iter = True
+                ttc = self.chord_t / 100
                 self.chord_t = 0
         else:
-            self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180)
+            self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180) #chord_t = stagger angle
 
     def remove_throat_discontinuity(self, count=[0]) -> 'td.RemoveThroatDiscontinuity':
         count[0] += 1

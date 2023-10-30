@@ -17,13 +17,6 @@ KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
 R_COMB = fp.CombustionHelpers.find_R_combust()
 
-#geometria
-N_EL = 50
-stage = 1
-part = 'rotor'
-radius = 'r_mean'
-stage_part = str(stage) + part[0] + '_' + str(radius[0]) + str(radius[2:])
-
 T_01 = th.celsius_to_kelvin(TIT_celsius) #K
 
 #0.5<phi<1.0
