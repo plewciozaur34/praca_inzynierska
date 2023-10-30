@@ -75,14 +75,9 @@ def main():
     N = 1
     for i in range(0,N):
         
-        geo_params.def_values()
+        itera, ttc = geo_params.def_values()
         geo_params.print_attributes()
-
-        rtd = geo_params.remove_throat_discontinuity()
-        print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
-
-        pressure_and_suction_up = sp.SurfacePoints()
-        pressure_and_suction_up.surface_points(geo_params, rtd)
+        rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
 
         exes = [rtd.point1.x, rtd.point2.x, rtd.point3.x, rtd.point4.x, rtd.point5.x]
         whys = [rtd.point1.y, rtd.point2.y, rtd.point3.y, rtd.point4.y, rtd.point5.y]
