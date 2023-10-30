@@ -54,7 +54,7 @@ class GeometryParameters:
             if self.chord_t >= 4: 
                 iter = True
                 ttc = self.chord_t / 100
-                self.chord_t = 0
+                self.chord_t = 0.0
         else:
             self.chord_t = self.chord_x * np.tan(self.chord_t * np.pi / 180) #chord_t = stagger angle
 
