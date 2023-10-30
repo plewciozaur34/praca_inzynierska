@@ -90,7 +90,7 @@ class GeometryParameters:
 
     def chord_t_iteration(self, itera, ttc) -> None:
         rtd = self.remove_throat_discontinuity()
-        print(f"Remove throat discontinuity was iterated {self.remove_throat_discontinuity.__defaults__[0][0]} times.")
+        
         pressure_and_suction_up = sp.SurfacePoints()
         pressure_and_suction_up.surface_points(self, rtd)
         t_max_class = pressure_and_suction_up.find_thickness_max()
@@ -127,7 +127,7 @@ class GeometryParameters:
         b3 = self.beta_in + self.half_wedge_in
         x3 = self.Rle * (1 - np.sin(th.rad(b3)))
         if self.chord_t == 0:
-            self.chord = point2.y + 180/np.pi * ((point2.x - x3) / (point2.b - b3)) * np.log(np.cos(th.rad(point2.b)) / np.cos(th.rad(b3))) - self.Rle * np.cos(th.rad(b3))
+            self.chord_t = point2.y + 180/np.pi * ((point2.x - x3) / (point2.b - b3)) * np.log(np.cos(th.rad(point2.b)) / np.cos(th.rad(b3))) - self.Rle * np.cos(th.rad(b3))
         y3 = self.chord_t + self.Rle * np.cos(th.rad(b3))
         
         return p.Point(b3, x3, y3)
