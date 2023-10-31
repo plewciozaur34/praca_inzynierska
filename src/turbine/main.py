@@ -5,20 +5,16 @@
 
 
 import pandas as pd
-import matplotlib.pyplot as plt
-import datetime
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
-from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc
-from airfoil_geometry.dep_geom_parameters import surface_points  as sp
+from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc 
 from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
-from helpers import data_calc as dc
-from helpers import data_geom as dg
+from initial_turbine_settings import data_calc as dc
+from helpers.figures import DrawFigures as fig
 from helpers.calc_helpers import CalcOperations as co
-from turbine_3D import sre_input as sre_in
 from turbine_3D.vector_3D import Vector3D as v3d
 
 # część obliczeniowa
@@ -79,27 +75,7 @@ def main():
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
         geo_params.print_attributes()
 
-        exes = [rtd.point1.x, rtd.point2.x, rtd.point3.x, rtd.point4.x, rtd.point5.x]
-        whys = [rtd.point1.y, rtd.point2.y, rtd.point3.y, rtd.point4.y, rtd.point5.y]
-        colors = ['red', 'blue', 'green', 'grey', 'pink']
-        legend = ['point1', 'point2', 'point3', 'point4', 'point5']
-
-        fig, axs = plt.subplots(1,1, figsize = (6,5))
-        for x, y, color, legend in zip(exes, whys, colors, legend):
-            axs.scatter(x, y, color=color, s=10, label=legend)
-
-        #th.plot_line_through_point(axs, [rtd.point3.x, rtd.point3.y], rtd.point3.b, length=0.1, color='green', linestyle='--')
-        #th.plot_line_through_point(axs, [rtd.point4.x, rtd.point4.y], rtd.point4.b, length=0.1, color='grey', linestyle='--')
-        
-        axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color = 'blue')
-        axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
-        axs.set_title(f'Airfoil geometry for {dg.radius} for {dg.part} on stage {dg.stage}')
-        axs.legend()
-        plt.show()
-
-        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f'./data/airfoils/airfoil_{dg.stage_part}_{timestamp}.png'
-        #fig.savefig(filename)
+        fig.airfoil_figure(rtd, pressure_and_suction_up)
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])

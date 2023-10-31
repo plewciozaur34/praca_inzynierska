@@ -4,8 +4,6 @@ import inspect
 from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
 from . import calculated_params as cp
-from turbine_3D import sre_output as sre_out
-from turbine_3D import sre_input as sre_in
 from turbine_3D.vector_3D import Vector3D as v3d
 
 

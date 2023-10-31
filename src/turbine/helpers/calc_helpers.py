@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import data_calc as dc 
+from initial_turbine_settings import data_calc as dc 
 from helpers.temp_helpers import TempHelpers as th
 
 class CalcOperations:

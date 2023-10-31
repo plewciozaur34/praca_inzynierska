@@ -4,8 +4,10 @@ import pandas as pd
 from turbine_input_data import vector_of_state
 from helpers.calc_helpers import CalcOperations as co
 from helpers.temp_helpers import TempHelpers as th
+from helpers.data_interpolation import DataInterpolation as di
 from . import sre_input as sre_in
 from . import sre_output as sre_out
+from initial_turbine_settings import data_geom as dg
 
 class Vector3D:
     def radius_instances(df):
@@ -84,6 +86,12 @@ class Vector3D:
             geo_input_df.loc[idx, 'chord_x'] = 0
             geo_input_df.loc[idx, 'half_wedge_out'] = 0
             geo_input_df.loc[idx, 'throat'] = 0
+            geo_input_df.loc[idx, 'chord_t'] = di.chord_t_intialization(dg.chord_init, beta_in_list[idx], beta_out_list[idx])
+            geo_input_df.loc[idx, 'Nb'] = dg.NB
+            pitch = (2 * np.pi * r_list[idx]) / dg.NB
+            geo_input_df.loc[idx, 'Rle'] = 0.1 * pitch
+#FIXME jak przyjdzie mi lepszy pomysł na oszacowanie solidity
+            geo_input_df.loc[idx, 'Rte'] = 0.04 * pitch * dg.SOLIDITY_ASSUM
         for idx, name in enumerate(rp_names):
             geo_input_df.loc[idx, 'index'] = rp_names[idx]
         geo_input_df.set_index('index', inplace=True)

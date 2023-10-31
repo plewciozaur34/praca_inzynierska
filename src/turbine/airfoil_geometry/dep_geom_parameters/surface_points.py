@@ -5,8 +5,7 @@ from . import mechanical_props as mp
 from . import thickness as tc
 from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
-from helpers import data_calc as dc
-from helpers import data_geom as dg
+from initial_turbine_settings import data_geom as dg
 
 class SurfacePoints: 
     def __init__(self, xs: list = list(np.zeros(dg.N_EL)), xp: list = list(np.zeros(dg.N_EL)), ys: list = list(np.zeros(dg.N_EL)), yp: list = list(np.zeros(dg.N_EL))) -> None:
