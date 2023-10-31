@@ -81,7 +81,7 @@ class Vector3D:
         r_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
             geo_input_df.loc[idx, 'beta_in'] = beta_in_list[idx]
-            geo_input_df.loc[idx, 'beta_out'] = beta_out_list[idx]
+            geo_input_df.loc[idx, 'beta_out'] = - beta_out_list[idx]
             geo_input_df.loc[idx, 'R'] = r_list[idx]
             geo_input_df.loc[idx, 'chord_x'] = 0
             geo_input_df.loc[idx, 'half_wedge_out'] = 0
@@ -92,6 +92,9 @@ class Vector3D:
             geo_input_df.loc[idx, 'Rle'] = 0.1 * pitch
 #FIXME jak przyjdzie mi lepszy pomysł na oszacowanie solidity
             geo_input_df.loc[idx, 'Rte'] = 0.04 * pitch * dg.SOLIDITY_ASSUM
+#FIXME wartości dla ugt i half_wedge_in
+            geo_input_df.loc[idx, 'ugt'] = 6.5
+            geo_input_df.loc[idx, 'half_wedge_in'] = 9
         for idx, name in enumerate(rp_names):
             geo_input_df.loc[idx, 'index'] = rp_names[idx]
         geo_input_df.set_index('index', inplace=True)

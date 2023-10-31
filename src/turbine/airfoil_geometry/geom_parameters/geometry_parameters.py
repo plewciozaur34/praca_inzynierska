@@ -90,7 +90,6 @@ class GeometryParameters:
 
     def chord_t_iteration(self, itera, ttc) -> None:
         rtd = self.remove_throat_discontinuity()
-        
         pressure_and_suction_up = sp.SurfacePoints()
         pressure_and_suction_up.surface_points(self, rtd)
         t_max_class = pressure_and_suction_up.find_thickness_max()

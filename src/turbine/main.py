@@ -34,13 +34,13 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.RH_RT)
 #-----------------------------------------------------------------------------------------
 # część geometria
 
-geo_params = gp.GeometryParameters()
-dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
+#geo_params = gp.GeometryParameters()
+#dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
 #TODO reasearch - dane prawdziwe do projektu (obliczenia plus literatura)
-geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor_check.csv', index_col=0)
+#geo_data_r = pd.read_csv('./data/csv/geometry_data_rotor_check.csv', index_col=0)
 
-geo_params.get_data(geo_data_r, 'check2')
+#geo_params.get_data(geo_data_r, 'check2')
 
 
 def main():
@@ -66,16 +66,29 @@ def main():
 
     #----------------------------------------------------------------------------------------------------
     #część geometria
+    v3d.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor)
+    v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
+
+    geo_params = gp.GeometryParameters()
+    dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
+
+    geo_data_r = pd.read_csv('./data/csv/geom_data_rotor.csv', index_col=0)
+
+    radii = ['r_hub', 'r_2', 'r_mean', 'r_4', 'r_tip']
+
+    
 #FIXME czy ta pętla jest tu potzrebna - tak, powinna mieć system przeskakiwania na kolejne promienie dla tej samej łopatki
-    N = 1
+    N = 5
     for i in range(0,N):
-        
+
+        geo_params.get_data(geo_data_r, radii[i])
         itera, ttc = geo_params.def_values()
+        geo_params.print_attributes()
         rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
         geo_params.print_attributes()
 
-        fig.airfoil_figure(rtd, pressure_and_suction_up)
+        fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])
@@ -101,9 +114,7 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
-        v3d.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor)
-        v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
-
+       
     
 
 if __name__ == "__main__":
