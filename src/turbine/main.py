@@ -1,10 +1,10 @@
 #FIXME przejrzeć cały kod i poprawić typowanie zmiennych i wyjść z funkcji - jeśli wystarczy czasu
 #TODO zapisywanie do i z csv - zrobić poprządek z danymi check i faktycznymi danymi do obliczeń
-#TODO jak rzeczy z sre będą gotowe tzreba zabrać sie za redesign maina()
 #TODO do sprawdzenia - w jakiej formie zwracać dane o geometrii do TurboGrida
 
 
 import pandas as pd
+import os
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
 from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc 
@@ -13,8 +13,10 @@ from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from initial_turbine_settings import data_calc as dc
+from initial_turbine_settings import data_geom as dg
 from helpers.figures import DrawFigures as fig
 from helpers.calc_helpers import CalcOperations as co
+from helpers.text_file import OutputTextFile as otf
 from turbine_3D.vector_3D import Vector3D as v3d
 
 # część obliczeniowa
@@ -76,19 +78,19 @@ def main():
 
     radii = ['r_hub', 'r_2', 'r_mean', 'r_4', 'r_tip']
 
-    
-#FIXME czy ta pętla jest tu potzrebna - tak, powinna mieć system przeskakiwania na kolejne promienie dla tej samej łopatki
-    N = 5
-    for i in range(0,N):
+    otf.data_text_file_create(turbine_assum, turbine_input)
+
+    for i in range(0,5):
 
         geo_params.get_data(geo_data_r, radii[i])
+        otf.data_text_file_append(radii[i], geo_params)
         itera, ttc = geo_params.def_values()
         geo_params.print_attributes()
         rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
         geo_params.print_attributes()
 
-        fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
+        timestamp = fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])
@@ -114,8 +116,12 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
-       
-    
+
+    source_file = "./blade_data_sheet.txt"
+    destination_path = f"./data/airfoils/{dg.stage_part}_{timestamp}/"
+    os.makedirs(destination_path, exist_ok=True)
+
+    os.rename(source_file, os.path.join(destination_path, "blade_data_sheet.txt"))
 
 if __name__ == "__main__":
     main()

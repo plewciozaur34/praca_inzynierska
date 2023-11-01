@@ -3,7 +3,6 @@ N_EL = 50
 
 stage = 1
 part = 'rotor'
-radius = 'r_mean'
 stage_part = str(stage) + part[0] 
 
 NB = 74 #number of blade for HPT stage 2 in GE CF6-80C2B4F

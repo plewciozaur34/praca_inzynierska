@@ -29,8 +29,10 @@ class DrawFigures:
         radii_name = str(radii_idx[0]) + str(radii_idx[2:])
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
-        directory = os.path.join('./data/airfoils/', f'{dg.stage_part}_{timestamp[:-1]}0')
+        directory = os.path.join('./data/airfoils/', f'{dg.stage_part}_{timestamp[:-2]}')
         os.makedirs(directory, exist_ok=True)
 
         filename = f'{directory}/0{idx}_airfoil_{dg.stage_part}_{radii_name}_{timestamp}.png'
         fig.savefig(filename)
+
+        return f'{timestamp[:-2]}'

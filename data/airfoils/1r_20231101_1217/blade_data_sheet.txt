@@ -1,0 +1,71 @@
+Blade_Data_Sheet
+File for stage 1 of rotor.
+Selected initialization method for chord_t: db_dx_const 
+turbine_input = [m_dot: 658, p01: 1058321.5, T01: 1023.85, tpr: 30.2, eta_is: 0.9, omega: 3800]
+turbine_assum = [alfa1: 0, alfa3: 0, phi: 0.8, c_x: 230, r_hub/r_tip: 0.8] 
+Number of elements: 50 (for one side of the airfoil)
+   
+Input independent parameters for RATD model for r_hub: 
+R= 0.594 
+beta_in= 28.01 
+beta_out= -30.83 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00504 
+Rte= 0.00242 
+Nb= 74.0 
+throat= 0.0 
+half_wedge_in= 9.0 
+   
+Input independent parameters for RATD model for r_2: 
+R= 0.658 
+beta_in= 23.56 
+beta_out= -39.79 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00559 
+Rte= 0.00268 
+Nb= 74.0 
+throat= 0.0 
+half_wedge_in= 9.0 
+   
+Input independent parameters for RATD model for r_mean: 
+R= 0.722 
+beta_in= 24.09 
+beta_out= -46.27 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00613 
+Rte= 0.00294 
+Nb= 74.0 
+throat= 0.0 
+half_wedge_in= 9.0 
+   
+Input independent parameters for RATD model for r_4: 
+R= 0.787 
+beta_in= 3.5 
+beta_out= -61.39 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00668 
+Rte= 0.00321 
+Nb= 74.0 
+throat= 0.0 
+half_wedge_in= 9.0 
+   
+Input independent parameters for RATD model for r_tip: 
+R= 0.851 
+beta_in= 24.47 
+beta_out= -73.43 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00723 
+Rte= 0.00347 
+Nb= 74.0 
+throat= 0.0 
+half_wedge_in= 9.0 

@@ -101,14 +101,3 @@ class Vector3D:
         print(geo_input_df)
         geo_input_df.to_csv('./data/csv/geom_data_rotor.csv')
 
-
-
-
-
-
-
-
-
-#TODO zapis beta_in_list, beta_out_list do csv z danymi dla r_mean i zrobienie kolejnych wierszy dla 
-#innych promieni; dobrze by było gdyby r_mean był pomiędzy - jak?? 
-
