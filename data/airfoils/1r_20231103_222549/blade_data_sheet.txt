@@ -18,6 +18,16 @@ Nb= 74.0
 throat= 0.0 
 half_wedge_in= 9.0 
    
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.0862 
+chord_t= 0.0043 
+ugt= 6.5 
+Rle= 0.00504 
+Rte= 0.00242 
+throat= 0.0384 
+half_wedge_out= 3.393 
+   
+   
 Input independent parameters for RATD model for r_2: 
 R= 0.658 
 beta_in= 23.56 
@@ -30,6 +40,16 @@ Rte= 0.00268
 Nb= 74.0 
 throat= 0.0 
 half_wedge_in= 9.0 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.0999 
+chord_t= 0.0216 
+ugt= 6.5 
+Rle= 0.00559 
+Rte= 0.00268 
+throat= 0.0376 
+half_wedge_out= 3.3496 
+   
    
 Input independent parameters for RATD model for r_mean: 
 R= 0.722 
@@ -44,6 +64,16 @@ Nb= 74.0
 throat= 0.0 
 half_wedge_in= 9.0 
    
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.1155 
+chord_t= 0.0359 
+ugt= 6.5 
+Rle= 0.00613 
+Rte= 0.00294 
+throat= 0.0365 
+half_wedge_out= 3.3289 
+   
+   
 Input independent parameters for RATD model for r_4: 
 R= 0.787 
 beta_in= 3.5 
@@ -57,6 +87,16 @@ Nb= 74.0
 throat= 0.0 
 half_wedge_in= 9.0 
    
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.121 
+chord_t= 0.089 
+ugt= 6.5 
+Rle= 0.00668 
+Rte= 0.00321 
+throat= 0.0256 
+half_wedge_out= 3.297 
+   
+   
 Input independent parameters for RATD model for r_tip: 
 R= 0.851 
 beta_in= 24.47 
@@ -69,3 +109,13 @@ Rte= 0.00347
 Nb= 74.0 
 throat= 0.0 
 half_wedge_in= 9.0 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.1432 
+chord_t= 0.1203 
+ugt= 6.5 
+Rle= 0.00723 
+Rte= 0.00347 
+throat= 0.0137 
+half_wedge_out= 3.275 
+   

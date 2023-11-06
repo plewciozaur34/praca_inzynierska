@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-import datetime
-import os
+import pandas as pd
 
 from initial_turbine_settings import data_geom as dg
+from helpers.saving import SaveFigText
 
 class DrawFigures:
 
@@ -27,12 +27,33 @@ class DrawFigures:
         #plt.show()
 
         radii_name = str(radii_idx[0]) + str(radii_idx[2:])
-        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        SaveFigText.save_figure(fig, idx, radii_name)
 
-        directory = os.path.join('./data/airfoils/', f'{dg.stage_part}_{timestamp[:-2]}')
-        os.makedirs(directory, exist_ok=True)
+    @staticmethod
+    def blade_3d():
+        file_path = 'your_file.txt'
 
-        filename = f'{directory}/0{idx}_airfoil_{dg.stage_part}_{radii_name}_{timestamp}.png'
-        fig.savefig(filename)
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
 
-        return f'{timestamp[:-2]}'
+        data = []
+        for line in lines:
+            if not line.startswith('#'):
+                line = line.strip().split('\t')
+                if len(line) == 3:
+                    data.append([float(line[0]), float(line[1]), float(line[2])])
+
+        # Example data
+        data = pd.read_csv('./data/tgrid2/xd.csv', sep='\t', )
+        print(data)
+
+        fig = plt.figure(figsize=(12, 12))
+        ax = fig.add_subplot(projection='3d')
+
+        ax.scatter(data['x'], data['y'], data['z'])
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_zlabel('Z Label')
+        plt.show()
+
+        #SaveFigureText

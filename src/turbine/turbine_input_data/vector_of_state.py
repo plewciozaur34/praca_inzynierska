@@ -1,5 +1,6 @@
 import numpy as np
 import inspect
+import math
 
 from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
@@ -19,13 +20,12 @@ class VectorOfState:
 
     def find_beta(self, phi: float) -> float:
         w_u = self.cu - self.cx / phi
-        w = np.sqrt(self.cx**2 + w_u**2)
-        beta = np.arccos(self.cx / w)
+        w_x = self.cx
+        beta = th.deg(np.arctan(w_u / w_x))
         return beta
     
     def find_alfa(self) -> float:
-        c = np.sqrt(self.cx**2 + self.cu**2)
-        alfa = np.arccos(self.cx / c)
+        alfa = th.deg(np.arctan(self.cu / self.cx))
         return alfa
      
     def find_work(self, second_vector: 'VectorOfState', omega: float, r: float) -> float:

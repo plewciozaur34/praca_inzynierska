@@ -11,7 +11,7 @@ from ..dep_geom_parameters import surface_points as sp
 
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
-                 half_wedge_in: float = 0, Rle: float = 0, beta_out: float = 0, Rte: float = 0, Nb: float = 0,
+                 half_wedge_in: float = 0, Rle: float = 0, beta_out: float = 0, Rte: float = 0, Nb: int = 0,
                 throat: float = 0, half_wedge_out: float = 0) -> None:
         self.R: float = R
         self.chord_x: float = chord_x
@@ -22,7 +22,7 @@ class GeometryParameters:
         self.Rle: float = Rle
         self.beta_out: float = beta_out
         self.Rte: float = Rte
-        self.Nb: float = Nb
+        self.Nb: int = Nb
         self.throat: float = throat
         self.half_wedge_out: float = half_wedge_out
 

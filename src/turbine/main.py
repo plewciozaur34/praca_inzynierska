@@ -2,6 +2,8 @@
 #TODO zapisywanie do i z csv - zrobić poprządek z danymi check i faktycznymi danymi do obliczeń
 #TODO do sprawdzenia - w jakiej formie zwracać dane o geometrii do TurboGrida
 
+#TODO posprzątać kod - usunąć zbędne komentarze, usunąć zbędne funkcje, usunąć zbędne pliki
+#FIXME wartości wejściowe ugt i half_wedge_in 
 
 import pandas as pd
 import os
@@ -13,10 +15,10 @@ from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from initial_turbine_settings import data_calc as dc
-from initial_turbine_settings import data_geom as dg
 from helpers.figures import DrawFigures as fig
 from helpers.calc_helpers import CalcOperations as co
-from helpers.text_file import OutputTextFile as otf
+from helpers.text_file import OutputTextFile
+from helpers.saving import SaveFigText as sft
 from turbine_3D.vector_3D import Vector3D as v3d
 
 # część obliczeniowa
@@ -68,7 +70,6 @@ def main():
 
     #----------------------------------------------------------------------------------------------------
     #część geometria
-    v3d.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor)
     v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
 
     geo_params = gp.GeometryParameters()
@@ -78,19 +79,26 @@ def main():
 
     radii = ['r_hub', 'r_2', 'r_mean', 'r_4', 'r_tip']
 
-    otf.data_text_file_create(turbine_assum, turbine_input)
+    otf = OutputTextFile()
+
+    otf.data_text_file_one(turbine_assum, turbine_input)
 
     for i in range(0,5):
 
+        print(f"RATD model for {radii[i]}: ")
         geo_params.get_data(geo_data_r, radii[i])
-        otf.data_text_file_append(radii[i], geo_params)
+        otf.data_text_file_two(radii[i], geo_params)
         itera, ttc = geo_params.def_values()
         geo_params.print_attributes()
         rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
         print(f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times.")
         geo_params.print_attributes()
-
-        timestamp = fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
+        otf.data_text_file_append_three(radii[i], geo_params)
+        fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
+        sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
+        radii_inst = v3d.radius_instances(sre_output)
+        radius_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
+        otf.turbogrid_file(pressure_and_suction_up, i, radius_list[i])
 
         get_params = dep_params.find_geometry_dependent_parameters()
         params_dictionary = pd.DataFrame([get_params.to_dict()])
@@ -116,12 +124,8 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
-
-    source_file = "./blade_data_sheet.txt"
-    destination_path = f"./data/airfoils/{dg.stage_part}_{timestamp}/"
-    os.makedirs(destination_path, exist_ok=True)
-
-    os.rename(source_file, os.path.join(destination_path, "blade_data_sheet.txt"))
+    sft.save_text_blade(otf)
+    sft.save_text_turbogrid(otf)
 
 if __name__ == "__main__":
     main()

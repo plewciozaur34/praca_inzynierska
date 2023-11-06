@@ -111,6 +111,7 @@ class SurfacePoints:
             self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
+    
      
     def mec_props(self, nEL = dg.N_EL) -> mp.MechanicalProps:
         area = co.area_calc(self.xs[0], self.ys[0], self.xs[1], self.ys[1], self.xp[1], self.yp[1])

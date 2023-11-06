@@ -58,16 +58,16 @@ class Vector3D:
         for idx, stator in enumerate(stator_inst_list):
             for rotor in rotor_inst_list:
                 if idx == 2:
-                    beta_in[idx] = th.deg(stator.find_beta(turbine_assum.phi))
-                    beta_out[idx] = th.deg(rotor.find_beta(turbine_assum.phi))
+                    beta_in[idx] = stator.find_beta(turbine_assum.phi)
+                    beta_out[idx] = rotor.find_beta(turbine_assum.phi)
                 else:
                     alfa2 = stator.find_alfa()
                     alfa3 = rotor.find_alfa()
                     Rn = radii_inst[idx].Rn
-                    phi = (2 - 2*Rn)/(np.tan(alfa2) + np.tan(alfa3))
+                    phi = (2 - 2*Rn)/(np.tan(th.rad(alfa2)) + np.tan(th.rad(alfa3)))
 
-                    beta_in[idx] = th.deg(stator.find_beta(phi))
-                    beta_out[idx] = th.deg(rotor.find_beta(phi))
+                    beta_in[idx] = stator.find_beta(phi)
+                    beta_out[idx] = rotor.find_beta(phi)
             
         return beta_in, beta_out, radii_inst
 
@@ -81,12 +81,12 @@ class Vector3D:
         r_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
             geo_input_df.loc[idx, 'beta_in'] = beta_in_list[idx]
-            geo_input_df.loc[idx, 'beta_out'] = - beta_out_list[idx]
+            geo_input_df.loc[idx, 'beta_out'] = beta_out_list[idx]
             geo_input_df.loc[idx, 'R'] = r_list[idx]
             geo_input_df.loc[idx, 'chord_x'] = 0
             geo_input_df.loc[idx, 'half_wedge_out'] = 0
             geo_input_df.loc[idx, 'throat'] = 0
-            geo_input_df.loc[idx, 'chord_t'] = di.chord_t_intialization(dg.chord_init, beta_in_list[idx], beta_out_list[idx])
+            geo_input_df.loc[idx, 'chord_t'] = di.chord_t_intialization(dg.chord_init, beta_in_list[idx], beta_out_list[idx], idx)
             geo_input_df.loc[idx, 'Nb'] = dg.NB
             pitch = (2 * np.pi * r_list[idx]) / dg.NB
             geo_input_df.loc[idx, 'Rle'] = 0.1 * pitch

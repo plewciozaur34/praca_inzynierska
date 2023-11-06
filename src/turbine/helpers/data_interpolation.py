@@ -2,6 +2,8 @@ from scipy.interpolate import interp1d
 import csv
 import os
 
+from initial_turbine_settings import data_geom as dg
+
 class DataInterpolation:
 
     path = './data/csv/interpolate_data/'
@@ -33,7 +35,7 @@ class DataInterpolation:
     tmax_c = interp1d(figures_dict['tmax_c']['x'], figures_dict['tmax_c']['y'], kind='slinear')
 
     @staticmethod
-    def chord_t_intialization(chord_init: str, beta_in: float, beta_out: float):
+    def chord_t_intialization(chord_init: str, beta_in: float, beta_out: float, idx: int):
         def initialize_with_stagger(stagger_func, beta_range):
             if beta_out >= beta_range[0] and beta_out < beta_range[1]:
                 stagger = stagger_func(beta_in)
@@ -46,6 +48,11 @@ class DataInterpolation:
             chord_100 = chord_t * 100
             if 4 <= chord_100 < 20:
                 return chord_100
+            return None
+        
+        def initialize_with_chord_t_value(idx):
+            if 0 < dg.CHORD_T[idx] < 4:
+                return dg.CHORD_T[idx]
             return None
 
         beta_range_funcs = {
@@ -63,6 +70,7 @@ class DataInterpolation:
                 for beta_range, stagger_func in beta_range_funcs.items():
                     result = initialize_with_stagger(stagger_func, beta_range)
                     if result:
+                        print(f"Stagger angle initialized with {beta_range} range")
                         return result
                 print("Can't initialize, switching to 'tmax_c_100' method")
                 chord_init = 'tmax_c_100'
@@ -75,7 +83,15 @@ class DataInterpolation:
                 print("Can't initialize, switching to 'db_dx_const' method")
                 chord_init = 'db_dx_const'
 
+            elif chord_init == 'chord_t_value':
+                result = initialize_with_chord_t_value(idx)
+                if result:
+                    return result
+                print("Can't initialize, switching to 'db_dx_const' method")
+                chord_init = 'db_dx_const'
+
             elif chord_init == 'db_dx_const':
+                print("value will be 0")
                 return 0
 
             else:
