@@ -35,7 +35,7 @@ class Vector3D:
         sre_input = sre_in.SimRadEquiInput()
         sre_input.calculate_data(turbine_assum, turbine_input)
         sre_output = sre_input.simple_radial_equi(rp_list, turbine_assum)
-        sre_output.to_csv('./data/csv/sre_output_check.csv')
+        sre_output.to_csv('./data/csv/sre_output.csv')
 
         return sre_output
     
@@ -89,12 +89,12 @@ class Vector3D:
             geo_input_df.loc[idx, 'chord_t'] = di.chord_t_intialization(dg.chord_init, beta_in_list[idx], beta_out_list[idx], idx)
             geo_input_df.loc[idx, 'Nb'] = dg.NB
             pitch = (2 * np.pi * r_list[idx]) / dg.NB
-            geo_input_df.loc[idx, 'Rle'] = 0.1 * pitch
+            geo_input_df.loc[idx, 'Rle'] = dg.RLE_MULTIPLIER * pitch
 #FIXME jak przyjdzie mi lepszy pomysł na oszacowanie solidity
-            geo_input_df.loc[idx, 'Rte'] = 0.04 * pitch * dg.SOLIDITY_ASSUM
+            geo_input_df.loc[idx, 'Rte'] = dg.RTE_MULTIPLIER * pitch * dg.SOLIDITY_ASSUM
 #FIXME wartości dla ugt i half_wedge_in
-            geo_input_df.loc[idx, 'ugt'] = 6.5
-            geo_input_df.loc[idx, 'half_wedge_in'] = 9
+            geo_input_df.loc[idx, 'ugt'] = dg.UGT[idx]
+            geo_input_df.loc[idx, 'half_wedge_in'] = dg.HALF_WEDGE_IN[idx]
         for idx, name in enumerate(rp_names):
             geo_input_df.loc[idx, 'index'] = rp_names[idx]
         geo_input_df.set_index('index', inplace=True)

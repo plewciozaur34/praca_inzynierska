@@ -91,7 +91,6 @@ class DataInterpolation:
                 chord_init = 'db_dx_const'
 
             elif chord_init == 'db_dx_const':
-                print("value will be 0")
                 return 0
 
             else:

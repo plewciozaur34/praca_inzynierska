@@ -20,11 +20,32 @@ class SaveFigText:
             f.write(otf.buffer)
 
     @staticmethod
-    def save_text_turbogrid(otf):
+    def save_turbogrid_profile(otf):
         SaveFigText.ensure_directory_initialized()
         filename = f'{SaveFigText.directory}/turbine_design_blade_rotor_profile.curve'
         with open(filename, 'w') as f:
-            f.write(otf.empty)
+            f.write(otf.profile)
+
+    @staticmethod
+    def save_turbogrid_shroud(otf):
+        SaveFigText.ensure_directory_initialized()
+        filename = f'{SaveFigText.directory}/turbine_design_blade_rotor_shroud.curve'
+        with open(filename, 'w') as f:
+            f.write(otf.shroud)
+
+    @staticmethod
+    def save_turbogrid_hub(otf):
+        SaveFigText.ensure_directory_initialized()
+        filename = f'{SaveFigText.directory}/turbine_design_blade_rotor_hub.curve'
+        with open(filename, 'w') as f:
+            f.write(otf.hub)
+
+    @staticmethod
+    def save_turbogrid_init(otf):
+        SaveFigText.ensure_directory_initialized()
+        filename = f'{SaveFigText.directory}/turbine_design_blade_rotor_init.inf'
+        with open(filename, 'w') as f:
+            f.write(otf.init)
         
     @staticmethod
     def ensure_directory_initialized():

@@ -102,13 +102,15 @@ class SurfacePoints:
             self.xp[i] = self.xp[i-1] + dxp
             if self.xp[i] > geo_params.chord_x:
                 self.xp[i] = geo_params.chord_x 
-                self.yp[i] = 0
+                self.yp[i] = 0.000000 
             else:
                 self.yp[i] = point7.y - np.sqrt(geo_params.Rte**2 - (self.xp[i] - point7.x)**2)
             self.xs[i] = self.xs[i-1] + dxs
             if self.xs[i] > geo_params.chord_x:
                 self.xs[i] = geo_params.chord_x
-            self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
+                self.ys[i] = 0.000000
+            else:
+                self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
     
