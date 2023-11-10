@@ -1,6 +1,5 @@
 import numpy as np
 import inspect
-import math
 
 from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co

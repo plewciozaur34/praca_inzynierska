@@ -2,16 +2,17 @@ from combustion_params import fuel_parameters as fp
 from helpers.temp_helpers import TempHelpers as th
 
 #dane wejściowe dla obliczeń calc_2D.py
-TIT_celsius = 1297
+TIT_celsius = 1330
 M_1 = 0.78
 M_DOT = 658
 TPR = 30.2
 ETA_IS = 0.9
 OMEGA = 3800
-P_INPUT = 23800
+H = 10700
 PHI = 0.8
 C_X = 230
 RH_RT = 0.8
+LAMBDA_N = 0.05
 
 KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()

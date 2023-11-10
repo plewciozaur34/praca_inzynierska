@@ -8,7 +8,6 @@ import pandas as pd
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
 from airfoil_geometry.dep_geom_parameters import geometry_dep_params_calc as gdpc 
-from helpers.temp_helpers import TempHelpers as th
 from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
@@ -28,10 +27,11 @@ WS_rotor = vector_of_state.VectorOfState()
 
 #turbine_input = [m_dot [kg/s], p01 [Pa], T01 [K], tpr [-], eta_is [-], omega [rpm]] for LP
 turbine_input = ti.TurbineInput(dc.M_DOT, 0, dc.T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
-turbine_input.p01 = co.turbine_input_pressure(turbine_input.tpr) / th.p_p0(dc.M_1, dc.KAPPA)
 
-#turbine_assum = [alfa1, alfa3, phi, c_x, r_hub/r_tip]
-turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.RH_RT)
+#turbine_assum = [alfa1, alfa3, phi, c_x, lambda_n, r_hub/r_tip]
+turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.LAMBDA_N, dc.RH_RT)
+
+turbine_input.p01 = co.turbine_input_stagnation_pressure(turbine_input, turbine_assum)
 
 #-----------------------------------------------------------------------------------------
 # część geometria
@@ -41,7 +41,7 @@ def main():
     #część obliczeniowa 
     c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
     T_2, T_3 = co.find_temperature(turbine_input, turbine_assum)
-    p_2, p_3 = co.find_pressure()
+    p_2, p_3 = co.find_pressure(turbine_input, turbine_assum)
     
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3

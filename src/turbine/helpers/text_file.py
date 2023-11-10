@@ -17,7 +17,7 @@ class OutputTextFile:
         if dg.chord_init == 'chord_t_value':
             self.buffer += f"   initial chord_t values = {dg.CHORD_T} (from r_hub to r_tip)\n"
         self.buffer += f"turbine_input = [m_dot: {turbine_input.m_dot}, p01: {round(turbine_input.p01,1)}, T01: {turbine_input.T01}, tpr: {turbine_input.tpr}, eta_is: {turbine_input.eta_is}, omega: {turbine_input.omega}]\n"
-        self.buffer += f"turbine_assum = [alfa1: {turbine_assum.alfa1}, alfa3: {turbine_assum.alfa3}, phi: {turbine_assum.phi}, c_x: {turbine_assum.cx}, r_hub/r_tip: {turbine_assum.rhub_rtip}] \n"
+        self.buffer += f"turbine_assum = [alfa1: {turbine_assum.alfa1}, alfa3: {turbine_assum.alfa3}, phi: {turbine_assum.phi}, c_x: {turbine_assum.cx}, lambda_n: {turbine_assum.lambda_n}, r_hub/r_tip: {turbine_assum.rhub_rtip}] \n"
         self.buffer += f"Number of elements: {dg.N_EL} (for one side of the airfoil)\n"
         self.buffer += f"data_geom input values => solidity: {dg.SOLIDITY_ASSUM}, ugt: {dg.UGT}, half_wedge_in: {dg.HALF_WEDGE_IN}, rte_multiplier: {dg.RTE_MULTIPLIER}, rle_multiplier: {dg.RLE_MULTIPLIER}\n"
 
