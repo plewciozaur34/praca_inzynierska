@@ -72,14 +72,14 @@ class OutputTextFile:
 
     def turbogrid_shroud(self, radius):
         x = 0.0
-        y = np.linspace(-0.05, 0.14, dg.N_EL)
+        y = np.linspace(-0.07, 0.20, dg.N_EL)
         tip_radius = radius #- 0.001
         for i in range(0, dg.N_EL):
             self.shroud += f"{x:.{6}f}\t{tip_radius:.{6}f}\t{y[i]:.{6}f}\n"
 
     def turbogrid_hub(self, radius):
         x = 0.0
-        y = np.linspace(-0.02, 0.14, dg.N_EL)
+        y = np.linspace(-0.07, 0.20, dg.N_EL)
         hub_radius = radius #+ 0.001
         for i in range(0, dg.N_EL):
             self.hub += f"{x:.{6}f}\t{hub_radius:.{6}f}\t{y[i]:.{6}f}\n"
