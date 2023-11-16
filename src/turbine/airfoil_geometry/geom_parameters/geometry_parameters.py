@@ -7,8 +7,6 @@ from . import throat_dicontinuity as td
 from helpers.temp_helpers import TempHelpers as th
 from ..dep_geom_parameters import surface_points as sp
 
-#TODO zapis geometrii do csv w postaci punktów
-
 class GeometryParameters:
     def __init__(self, R: float = 0, chord_x: float =0 , chord_t: float = 0 , ugt: float = 0, beta_in: float = 0, 
                  half_wedge_in: float = 0, Rle: float = 0, beta_out: float = 0, Rte: float = 0, Nb: int = 0,

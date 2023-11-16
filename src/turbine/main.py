@@ -1,7 +1,6 @@
 #FIXME przejrzeć cały kod i poprawić typowanie zmiennych i wyjść z funkcji - jeśli wystarczy czasu
 
 #TODO posprzątać kod - usunąć zbędne komentarze, usunąć zbędne funkcje, usunąć zbędne pliki
-#FIXME wartości wejściowe ugt i half_wedge_in 
 
 import pandas as pd
 
@@ -113,7 +112,7 @@ def main():
         geo_dep_params.to_csv('./data/csv/geometry_dep_params.csv')
         print(geo_dep_params)
 
-        calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
+        calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','mach','mach_rel'])
 
     otf.turbogrid_init()
     otf.turbogrid_shroud(radius_list[4])

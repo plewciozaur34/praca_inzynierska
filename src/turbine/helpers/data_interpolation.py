@@ -37,7 +37,7 @@ class DataInterpolation:
     @staticmethod
     def chord_t_intialization(chord_init: str, beta_in: float, beta_out: float, idx: int):
         def initialize_with_stagger(stagger_func, beta_range):
-            if beta_out >= beta_range[0] and beta_out < beta_range[1]:
+            if abs(beta_out) >= beta_range[0] and abs(beta_out) < beta_range[1]:
                 stagger = stagger_func(beta_in)
                 if stagger >= 20:
                     return stagger
@@ -76,7 +76,7 @@ class DataInterpolation:
                 chord_init = 'tmax_c_100'
 
             elif chord_init == 'tmax_c_100':
-                beta_plus = beta_in + beta_out
+                beta_plus = abs(beta_in) + abs(beta_out)
                 result = initialize_with_tmax_c(beta_plus)
                 if result:
                     return result

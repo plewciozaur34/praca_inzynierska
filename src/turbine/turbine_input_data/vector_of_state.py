@@ -5,6 +5,7 @@ from helpers.temp_helpers import TempHelpers as th
 from helpers.calc_helpers import CalcOperations as co
 from . import calculated_params as cp
 from turbine_3D.vector_3D import Vector3D as v3d
+from initial_turbine_settings import data_calc as dc
 
 
 class VectorOfState:
@@ -32,23 +33,28 @@ class VectorOfState:
         u = omega_rs * r
         l = u * (self.cu - second_vector.cu)
         return l
-
-#TODO napisać find_Mach, Mach_rel 
+    
     def find_Mach(self) -> float:
-        return 0
+        c = np.sqrt(self.cx**2 + self.cu**2)
+        return c / np.sqrt(dc.KAPPA * dc.R_COMB * self.T)
 
-    def find_Mach_rel(self) -> float:
-        return 0
+    def find_Mach_rel(self, phi: float) -> float:
+        w_u = self.cu - self.cx / phi
+        w_x = self.cx
+        w = np.sqrt(w_u**2 + w_x**2)
+        return w / np.sqrt(dc.KAPPA * dc.R_COMB * self.T)
 
 #TODO więcej funkcji find?? - co jeszcze jest potrzebne
 
-    def mean_calc(self, phi: FloatingPointError) -> cp.CalcParams:
+    def mean_calc(self, phi: float) -> cp.CalcParams:
         print('entering mean_calc')
         
         beta = self.find_beta(phi)
         beta_deg = th.deg(beta)
         alfa = self.find_alfa()
-        return cp.CalcParams(beta, beta_deg, alfa)
+        mach = self.find_Mach()
+        mach_rel = self.find_Mach_rel(phi)
+        return cp.CalcParams(beta, beta_deg, alfa, mach, mach_rel)
     
     def get_instance_name(self):
         frame = inspect.currentframe().f_back
