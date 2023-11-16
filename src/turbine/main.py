@@ -117,8 +117,8 @@ def main():
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','work'])
 
     otf.turbogrid_init()
-    otf.turbogrid_shroud(radius_list[0])
-    otf.turbogrid_hub(radius_list[3])
+    otf.turbogrid_shroud(radius_list[4])
+    otf.turbogrid_hub(radius_list[0])
     sft.save_text_blade(otf)
     sft.save_turbogrid_profile(otf)
     sft.save_turbogrid_shroud(otf)

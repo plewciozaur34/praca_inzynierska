@@ -14,7 +14,7 @@ class SurfacePoints:
         self.ys: list = ys
         self.yp: list = yp
 
-#todo jeśli pojawią się problemy: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
+#TODO jeśli pojawią się problemy: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
 #wszystko zależy od tego jak to będzie wyglądać przy innych danych wejściowych
     @staticmethod
     def Parametric1(X1, X2, nEL = 10, endpoint = False):
@@ -102,15 +102,12 @@ class SurfacePoints:
             self.xp[i] = self.xp[i-1] + dxp
             if self.xp[i] > geo_params.chord_x:
                 self.xp[i] = geo_params.chord_x 
-                self.yp[i] = 0.000000 
-            else:
-                self.yp[i] = point7.y - np.sqrt(geo_params.Rte**2 - (self.xp[i] - point7.x)**2)
+            self.yp[i] = point7.y - np.sqrt(max(geo_params.Rte**2 - (self.xp[i] - point7.x)**2, 0.000000))
+            
             self.xs[i] = self.xs[i-1] + dxs
             if self.xs[i] > geo_params.chord_x:
                 self.xs[i] = geo_params.chord_x
-                self.ys[i] = 0.000000
-            else:
-                self.ys[i] = point7.y + np.sqrt(geo_params.Rte**2 - (self.xs[i] - point7.x)**2)
+            self.ys[i] = point7.y + np.sqrt(max(geo_params.Rte**2 - (self.xs[i] - point7.x)**2, 0.000000))
 
         return SurfacePoints(self.xs, self.xp, self.ys, self.yp)
     
