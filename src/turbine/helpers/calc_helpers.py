@@ -53,7 +53,6 @@ class CalcOperations:
     
     @staticmethod
     def find_T03_for_one_stage(turbine_input, turbine_assum) -> float:
-        p_01 = CalcOperations.turbine_input_stagnation_pressure(turbine_input, turbine_assum)
         T_01 = turbine_input.T01
         d_T0 = CalcOperations.find_temperature_drop(turbine_input)
         T_03_stage = T_01 + d_T0

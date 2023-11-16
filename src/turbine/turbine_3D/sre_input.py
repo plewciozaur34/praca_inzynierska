@@ -50,7 +50,6 @@ class SimRadEquiInput:
             C_u2 = Cp_u2*u_mean
             rad_data = pd.DataFrame({'r_p':[r_p],'C_x1':[C_x1], 'C_x2':[C_x2], 'C_u1':[C_u1], 'C_u2':[C_u2], 'Rn_prim':[Rn_prim], 'Rn':[Rn]})
             radious_df = pd.concat([radious_df, rad_data])
-        #radious_df.set_index('r_p', inplace=True)
 
         return radious_df
             

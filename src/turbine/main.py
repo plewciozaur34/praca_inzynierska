@@ -1,5 +1,4 @@
 #FIXME przejrzeć cały kod i poprawić typowanie zmiennych i wyjść z funkcji - jeśli wystarczy czasu
-#TODO do sprawdzenia - w jakiej formie zwracać dane o geometrii do TurboGrida
 
 #TODO posprzątać kod - usunąć zbędne komentarze, usunąć zbędne funkcje, usunąć zbędne pliki
 #FIXME wartości wejściowe ugt i half_wedge_in 

@@ -24,7 +24,6 @@ class DrawFigures:
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color = 'black')
         axs.set_title(f'Airfoil geometry for {radii_idx} for {dg.part} on stage {dg.stage}')
         axs.legend()
-        #plt.show()
 
         radii_name = str(radii_idx[0]) + str(radii_idx[2:])
         SaveFigText.save_figure(fig, idx, radii_name)
