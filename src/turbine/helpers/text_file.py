@@ -10,8 +10,9 @@ class OutputTextFile:
         self.hub = ""
         self.init = ""
 
-    def data_text_file_one(self, turbine_assum, turbine_input):
+    def data_text_file_one(self, turbine_assum, turbine_input, Reynolds_number):
         self.buffer += "Blade_Data_Sheet\n"
+        self.buffer += f"Reynolds number for the turbine: {Reynolds_number}\n"
         self.buffer += f"File for stage {dg.stage} of {dg.part}.\n"
         self.buffer += f"Selected initialization method for chord_t: {dg.chord_init} \n"
         if dg.chord_init == 'chord_t_value':
@@ -20,6 +21,7 @@ class OutputTextFile:
         self.buffer += f"turbine_assum = [alfa1: {turbine_assum.alfa1}, alfa3: {turbine_assum.alfa3}, phi: {turbine_assum.phi}, c_x: {turbine_assum.cx}, lambda_n: {turbine_assum.lambda_n}, r_hub/r_tip: {turbine_assum.rhub_rtip}] \n"
         self.buffer += f"Number of elements: {dg.N_EL} (for one side of the airfoil)\n"
         self.buffer += f"data_geom input values => solidity: {dg.SOLIDITY_ASSUM}, ugt: {dg.UGT}, half_wedge_in: {dg.HALF_WEDGE_IN}, rte_multiplier: {dg.RTE_MULTIPLIER}, rle_multiplier: {dg.RLE_MULTIPLIER}\n"
+        
 
     def data_text_file_two(self,radii, geo_params):
         self.buffer += f"   \n"

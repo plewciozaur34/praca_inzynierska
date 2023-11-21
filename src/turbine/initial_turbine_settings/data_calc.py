@@ -18,6 +18,8 @@ KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
 R_COMB = fp.CombustionHelpers.find_R_combust()
 
+MU = 3.6621*10^(-5) #FIXME wartość dla powietrza, nie dla spalin
+
 T_01 = th.celsius_to_kelvin(TIT_celsius) #K
 
 #0.5<phi<1.0

@@ -2,6 +2,8 @@
 
 #TODO posprzątać kod - usunąć zbędne komentarze, usunąć zbędne funkcje, usunąć zbędne pliki
 
+#TODO kod dla statora!!
+
 import pandas as pd
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
@@ -66,8 +68,15 @@ def main():
 
     radii = ['r_hub', 'r_2', 'r_mean', 'r_4', 'r_tip']
 
+    sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
+    radii_inst = v3d.radius_instances(sre_output)
+    radius_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
+
+    Reynolds_number = co.find_reynolds_number(turbine_input.omega, radius_list[4], dc.MU)
+    print(f"Reynolds number: {Reynolds_number}")
+
     otf = OutputTextFile()
-    otf.data_text_file_one(turbine_assum, turbine_input)
+    otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number)
 
     for i in range(0,5):
 
@@ -85,9 +94,7 @@ def main():
 
         fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
 
-        sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
-        radii_inst = v3d.radius_instances(sre_output)
-        radius_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
+        
         otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i])
 
         get_params = dep_params.find_geometry_dependent_parameters()
