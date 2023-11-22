@@ -28,7 +28,7 @@ class Vector3D:
                 instance_name = f"WS_{side}_{position}"
                 instances[instance_name] = vector_of_state.VectorOfState(instance_name)
         return instances
-    
+        
     @staticmethod
     def sre_initialise(turbine_assum, turbine_input):
         rp_list = co.radious_prim_list(turbine_assum, turbine_input)

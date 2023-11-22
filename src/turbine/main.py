@@ -22,6 +22,7 @@ from turbine_3D.vector_3D import Vector3D as v3d
 
 #WEKTOR STANU: [c_axial, c_radial, c_u, p, T, r]
 #wektory stanu dla palisady płaskiej (r_mean)
+WS_inlet = vector_of_state.VectorOfState()
 WS_stator = vector_of_state.VectorOfState()
 WS_rotor = vector_of_state.VectorOfState()
 
@@ -33,25 +34,32 @@ turbine_assum = ta.TurbineAssum(0,0,dc.PHI, dc.C_X, dc.LAMBDA_N, dc.RH_RT)
 
 turbine_input.p01 = co.turbine_input_stagnation_pressure(turbine_input, turbine_assum)
 
-#-----------------------------------------------------------------------------------------
-# część geometria
-
 def main():
 
     #część obliczeniowa 
     c_u2, c_u3 = co.find_cu2(turbine_assum, turbine_input)
     T_2, T_3 = co.find_temperature(turbine_input, turbine_assum)
     p_2, p_3 = co.find_pressure(turbine_input, turbine_assum)
+    p_1 = co.turbine_input_static_pressure()
+    T_1, c_1 = co.find_inlet_static_temp_and_velocity(turbine_input, turbine_assum)
     
+    WS_inlet.cu = 0
     WS_stator.cu = c_u2
     WS_rotor.cu = c_u3
+
+    WS_inlet.cx = turbine_assum.cx
     WS_stator.cx = turbine_assum.cx
     WS_rotor.cx = turbine_assum.cx
+
+    WS_inlet.T = T_1
     WS_stator.T = T_2
     WS_rotor.T = T_3
+
+    WS_inlet.p = p_1
     WS_stator.p = p_2
     WS_rotor.p = p_3
     
+    WS_inlet.mean_calc(turbine_assum.phi)
     WS_rotor.mean_calc(turbine_assum.phi)
     #FIXME WS_rotor.find_work(WS_stator, turbine_input.omega)
 
@@ -72,7 +80,7 @@ def main():
     radii_inst = v3d.radius_instances(sre_output)
     radius_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
 
-    Reynolds_number = co.find_reynolds_number(turbine_input.omega, radius_list[4], dc.MU)
+    Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
     print(f"Reynolds number: {Reynolds_number}")
 
     otf = OutputTextFile()
