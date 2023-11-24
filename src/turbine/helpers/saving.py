@@ -13,10 +13,12 @@ class SaveFigText:
         fig.savefig(filename)
 
     @staticmethod
-    def save_plot(fig):
+    def save_plot(fig1, fig2):
         SaveFigText.ensure_directory_initialized()
-        filename = f'{SaveFigText.directory}/airfoil_plots.png'
-        fig.savefig(filename)
+        rotor_angles = f'{SaveFigText.directory}/plots_rotor_angles.png'
+        phi_reaction = f'{SaveFigText.directory}/plots_phi_reaction.png'
+        fig1.savefig(rotor_angles)
+        fig2.savefig(phi_reaction)
 
     @staticmethod
     def save_text_blade(otf):

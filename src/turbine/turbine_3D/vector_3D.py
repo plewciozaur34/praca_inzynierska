@@ -40,9 +40,13 @@ class Vector3D:
         return sre_output
     
     @staticmethod
-    def sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor):
+    def sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor, plot):
         beta_in = list(np.zeros(5))
         beta_out = list(np.zeros(5))
+        alfa2 = list(np.zeros(5))
+        alfa3 = list(np.zeros(5))
+        phi = list(np.zeros(5))
+        Rn = list(np.zeros(5))
         ws_instances = Vector3D.ws_create_instances()
         WS_s_rhub, WS_s_r2, WS_s_r4, WS_s_rtip, WS_r_rhub, WS_r_r2, WS_r_r4, WS_r_rtip = ws_instances.values()
         instances_list = [WS_s_rhub, WS_s_r2, WS_s_r4, WS_s_rtip, WS_r_rhub, WS_r_r2, WS_r_r4, WS_r_rtip]
@@ -60,20 +64,25 @@ class Vector3D:
                 if idx == 2:
                     beta_in[idx] = stator.find_beta(turbine_assum.phi)
                     beta_out[idx] = rotor.find_beta(turbine_assum.phi)
+                    alfa2[idx] = stator.find_alfa()
+                    alfa3[idx] = rotor.find_alfa()
+                    phi[idx] = turbine_assum.phi
+                    Rn[idx] = radii_inst[idx].Rn
                 else:
-                    alfa2 = stator.find_alfa()
-                    alfa3 = rotor.find_alfa()
-                    Rn = radii_inst[idx].Rn
-                    phi = (2 - 2*Rn)/(np.tan(th.rad(alfa2)) + np.tan(th.rad(alfa3)))
+                    alfa2[idx] = stator.find_alfa()
+                    alfa3[idx] = rotor.find_alfa()
+                    Rn[idx] = radii_inst[idx].Rn
+                    phi[idx] = (2 - 2*Rn[idx])/(np.tan(th.rad(alfa2[idx])) + np.tan(th.rad(alfa3[idx])))
 
-                    beta_in[idx] = stator.find_beta(phi)
-                    beta_out[idx] = rotor.find_beta(phi)
-            
+                    beta_in[idx] = stator.find_beta(phi[idx])
+                    beta_out[idx] = rotor.find_beta(phi[idx])
+        if plot == True:
+            return beta_in, beta_out, radii_inst, alfa2, alfa3, phi, Rn
         return beta_in, beta_out, radii_inst
 
     @staticmethod
     def create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor):
-        beta_in_list, beta_out_list, radii_inst = Vector3D.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor)
+        beta_in_list, beta_out_list, radii_inst = Vector3D.sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor, plot=False)
         geo_input_df = pd.read_csv('./data/csv/geom_data_rotor.csv')
         
         rp_list = co.radious_prim_list(turbine_assum, turbine_input)
