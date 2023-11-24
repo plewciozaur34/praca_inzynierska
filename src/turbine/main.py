@@ -13,6 +13,7 @@ from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from initial_turbine_settings import data_calc as dc
 from helpers.figures import DrawFigures as fig
+from helpers.plots import DrawPlots as plots
 from helpers.calc_helpers import CalcOperations as co
 from helpers.text_file import OutputTextFile
 from helpers.saving import SaveFigText as sft
@@ -137,6 +138,7 @@ def main():
     sft.save_turbogrid_shroud(otf)
     sft.save_turbogrid_hub(otf)
     sft.save_turbogrid_init(otf)
+    plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
 
 if __name__ == "__main__":
     main()
