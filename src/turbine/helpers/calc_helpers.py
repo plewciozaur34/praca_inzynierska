@@ -100,23 +100,25 @@ class CalcOperations:
         return T_2, T_3
     
     @staticmethod
-    def find_rotor_inlet_density(turbine_input, turbine_assum) -> float:
+    def find_rotor_density(turbine_input, turbine_assum, outlet) -> float:
         p_2, p_3 = CalcOperations.find_pressure(turbine_input, turbine_assum)
         T_2, T_3 = CalcOperations.find_temperature(turbine_input, turbine_assum)
+        if outlet == True:
+            return p_3/(dc.R_COMB*T_3)
         return p_2/(dc.R_COMB*T_2)
     
     @staticmethod
     def find_stator_inlet_density(turbine_input, turbine_assum) -> float:
         p_1 = CalcOperations.turbine_input_static_pressure()
         T_1, c_1 = CalcOperations.find_inlet_static_temp_and_velocity(turbine_input, turbine_assum)
-        return p_1/(dc.R_COMB*T_1) 
+        return p_1/(dc.R_COMB*T_1)  
     
     @staticmethod
     def find_mean_radious(u: float, omega: float) -> float:
         return u/th.rpm_to_rad_s(omega)
     
     def find_rtip_rhub_rmean(turbine_assum, turbine_input) -> (float, float, float):
-        rho = CalcOperations.find_rotor_inlet_density(turbine_input, turbine_assum)
+        rho = CalcOperations.find_rotor_density(turbine_input, turbine_assum, outlet=False)
         u = CalcOperations.find_tangential_velocity(turbine_assum)
         #FIXME jak policzyć r_mean dla statora???????
         r_mean = CalcOperations.find_mean_radious(u, turbine_input.omega)
@@ -124,6 +126,14 @@ class CalcOperations:
         r_tip = A/(np.pi*4*r_mean) + r_mean
         r_hub = 2*r_mean - r_tip
         return r_tip, r_mean, r_hub
+    
+    @staticmethod
+    def is_rotor_rtip_change_needed(turbine_input, turbine_assum):
+        rho3 = CalcOperations.find_rotor_density(turbine_input, turbine_assum, outlet=True)
+        r_tip2, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        A3 = turbine_input.m_dot/(turbine_assum.cx*rho3)
+        r_tip3 = np.sqrt((A3/np.pi)+r_hub**2)
+        return round((abs(r_tip3 - r_tip2)/r_tip2)*100, 2)
     
     @staticmethod
     def radious_prim_list(turbine_assum, turbine_input) -> list:

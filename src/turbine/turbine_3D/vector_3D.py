@@ -47,6 +47,10 @@ class Vector3D:
         alfa3 = list(np.zeros(5))
         phi = list(np.zeros(5))
         Rn = list(np.zeros(5))
+        Mach2 = list(np.zeros(5))
+        Mach_rel2 = list(np.zeros(5))
+        Mach3 = list(np.zeros(5))
+        Mach_rel3 = list(np.zeros(5))
         ws_instances = Vector3D.ws_create_instances()
         WS_s_rhub, WS_s_r2, WS_s_r4, WS_s_rtip, WS_r_rhub, WS_r_r2, WS_r_r4, WS_r_rtip = ws_instances.values()
         instances_list = [WS_s_rhub, WS_s_r2, WS_s_r4, WS_s_rtip, WS_r_rhub, WS_r_r2, WS_r_r4, WS_r_rtip]
@@ -68,6 +72,10 @@ class Vector3D:
                     alfa3[idx] = rotor.find_alfa()
                     phi[idx] = turbine_assum.phi
                     Rn[idx] = radii_inst[idx].Rn
+                    Mach2[idx] = stator.find_Mach()
+                    Mach_rel2[idx] = stator.find_Mach_rel(turbine_assum.phi)
+                    Mach3[idx] = rotor.find_Mach()
+                    Mach_rel3[idx] = rotor.find_Mach_rel(turbine_assum.phi)
                 else:
                     alfa2[idx] = stator.find_alfa()
                     alfa3[idx] = rotor.find_alfa()
@@ -76,8 +84,13 @@ class Vector3D:
 
                     beta_in[idx] = stator.find_beta(phi[idx])
                     beta_out[idx] = rotor.find_beta(phi[idx])
+
+                    Mach2[idx] = stator.find_Mach()
+                    Mach_rel2[idx] = stator.find_Mach_rel(phi[idx])
+                    Mach3[idx] = rotor.find_Mach()
+                    Mach_rel3[idx] = rotor.find_Mach_rel(phi[idx])
         if plot == True:
-            return beta_in, beta_out, radii_inst, alfa2, alfa3, phi, Rn
+            return beta_in, beta_out, radii_inst, alfa2, alfa3, phi, Rn, Mach2, Mach_rel2, Mach3, Mach_rel3
         return beta_in, beta_out, radii_inst
 
     @staticmethod

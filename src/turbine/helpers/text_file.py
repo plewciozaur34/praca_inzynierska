@@ -50,6 +50,9 @@ class OutputTextFile:
         self.buffer += f"half_wedge_out= {round(geo_params.half_wedge_out,4)} \n"
         self.buffer += f"   \n"
 
+    def data_text_file_append_four(self, tip_percentage_difference):
+        self.buffer += f"Tip percentage difference: {tip_percentage_difference}%"
+
     def turbogrid_profile(self, ps, idx, radius):
         number = idx + 1
         if idx == 0:

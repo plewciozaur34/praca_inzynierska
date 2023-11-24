@@ -130,6 +130,10 @@ def main():
 
         calculated_parameters = pd.DataFrame(columns=['beta','beta_deg','alfa','mach','mach_rel'])
 
+    tip_percentage_difference = co.is_rotor_rtip_change_needed(turbine_input, turbine_assum)
+    print(f"Tip percentage difference: {tip_percentage_difference}%")
+    otf.data_text_file_append_four(tip_percentage_difference)
+
     otf.turbogrid_init()
     otf.turbogrid_shroud(radius_list[4])
     otf.turbogrid_hub(radius_list[0])
@@ -139,6 +143,8 @@ def main():
     sft.save_turbogrid_hub(otf)
     sft.save_turbogrid_init(otf)
     plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
+    
+
 
 if __name__ == "__main__":
     main()

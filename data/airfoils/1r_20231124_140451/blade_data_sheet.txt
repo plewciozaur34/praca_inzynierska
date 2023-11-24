@@ -121,3 +121,4 @@ Rte= 0.00267
 throat= 0.0166 
 half_wedge_out= 4.0419 
    
+Tip percentage difference: 2.55%
