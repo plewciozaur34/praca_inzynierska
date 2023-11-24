@@ -100,20 +100,27 @@ class CalcOperations:
         return T_2, T_3
     
     @staticmethod
-    def find_inlet_density(turbine_input, turbine_assum) -> float:
+    def find_rotor_inlet_density(turbine_input, turbine_assum) -> float:
         p_2, p_3 = CalcOperations.find_pressure(turbine_input, turbine_assum)
         T_2, T_3 = CalcOperations.find_temperature(turbine_input, turbine_assum)
         return p_2/(dc.R_COMB*T_2)
+    
+    @staticmethod
+    def find_stator_inlet_density(turbine_input, turbine_assum) -> float:
+        p_1 = CalcOperations.turbine_input_static_pressure()
+        T_1, c_1 = CalcOperations.find_inlet_static_temp_and_velocity(turbine_input, turbine_assum)
+        return p_1/(dc.R_COMB*T_1) 
     
     @staticmethod
     def find_mean_radious(u: float, omega: float) -> float:
         return u/th.rpm_to_rad_s(omega)
     
     def find_rtip_rhub_rmean(turbine_assum, turbine_input) -> (float, float, float):
-        rho2 = CalcOperations.find_inlet_density(turbine_input, turbine_assum)
+        rho = CalcOperations.find_rotor_inlet_density(turbine_input, turbine_assum)
         u = CalcOperations.find_tangential_velocity(turbine_assum)
+        #FIXME jak policzyć r_mean dla statora???????
         r_mean = CalcOperations.find_mean_radious(u, turbine_input.omega)
-        A = turbine_input.m_dot/(turbine_assum.cx*rho2)
+        A = turbine_input.m_dot/(turbine_assum.cx*rho)
         r_tip = A/(np.pi*4*r_mean) + r_mean
         r_hub = 2*r_mean - r_tip
         return r_tip, r_mean, r_hub

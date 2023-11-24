@@ -13,6 +13,12 @@ class SaveFigText:
         fig.savefig(filename)
 
     @staticmethod
+    def save_plot(fig):
+        SaveFigText.ensure_directory_initialized()
+        filename = f'{SaveFigText.directory}/airfoil_plots.png'
+        fig.savefig(filename)
+
+    @staticmethod
     def save_text_blade(otf):
         SaveFigText.ensure_directory_initialized()
         filename = f'{SaveFigText.directory}/blade_data_sheet.txt'
