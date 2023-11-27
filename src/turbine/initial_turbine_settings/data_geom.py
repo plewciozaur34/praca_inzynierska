@@ -4,8 +4,6 @@ import numpy as np
 N_EL = 50
 
 stage = 1
-part = "rotor"
-stage_part = str(stage) + part[0]
 
 NB_r = 74  # number of blade for HPT stage 2 in GE CF6-80C2B4F = 74
 NB_s = 60

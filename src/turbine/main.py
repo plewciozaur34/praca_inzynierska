@@ -68,103 +68,98 @@ def main():
 
     # ----------------------------------------------------------------------------------------------------
     # część geometria
-    v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
-    v3d.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator)
 
     geo_params = gp.GeometryParameters()
     dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-    geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
-    geo_data_s = pd.read_csv("./data/csv/geom_data_stator.csv", index_col=0)
-
+    geo_data_list = v3d.geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
     radii = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
-
-    sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
-    radii_inst = v3d.radius_instances(sre_output)
-    radius_list = co.radius_list(radii_inst, turbine_assum, turbine_input)
+    radius_list = co.stator_radius_list(turbine_assum, turbine_input)
+    part = ["rotor", "stator"]
 
     Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
-    print(f"Reynolds number: {Reynolds_number}")
-
     otf = OutputTextFile()
-    otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number)
+    
+    for idx, geo_data in enumerate(geo_data_list): 
+        otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number, part[idx])
+        for i in range(0, 5):
+            print(f"RATD model for {radii[i]}: ")
 
-    for i in range(0, 5):
-        print(f"RATD model for {radii[i]}: ")
+            geo_params.get_data(geo_data_list[idx], radii[i])
 
-        geo_params.get_data(geo_data_r, radii[i])
+            otf.data_text_file_two(radii[i], geo_params)
 
-        otf.data_text_file_two(radii[i], geo_params)
+            itera, ttc = geo_params.def_values()
+            rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
+            print(
+                    f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times."
+                )
 
-        itera, ttc = geo_params.def_values()
-        rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
-        print(
-            f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times."
-        )
+            otf.data_text_file_append_three(geo_params)
 
-        otf.data_text_file_append_three(geo_params)
+            fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i , part[idx])
 
-        fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i)
+            otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i])
 
-        otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i])
+            get_params = dep_params.find_geometry_dependent_parameters()
+            params_dictionary = pd.DataFrame([get_params.to_dict()])
+            geo_dep_params = pd.DataFrame(
+                columns=[
+                    "pitch",
+                    "stagger_angle",
+                    "chord",
+                    "zweifel_coefficient",
+                    "solidity",
+                    "blockage_in",
+                    "blockage_out",
+                    "camber_angle",
+                    "lift_coefficient",
+                    ]
+                )
+            geo_dep_params = pd.concat(
+                    [geo_dep_params, params_dictionary], ignore_index=True
+                )
 
-        get_params = dep_params.find_geometry_dependent_parameters()
-        params_dictionary = pd.DataFrame([get_params.to_dict()])
-        geo_dep_params = pd.DataFrame(
-            columns=[
-                "pitch",
-                "stagger_angle",
-                "chord",
-                "zweifel_coefficient",
-                "solidity",
-                "blockage_in",
-                "blockage_out",
-                "camber_angle",
-                "lift_coefficient",
-            ]
-        )
-        geo_dep_params = pd.concat(
-            [geo_dep_params, params_dictionary], ignore_index=True
-        )
+            mechanical_props = pressure_and_suction_up.mec_props()
+            mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
+            mechanical_props_df = pd.DataFrame(columns=["airfoil_csa", "xcg", "ycg"])
+            mechanical_props_df = pd.concat(
+                    [mechanical_props_df, mechanical_props_dict], ignore_index=True
+                )
 
-        mechanical_props = pressure_and_suction_up.mec_props()
-        mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
-        mechanical_props_df = pd.DataFrame(columns=["airfoil_csa", "xcg", "ycg"])
-        mechanical_props_df = pd.concat(
-            [mechanical_props_df, mechanical_props_dict], ignore_index=True
-        )
+            max_thickness = pressure_and_suction_up.find_thickness_max()
+            max_thickness_dict = pd.DataFrame([max_thickness.to_dict()])
+            max_thickness_df = pd.DataFrame(columns=["max_thickness"])
+            max_thickness_df = pd.concat(
+                    [max_thickness_df, max_thickness_dict], ignore_index=True
+                )
 
-        max_thickness = pressure_and_suction_up.find_thickness_max()
-        max_thickness_dict = pd.DataFrame([max_thickness.to_dict()])
-        max_thickness_df = pd.DataFrame(columns=["max_thickness"])
-        max_thickness_df = pd.concat(
-            [max_thickness_df, max_thickness_dict], ignore_index=True
-        )
+            geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
+            geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
+            geo_dep_params.to_csv(f"./data/csv/geometry_dep_params_{part[idx]}.csv")
+            print(geo_dep_params)
 
-        geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
-        geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
-        geo_dep_params.to_csv("./data/csv/geometry_dep_params.csv")
-        print(geo_dep_params)
+            calculated_parameters = pd.DataFrame(
+                    columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]
+                )
 
-        calculated_parameters = pd.DataFrame(
-            columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]
-        )
+        tip_percentage_difference = co.is_rotor_rtip_change_needed(
+                turbine_input, turbine_assum
+            )
+        print(f"Tip percentage difference: {tip_percentage_difference}%")
+        otf.data_text_file_append_four(tip_percentage_difference)
 
-    tip_percentage_difference = co.is_rotor_rtip_change_needed(
-        turbine_input, turbine_assum
-    )
-    print(f"Tip percentage difference: {tip_percentage_difference}%")
-    otf.data_text_file_append_four(tip_percentage_difference)
-
-    otf.turbogrid_init()
-    otf.turbogrid_shroud(radius_list[4])
-    otf.turbogrid_hub(radius_list[0])
-    sft.save_text_blade(otf)
-    sft.save_turbogrid_profile(otf)
-    sft.save_turbogrid_shroud(otf)
-    sft.save_turbogrid_hub(otf)
-    sft.save_turbogrid_init(otf)
-    plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
+        otf.turbogrid_init(part[idx])
+        otf.turbogrid_shroud(radius_list[4])
+        otf.turbogrid_hub(radius_list[0])
+        sft.save_text_blade(otf, part[idx])
+        sft.save_turbogrid_profile(otf, part[idx])
+        sft.save_turbogrid_shroud(otf, part[idx])
+        sft.save_turbogrid_hub(otf, part[idx])
+        sft.save_turbogrid_init(otf, part[idx])
+        plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
+    
+    #cg.run_geometry(geo_params, dep_params, geo_data_list, radii, radius_list, part)
 
 
 if __name__ == "__main__":
