@@ -157,7 +157,9 @@ def main():
         sft.save_turbogrid_shroud(otf, part[idx])
         sft.save_turbogrid_hub(otf, part[idx])
         sft.save_turbogrid_init(otf, part[idx])
-        plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
+        otf.clear_output_text_file()
+
+    plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
     
     #cg.run_geometry(geo_params, dep_params, geo_data_list, radii, radius_list, part)
 
