@@ -157,7 +157,6 @@ class CalcOperations:
         return round((abs(r_tip3 - r_tip2) / r_tip2) * 100, 2)
 
     @staticmethod
-
     def radius_prim_list(turbine_assum, turbine_input) -> list:
         r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
             turbine_assum, turbine_input
@@ -172,7 +171,9 @@ class CalcOperations:
 
     @staticmethod
     def radius_list(radious_instance_df, turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
+            turbine_assum, turbine_input
+        )
         radious_list = list(np.zeros(5))
         for idx in range(5):
             radious_list[idx] = radious_instance_df[idx].r_p * r_mean
@@ -180,13 +181,14 @@ class CalcOperations:
 
     @staticmethod
     def stator_radius_list(turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
+            turbine_assum, turbine_input
+        )
         radius_prim_list = CalcOperations.radius_prim_list(turbine_assum, turbine_input)
         for idx, radius in enumerate(radius_prim_list):
             radius_prim_list[idx] = radius * r_mean
         return radius_prim_list
 
-    
     @staticmethod
     def find_psi_mean(turbine_assum, turbine_input) -> float:
         return (

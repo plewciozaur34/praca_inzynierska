@@ -7,7 +7,7 @@ stage = 1
 part = "rotor"
 stage_part = str(stage) + part[0]
 
-NB_r = 74 #number of blade for HPT stage 2 in GE CF6-80C2B4F = 74
+NB_r = 74  # number of blade for HPT stage 2 in GE CF6-80C2B4F = 74
 NB_s = 60
 SOLIDITY_ASSUM = 1.2
 # FIXME stagger_angle i tmax_c_100 nie działają, a działały :c

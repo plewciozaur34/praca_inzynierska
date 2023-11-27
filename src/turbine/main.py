@@ -74,8 +74,8 @@ def main():
     geo_params = gp.GeometryParameters()
     dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-    geo_data_r = pd.read_csv('./data/csv/geom_data_rotor.csv', index_col=0) 
-    geo_data_s = pd.read_csv('./data/csv/geom_data_stator.csv', index_col=0)
+    geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
+    geo_data_s = pd.read_csv("./data/csv/geom_data_stator.csv", index_col=0)
 
     radii = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
 
