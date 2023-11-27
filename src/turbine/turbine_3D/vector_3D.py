@@ -210,7 +210,9 @@ class Vector3D:
     @staticmethod
     def geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor):
         Vector3D.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
-        Vector3D.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator)
+        Vector3D.create_geom_data_csv_stator(
+            turbine_assum, turbine_input, WS_inlet, WS_stator
+        )
 
         geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
         geo_data_s = pd.read_csv("./data/csv/geom_data_stator.csv", index_col=0)

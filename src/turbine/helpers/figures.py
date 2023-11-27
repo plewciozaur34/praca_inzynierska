@@ -7,7 +7,9 @@ from helpers.saving import SaveFigText
 
 class DrawFigures:
     @staticmethod
-    def airfoil_figure(rtd, pressure_and_suction_up, radii_idx, idx, part, stage=dg.stage):
+    def airfoil_figure(
+        rtd, pressure_and_suction_up, radii_idx, idx, part, stage=dg.stage
+    ):
         exes = [rtd.point1.x, rtd.point2.x, rtd.point3.x, rtd.point4.x, rtd.point5.x]
         whys = [rtd.point1.y, rtd.point2.y, rtd.point3.y, rtd.point4.y, rtd.point5.y]
         colors = ["red", "blue", "green", "grey", "pink"]
@@ -22,12 +24,8 @@ class DrawFigures:
 
         axs.plot(pressure_and_suction_up.xp, pressure_and_suction_up.yp, color="black")
         axs.plot(pressure_and_suction_up.xs, pressure_and_suction_up.ys, color="black")
-        axs.set_title(
-            f"Airfoil geometry for {radii_idx} for {part} on stage {stage}"
-        )
+        axs.set_title(f"Airfoil geometry for {radii_idx} for {part} on stage {stage}")
         axs.legend()
 
         radii_name = str(radii_idx[0]) + str(radii_idx[2:])
         SaveFigText.save_figure(fig, idx, radii_name, part)
-
-    

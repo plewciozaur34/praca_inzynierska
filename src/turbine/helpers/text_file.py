@@ -11,7 +11,9 @@ class OutputTextFile:
         self.hub = ""
         self.init = ""
 
-    def data_text_file_one(self, turbine_assum, turbine_input, Reynolds_number, part, stage=dg.stage):
+    def data_text_file_one(
+        self, turbine_assum, turbine_input, Reynolds_number, part, stage=dg.stage
+    ):
         self.buffer += "Blade_Data_Sheet\n"
         self.buffer += f"Reynolds number for the turbine: {Reynolds_number}\n"
         self.buffer += f"File for stage {stage} of {part}.\n"
