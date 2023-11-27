@@ -132,11 +132,11 @@ class Vector3D:
                 # Mach3,
                 # Mach_rel3,
             )
-        return beta_in, beta_out, radii_inst
+        return beta_in, beta_out, radii_inst, alfa2
 
     @staticmethod
     def create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor):
-        beta_in_list, beta_out_list, radii_inst = Vector3D.sre_to_geom_data(
+        beta_in_list, beta_out_list, radii_inst, alfa_in = Vector3D.sre_to_geom_data(
             turbine_assum, turbine_input, WS_stator, WS_rotor, plot=False
         )
         geo_input_df = pd.read_csv("./data/csv/geom_data_rotor.csv")
@@ -170,14 +170,13 @@ class Vector3D:
         geo_input_df.to_csv("./data/csv/geom_data_rotor.csv")
 
     @staticmethod
-    def create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator):
+    def create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor):
+        beta_in_list, beta_out_list, radii_inst, alfa_out_list = Vector3D.sre_to_geom_data(
+            turbine_assum, turbine_input, WS_stator, WS_rotor, plot=False
+        )
         alfa_in_list = list(np.zeros(5))
-        alfa_out_list = list(np.zeros(5))
         for i in range(len(alfa_in_list)):
             alfa_in_list[i] = WS_inlet.find_alfa()
-
-        for i in range(len(alfa_out_list)):
-            alfa_out_list[i] = -WS_stator.find_alfa()
 
         geo_input_df = pd.read_csv("./data/csv/geom_data_stator.csv")
 
@@ -186,7 +185,7 @@ class Vector3D:
         r_list = co.stator_radius_list(turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
             geo_input_df.loc[idx, "beta_in"] = alfa_in_list[idx]
-            geo_input_df.loc[idx, "beta_out"] = alfa_out_list[idx]
+            geo_input_df.loc[idx, "beta_out"] = -alfa_out_list[idx]
             geo_input_df.loc[idx, "R"] = r_list[idx]
             geo_input_df.loc[idx, "chord_x"] = 0
             geo_input_df.loc[idx, "half_wedge_out"] = 0
@@ -210,7 +209,7 @@ class Vector3D:
     @staticmethod
     def geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor):
         Vector3D.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
-        Vector3D.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator)
+        Vector3D.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
 
         geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
         geo_data_s = pd.read_csv("./data/csv/geom_data_stator.csv", index_col=0)

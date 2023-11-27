@@ -1,0 +1,124 @@
+Blade_Data_Sheet
+Reynolds number for the turbine: 33188137.51338624
+File for stage 1 of rotor.
+Selected initialization method for chord_t: db_dx_const 
+turbine_input = [m_dot: 658, p01: 820365.1, T01: 1056.85, tpr: 30.2, eta_is: 0.9, omega: 3800]
+turbine_assum = [alfa1: 0, alfa3: 0, phi: 0.8, c_x: 230, lambda_n: 0.05, r_hub/r_tip: 0.8] 
+Number of elements: 50 (for one side of the airfoil)
+data_geom input values => solidity: 1.2, ugt: [5.   5.75 6.5  7.25 8.  ], half_wedge_in: [ 6.5    8.125  9.75  11.375 13.   ], rte_multiplier: 0.03, rle_multiplier: 0.05
+   
+Input independent parameters for RATD model for r_hub: 
+R= 0.571 
+beta_in= 27.89 
+beta_out= -29.92 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 5.0 
+Rle= 0.00276 
+Rte= 0.00199 
+Nb= 65.0 
+throat= 0.0 
+half_wedge_in= 6.5 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.0935 
+chord_t= 0.0076 
+ugt= 5.0 
+Rle= 0.00276 
+Rte= 0.00199 
+throat= 0.0439 
+half_wedge_out= 2.5808 
+   
+   
+Input independent parameters for RATD model for r_2: 
+R= 0.647 
+beta_in= 21.65 
+beta_out= -39.53 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 5.75 
+Rle= 0.00313 
+Rte= 0.00225 
+Nb= 65.0 
+throat= 0.0 
+half_wedge_in= 8.12 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.1096 
+chord_t= 0.0282 
+ugt= 5.75 
+Rle= 0.00313 
+Rte= 0.00225 
+throat= 0.0437 
+half_wedge_out= 2.9554 
+   
+   
+Input independent parameters for RATD model for r_mean: 
+R= 0.722 
+beta_in= 19.7 
+beta_out= -46.44 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 6.5 
+Rle= 0.00349 
+Rte= 0.00251 
+Nb= 65.0 
+throat= 0.0 
+half_wedge_in= 9.75 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.1277 
+chord_t= 0.0465 
+ugt= 6.5 
+Rle= 0.00349 
+Rte= 0.00251 
+throat= 0.0431 
+half_wedge_out= 3.3327 
+   
+   
+Input independent parameters for RATD model for r_4: 
+R= 0.798 
+beta_in= -6.82 
+beta_out= -61.64 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 7.25 
+Rle= 0.00386 
+Rte= 0.00278 
+Nb= 65.0 
+throat= 0.0 
+half_wedge_in= 11.38 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.1261 
+chord_t= 0.1081 
+ugt= 7.25 
+Rle= 0.00386 
+Rte= 0.00278 
+throat= 0.0311 
+half_wedge_out= 3.6845 
+   
+   
+Input independent parameters for RATD model for r_tip: 
+R= 0.874 
+beta_in= -38.44 
+beta_out= -72.8 
+chord_x= 0.0 
+chord_t= 0.0 
+ugt= 8.0 
+Rle= 0.00422 
+Rte= 0.00304 
+Nb= 65.0 
+throat= 0.0 
+half_wedge_in= 13.0 
+   
+Independent parameters after def_values, remove_throat_discontinuity and chord_t_intialization: 
+chord_x= 0.0953 
+chord_t= 0.1523 
+ugt= 8.0 
+Rle= 0.00422 
+Rte= 0.00304 
+throat= 0.0189 
+half_wedge_out= 4.0419 
+   
+Tip percentage difference: 2.55%
