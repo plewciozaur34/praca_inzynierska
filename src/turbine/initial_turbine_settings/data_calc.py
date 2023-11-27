@@ -1,7 +1,7 @@
 from combustion_params import fuel_parameters as fp
 from helpers.temp_helpers import TempHelpers as th
 
-#dane wejściowe dla obliczeń calc_2D.py
+# dane wejściowe dla obliczeń calc_2D.py
 TIT_celsius = 1330
 M_1 = 0.78
 M_DOT = 658
@@ -18,11 +18,11 @@ KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
 R_COMB = fp.CombustionHelpers.find_R_combust()
 
-MU = 0.000036621 #FIXME wartość dla powietrza, nie dla spalin
+MU = 0.000036621  # FIXME wartość dla powietrza, nie dla spalin
 
-T_01 = th.celsius_to_kelvin(TIT_celsius) #K
+T_01 = th.celsius_to_kelvin(TIT_celsius)  # K
 
-#0.5<phi<1.0
-#c_x - na podstawie danych z examples z principles of turbomachinery...
-#crusing altitude = 10,700 m #silnik GE CF6, samolot A300
-#temp=-54.3 C; p=23800 Pa; M=0.78
+# 0.5<phi<1.0
+# c_x - na podstawie danych z examples z principles of turbomachinery...
+# crusing altitude = 10,700 m #silnik GE CF6, samolot A300
+# temp=-54.3 C; p=23800 Pa; M=0.78
