@@ -67,7 +67,7 @@ class OutputTextFile:
 
     def turbogrid_init(self):
         self.init += f"Axis of Rotation: Z \n"
-        self.init += f"Number of Blade Sets: {dg.NB} \n"
+        self.init += f"Number of Blade Sets: {dg.NB_r} \n"
         self.init += f"Number of Blades Per Set: 1 \n"
         self.init += f"Blade Loft Direction: Streamwise \n"
         self.init += f"Geometry Units: M \n"

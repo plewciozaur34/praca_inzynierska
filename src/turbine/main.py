@@ -69,17 +69,19 @@ def main():
     # ----------------------------------------------------------------------------------------------------
     # część geometria
     v3d.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
+    v3d.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator)
 
     geo_params = gp.GeometryParameters()
     dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-    geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
+    geo_data_r = pd.read_csv('./data/csv/geom_data_rotor.csv', index_col=0) 
+    geo_data_s = pd.read_csv('./data/csv/geom_data_stator.csv', index_col=0)
 
     radii = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
 
     sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
     radii_inst = v3d.radius_instances(sre_output)
-    radius_list = co.radious_list(radii_inst, turbine_assum, turbine_input)
+    radius_list = co.radius_list(radii_inst, turbine_assum, turbine_input)
 
     Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
     print(f"Reynolds number: {Reynolds_number}")
