@@ -11,10 +11,10 @@ class OutputTextFile:
         self.hub = ""
         self.init = ""
 
-    def data_text_file_one(self, turbine_assum, turbine_input, Reynolds_number):
+    def data_text_file_one(self, turbine_assum, turbine_input, Reynolds_number, part, stage=dg.stage):
         self.buffer += "Blade_Data_Sheet\n"
         self.buffer += f"Reynolds number for the turbine: {Reynolds_number}\n"
-        self.buffer += f"File for stage {dg.stage} of {dg.part}.\n"
+        self.buffer += f"File for stage {stage} of {part}.\n"
         self.buffer += f"Selected initialization method for chord_t: {dg.chord_init} \n"
         if dg.chord_init == "chord_t_value":
             self.buffer += (
@@ -65,16 +65,19 @@ class OutputTextFile:
         for i in range(0, dg.N_EL - 1):
             self.profile += f"{radius:.{6}f}\t{ps.yp[dg.N_EL - i -1]:.{6}f}\t{ps.xp[dg.N_EL - i -1]:.{6}f}\n"
 
-    def turbogrid_init(self):
+    def turbogrid_init(self, part):
         self.init += f"Axis of Rotation: Z \n"
-        self.init += f"Number of Blade Sets: {dg.NB_r} \n"
+        if part == "rotor":
+            self.init += f"Number of Blade Sets: {dg.NB_r} \n"
+        else:
+            self.init += f"Number of Blade Sets: {dg.NB_s} \n"
         self.init += f"Number of Blades Per Set: 1 \n"
         self.init += f"Blade Loft Direction: Streamwise \n"
         self.init += f"Geometry Units: M \n"
         self.init += f"Blade 0 TE: EllipseEnd \n"
-        self.init += f"Hub Data File: turbine_design_blade_rotor_hub.curve \n"
-        self.init += f"Shroud Data File: turbine_design_blade_rotor_shroud.curve \n"
-        self.init += f"Profile Data File: turbine_design_blade_rotor_profile.curve \n"
+        self.init += f"Hub Data File: turbine_design_blade_{part}_hub.curve \n"
+        self.init += f"Shroud Data File: turbine_design_blade_{part}_shroud.curve \n"
+        self.init += f"Profile Data File: turbine_design_blade_{part}_profile.curve \n"
 
     def turbogrid_shroud(self, radius):
         x = 0.0
@@ -89,3 +92,10 @@ class OutputTextFile:
         hub_radius = radius  # + 0.001
         for i in range(0, dg.N_EL):
             self.hub += f"{x:.{6}f}\t{hub_radius:.{6}f}\t{y[i]:.{6}f}\n"
+
+    def clear_output_text_file(self):
+        self.buffer = ""
+        self.profile = ""
+        self.shroud = ""
+        self.hub = ""
+        self.init = ""
