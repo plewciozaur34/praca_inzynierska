@@ -3,7 +3,6 @@ import pandas as pd
 
 from helpers.calc_helpers import CalcOperations as co
 
-
 class SimRadEquiInput:
     def __init__(
         self,

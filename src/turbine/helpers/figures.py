@@ -27,7 +27,8 @@ class DrawFigures:
         )
         axs.legend()
 
-        radii_name = str(radii_idx[0]) + str(radii_idx[2:])
+        #radii_name = str(radii_idx[0]) + str(radii_idx[2:])
+        radii_name = str(radii_idx)
         SaveFigText.save_figure(fig, idx, radii_name, part)
 
     

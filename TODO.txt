@@ -1,0 +1,9 @@
+- edytowalna ilość promieni do sre -> częściowo zrobione, tzreba przepisać ładowanie 
+    wartości z sre (vector_of_state, vector3D)
+-- sprawdzic jak będą wyglądać wykresy
+- dwie wersje plików to turbogrida, tak żeby mogła przełączyć "pstryczek" i
+    generuje się druga wersja
+-- dwa osobne pliki dla statora i rotora
+-- dwa osobne pliki dla statora i rotora, ale z przesunięciem
+   + odwrócenie statora
+- pliki cgns z turbogrida

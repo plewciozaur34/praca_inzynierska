@@ -75,7 +75,12 @@ class VectorOfState:
         sre_output = v3d.sre_initialise(turbine_assum, turbine_input)
         radii_inst = v3d.radius_instances(sre_output)
 
-        position_mapping = {"rhub": 0, "r2": 1, "r4": 3, "rtip": 4}
+        radii_names_list = co.radii_names_list()
+
+        #position_mapping = {"rhub": 0, "r2": 1, "r4": 3, "rtip": 4}
+        position_mapping = {name.lower(): index for index, name in enumerate(radii_names_list)}
+        position_mapping.pop("r_mean", None)
+
         position = name[5:]
         if position in position_mapping:
             idx = position_mapping[position]

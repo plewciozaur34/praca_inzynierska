@@ -29,7 +29,10 @@ class Vector3D:
     @staticmethod
     def ws_create_instances():
         sides = ["s", "r"]
-        positions = ["rhub", "r2", "r4", "rtip"]
+
+        positions = co.radii_names_list()
+        if "r_mean" in positions:
+            positions.remove("r_mean")
 
         instances = {}
         for side in sides:
@@ -50,16 +53,17 @@ class Vector3D:
 
     @staticmethod
     def sre_to_geom_data(turbine_assum, turbine_input, WS_stator, WS_rotor, plot):
-        beta_in = list(np.zeros(5))
-        beta_out = list(np.zeros(5))
-        alfa2 = list(np.zeros(5))
-        alfa3 = list(np.zeros(5))
-        phi = list(np.zeros(5))
-        Rn = list(np.zeros(5))
-        Mach2 = list(np.zeros(5))
-        Mach_rel2 = list(np.zeros(5))
-        Mach3 = list(np.zeros(5))
-        Mach_rel3 = list(np.zeros(5))
+        beta_in = list(np.zeros(dg.N_RAD))
+        beta_out = list(np.zeros(dg.N_RAD))
+        alfa2 = list(np.zeros(dg.N_RAD))
+        alfa3 = list(np.zeros(dg.N_RAD))
+        phi = list(np.zeros(dg.N_RAD))
+        Rn = list(np.zeros(dg.N_RAD))
+        Mach2 = list(np.zeros(dg.N_RAD))
+        Mach_rel2 = list(np.zeros(dg.N_RAD))
+        Mach3 = list(np.zeros(dg.N_RAD))
+        Mach_rel3 = list(np.zeros(dg.N_RAD))
+        
         ws_instances = Vector3D.ws_create_instances()
         (
             WS_s_rhub,
@@ -71,6 +75,7 @@ class Vector3D:
             WS_r_r4,
             WS_r_rtip,
         ) = ws_instances.values()
+
         instances_list = [
             WS_s_rhub,
             WS_s_r2,
@@ -81,6 +86,7 @@ class Vector3D:
             WS_r_r4,
             WS_r_rtip,
         ]
+
         for instance in instances_list:
             name = instance.get_instance_name()
             instance.WS_get_data(turbine_assum, turbine_input, name)
@@ -142,8 +148,8 @@ class Vector3D:
         geo_input_df = pd.read_csv("./data/csv/geom_data_rotor.csv")
 
         rp_list = co.radius_prim_list(turbine_assum, turbine_input)
-        rp_names = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
-        r_list = co.radius_list(radii_inst, turbine_assum, turbine_input)
+        rp_names = co.radii_names_list()
+        r_list = co.radius_list(turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
             geo_input_df.loc[idx, "beta_in"] = beta_in_list[idx]
             geo_input_df.loc[idx, "beta_out"] = beta_out_list[idx]
@@ -174,15 +180,15 @@ class Vector3D:
         beta_in_list, beta_out_list, radii_inst, alfa_out_list = Vector3D.sre_to_geom_data(
             turbine_assum, turbine_input, WS_stator, WS_rotor, plot=False
         )
-        alfa_in_list = list(np.zeros(5))
+        alfa_in_list = list(np.zeros(dg.N_RAD))
         for i in range(len(alfa_in_list)):
             alfa_in_list[i] = WS_inlet.find_alfa()
 
         geo_input_df = pd.read_csv("./data/csv/geom_data_stator.csv")
 
         rp_list = co.radius_prim_list(turbine_assum, turbine_input)
-        rp_names = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
-        r_list = co.stator_radius_list(turbine_assum, turbine_input)
+        rp_names = co.radii_names_list()
+        r_list = co.radius_list(turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
             geo_input_df.loc[idx, "beta_in"] = alfa_in_list[idx]
             geo_input_df.loc[idx, "beta_out"] = -alfa_out_list[idx]

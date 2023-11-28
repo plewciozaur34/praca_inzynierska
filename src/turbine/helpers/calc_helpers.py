@@ -1,6 +1,7 @@
 import numpy as np
 
 from initial_turbine_settings import data_calc as dc
+from initial_turbine_settings import data_geom as dg
 from helpers.temp_helpers import TempHelpers as th
 
 
@@ -158,29 +159,22 @@ class CalcOperations:
 
     @staticmethod
     def radius_prim_list(turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
-            turbine_assum, turbine_input
-        )
+        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
         r_tip_p = r_tip / r_mean
         r_mean_p = r_mean / r_mean
         r_hub_p = r_hub / r_mean
-        first = np.linspace(r_hub_p, r_mean_p, 3)
-        second = np.linspace(r_mean_p, r_tip_p, 3)
-        combined = np.concatenate((first, second[1:]))
+        number_of_radii = dg.N_RAD
+
+        if number_of_radii % 2 == 0:
+            number_of_radii += 1
+
+        first = np.linspace(r_hub_p, r_mean_p, number_of_radii // 2 + 1)
+        second = np.linspace(r_mean_p, r_tip_p, number_of_radii // 2 + 1)[1:]
+        combined = np.concatenate((first, second))
         return combined.tolist()
 
     @staticmethod
-    def radius_list(radious_instance_df, turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
-            turbine_assum, turbine_input
-        )
-        radious_list = list(np.zeros(5))
-        for idx in range(5):
-            radious_list[idx] = radious_instance_df[idx].r_p * r_mean
-        return radious_list
-
-    @staticmethod
-    def stator_radius_list(turbine_assum, turbine_input) -> list:
+    def radius_list(turbine_assum, turbine_input) -> list:
         r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
             turbine_assum, turbine_input
         )
@@ -188,6 +182,26 @@ class CalcOperations:
         for idx, radius in enumerate(radius_prim_list):
             radius_prim_list[idx] = radius * r_mean
         return radius_prim_list
+    
+    @staticmethod
+    def radii_names_list() -> list:
+        number_of_radii = dg.N_RAD
+        if number_of_radii % 2 == 0:
+            number_of_radii += 1
+
+        radii_names = [""] * number_of_radii
+
+        radii_names[number_of_radii // 2] = "rmean"
+        radii_names[0] = "rhub"
+        radii_names[-1] = "rtip"
+
+        for i in range(1, number_of_radii // 2):
+            radii_names[i] = f"r{i+1}"
+
+        for i in range(number_of_radii // 2 + 1, number_of_radii -1):
+            radii_names[i] = f"r{i+1}"
+
+        return radii_names
 
     @staticmethod
     def find_psi_mean(turbine_assum, turbine_input) -> float:
