@@ -67,7 +67,12 @@ class SaveFigText:
     def ensure_directory_initialized():
         if not SaveFigText.directory:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            SaveFigText.directory = os.path.join(
-                "./data/airfoils/", f"turbine_stage_{timestamp}"
-            )
+            if dg.GAP_BOOL == True:
+                SaveFigText.directory = os.path.join(
+                    "./data/airfoils/", f"turbine_stage_{timestamp}_gap"
+                )
+            else:
+                SaveFigText.directory = os.path.join(
+                    "./data/airfoils/", f"turbine_stage_{timestamp}"
+                )
             os.makedirs(SaveFigText.directory, exist_ok=True)

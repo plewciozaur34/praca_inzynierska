@@ -24,6 +24,7 @@ class OutputTextFile:
         self.buffer += f"turbine_assum = [alfa1: {turbine_assum.alfa1}, alfa3: {turbine_assum.alfa3}, phi: {turbine_assum.phi}, c_x: {turbine_assum.cx}, lambda_n: {turbine_assum.lambda_n}, r_hub/r_tip: {turbine_assum.rhub_rtip}] \n"
         self.buffer += f"Number of elements: {dg.N_EL} (for one side of the airfoil)\n"
         self.buffer += f"data_geom input values => solidity: {dg.SOLIDITY_ASSUM}, ugt: {dg.UGT}, half_wedge_in: {dg.HALF_WEDGE_IN}, rte_multiplier: {dg.RTE_MULTIPLIER}, rle_multiplier: {dg.RLE_MULTIPLIER}\n"
+        self.buffer += f"gap_bool = {dg.GAP_BOOL}\n"
 
     def data_text_file_two(self, radii, geo_params):
         self.buffer += f"   \n"
@@ -55,15 +56,60 @@ class OutputTextFile:
     def data_text_file_append_four(self, tip_percentage_difference):
         self.buffer += f"Tip percentage difference: {tip_percentage_difference}%"
 
-    def turbogrid_profile(self, ps, idx, radius):
-        number = idx + 1
-        if idx == 0:
-            self.profile += f"##\tMain\tblade\n"
-        self.profile += f"#Profile\t{number}\n"
-        for i in range(0, dg.N_EL):
-            self.profile += f"{radius:.{6}f}\t{ps.ys[i]:.{6}f}\t{ps.xs[i]:.{6}f}\n"
-        for i in range(0, dg.N_EL - 1):
-            self.profile += f"{radius:.{6}f}\t{ps.yp[dg.N_EL - i -1]:.{6}f}\t{ps.xp[dg.N_EL - i -1]:.{6}f}\n"
+    def turbogrid_profile(self, ps, idx, radius, part):
+        yp_max = max(ps.yp)
+        ys_max = max(ps.ys)
+        y_max = max(yp_max, ys_max)
+        xp_max = max(ps.xp)
+        xs_max = max(ps.xs)
+        x_max = max(xp_max, xs_max)
+        gap_bool = dg.GAP_BOOL
+        
+        if not gap_bool:
+            if part == "rotor":
+                number = idx + 1
+                if idx == 0:
+                    self.profile += f"##\tMain\tblade\n"
+                self.profile += f"#Profile\t{number}\n"
+                for i in range(0, dg.N_EL):
+                    self.profile += f"{radius:.{6}f}\t{ps.ys[i]:.{6}f}\t{ps.xs[i]:.{6}f}\n"
+                for i in range(0, dg.N_EL - 1):
+                    self.profile += f"{radius:.{6}f}\t{ps.yp[dg.N_EL - i -1]:.{6}f}\t{ps.xp[dg.N_EL - i -1]:.{6}f}\n"
+            else:
+                number = idx + 1
+                if idx == 0:
+                    self.profile += f"##\tMain\tblade\n"
+                self.profile += f"#Profile\t{number}\n"
+                for i in range(0, dg.N_EL):
+                    ys_mir = -ps.ys[i] + y_max
+                    self.profile += f"{radius:.{6}f}\t{ys_mir:.{6}f}\t{ps.xs[i]:.{6}f}\n"
+                for i in range(0, dg.N_EL - 1):
+                    yp_mir = -ps.yp[dg.N_EL - i -1] + y_max
+                    self.profile += f"{radius:.{6}f}\t{yp_mir:.{6}f}\t{ps.xp[dg.N_EL - i -1]:.{6}f}\n"
+
+        else:
+            if part == "stator":
+                number = idx + 1
+                if idx == 0:
+                    self.profile += f"##\tMain\tblade\n"
+                self.profile += f"#Profile\t{number}\n"
+                for i in range(0, dg.N_EL):
+                    ys_mir = -ps.ys[i] + y_max
+                    self.profile += f"{radius:.{6}f}\t{ys_mir:.{6}f}\t{ps.xs[i]:.{6}f}\n"
+                for i in range(0, dg.N_EL - 1):
+                    yp_mir = -ps.yp[dg.N_EL - i -1] + y_max
+                    self.profile += f"{radius:.{6}f}\t{yp_mir:.{6}f}\t{ps.xp[dg.N_EL - i -1]:.{6}f}\n"
+            else:
+                number = idx + 1
+                if idx == 0:
+                    self.profile += f"##\tMain\tblade\n"
+                self.profile += f"#Profile\t{number}\n"
+                for i in range(0, dg.N_EL):
+                    xs_shift = ps.xs[i] + x_max + dg.GAP
+                    self.profile += f"{radius:.{6}f}\t{ps.ys[i]:.{6}f}\t{xs_shift:.{6}f}\n"
+                for i in range(0, dg.N_EL - 1):
+                    xp_shift = ps.xp[dg.N_EL - i -1] + x_max + dg.GAP
+                    self.profile += f"{radius:.{6}f}\t{ps.yp[dg.N_EL - i -1]:.{6}f}\t{xp_shift:.{6}f}\n"
 
     def turbogrid_init(self, part):
         self.init += f"Axis of Rotation: Z \n"
@@ -79,16 +125,28 @@ class OutputTextFile:
         self.init += f"Shroud Data File: turbine_design_blade_{part}_shroud.curve \n"
         self.init += f"Profile Data File: turbine_design_blade_{part}_profile.curve \n"
 
-    def turbogrid_shroud(self, radius):
-        x = 0.0
-        y = np.linspace(-0.07, 0.20, dg.N_EL)
-        tip_radius = radius  # - 0.001
-        for i in range(0, dg.N_EL):
-            self.shroud += f"{x:.{6}f}\t{tip_radius:.{6}f}\t{y[i]:.{6}f}\n"
+    def turbogrid_shroud(self, radius, part):
+            x = 0.0
+            if part == "rotor":
+                if dg.GAP_BOOL == True:
+                    y = np.linspace(0.08, 0.35, dg.N_EL)
+                else:
+                    y = np.linspace(-0.07, 0.20, dg.N_EL)
+            else:
+                y = np.linspace(-0.07, 0.20, dg.N_EL)
+            tip_radius = radius  # - 0.001
+            for i in range(0, dg.N_EL):
+                self.shroud += f"{x:.{6}f}\t{tip_radius:.{6}f}\t{y[i]:.{6}f}\n"
 
-    def turbogrid_hub(self, radius):
+    def turbogrid_hub(self, radius, part):
         x = 0.0
-        y = np.linspace(-0.07, 0.20, dg.N_EL)
+        if part == "rotor":
+            if dg.GAP_BOOL == True:
+                y = np.linspace(0.08, 0.35, dg.N_EL)
+            else:
+                y = np.linspace(-0.07, 0.20, dg.N_EL)
+        else:
+            y = np.linspace(-0.07, 0.20, dg.N_EL)
         hub_radius = radius  # + 0.001
         for i in range(0, dg.N_EL):
             self.hub += f"{x:.{6}f}\t{hub_radius:.{6}f}\t{y[i]:.{6}f}\n"
