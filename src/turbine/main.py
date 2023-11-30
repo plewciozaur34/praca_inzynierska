@@ -104,7 +104,7 @@ def main():
 
             fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i , part[idx])
 
-            otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i])
+            otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i], part[idx])
 
             get_params = dep_params.find_geometry_dependent_parameters()
             params_dictionary = pd.DataFrame([get_params.to_dict()])
@@ -155,8 +155,8 @@ def main():
         otf.data_text_file_append_four(tip_percentage_difference)
 
         otf.turbogrid_init(part[idx])
-        otf.turbogrid_shroud(radius_list[4])
-        otf.turbogrid_hub(radius_list[0])
+        otf.turbogrid_shroud(radius_list[4], part[idx])
+        otf.turbogrid_hub(radius_list[0], part[idx])
         sft.save_text_blade(otf, part[idx])
         sft.save_turbogrid_profile(otf, part[idx])
         sft.save_turbogrid_shroud(otf, part[idx])
