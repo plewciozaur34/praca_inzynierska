@@ -97,6 +97,7 @@ class GeometryParameters:
         if self.ugt <= 0:
             self.ugt = 0.0001
         self.half_wedge_out = self.ugt / 2
+        
         if self.chord_t < 20:
             if self.chord_t >= 4:
                 itera = True

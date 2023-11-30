@@ -1,0 +1,9 @@
+Axis of Rotation: Z 
+Number of Blade Sets: 65 
+Number of Blades Per Set: 1 
+Blade Loft Direction: Streamwise 
+Geometry Units: M 
+Blade 0 TE: EllipseEnd 
+Hub Data File: turbine_design_blade_rotor_hub.curve 
+Shroud Data File: turbine_design_blade_rotor_shroud.curve 
+Profile Data File: turbine_design_blade_rotor_profile.curve 

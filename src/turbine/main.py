@@ -4,6 +4,8 @@
 
 # TODO kod dla statora!!
 
+#FIXME sre dla 50 promieni, pt 9.00, cgns dla turbiny i statora, np free vortex dla statora
+
 import pandas as pd
 
 from airfoil_geometry.geom_parameters import geometry_parameters as gp
@@ -12,6 +14,7 @@ from turbine_input_data import vector_of_state
 from turbine_input_data import turbine_input as ti
 from turbine_input_data import turbine_assum as ta
 from initial_turbine_settings import data_calc as dc
+from initial_turbine_settings import data_geom as dg
 from helpers.figures import DrawFigures as fig
 from helpers.plots import DrawPlots as plots
 from helpers.calc_helpers import CalcOperations as co
@@ -72,18 +75,20 @@ def main():
     geo_params = gp.GeometryParameters()
     dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-    geo_data_list = v3d.geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
-    radii = ["r_hub", "r_2", "r_mean", "r_4", "r_tip"]
-    radius_list = co.stator_radius_list(turbine_assum, turbine_input)
+    
+    radii = co.radii_names_list()
+    radius_list = co.radius_list(turbine_assum, turbine_input)
     part = ["rotor", "stator"]
+
+    geo_data_list = v3d.geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
 
     Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
     otf = OutputTextFile()
     
     for idx, geo_data in enumerate(geo_data_list): 
         otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number, part[idx])
-        for i in range(0, 5):
-            print(f"RATD model for {radii[i]}: ")
+        for i in range(0, dg.N_RAD):
+            print(f"RATD model for {radii[i]} on {part[idx]}: ")
 
             geo_params.get_data(geo_data_list[idx], radii[i])
 
