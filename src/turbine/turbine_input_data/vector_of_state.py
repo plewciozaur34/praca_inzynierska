@@ -79,7 +79,7 @@ class VectorOfState:
 
         #position_mapping = {"rhub": 0, "r2": 1, "r4": 3, "rtip": 4}
         position_mapping = {name.lower(): index for index, name in enumerate(radii_names_list)}
-        position_mapping.pop("r_mean", None)
+        position_mapping.pop("rmean", None)
 
         position = name[5:]
         if position in position_mapping:

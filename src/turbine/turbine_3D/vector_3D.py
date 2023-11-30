@@ -31,14 +31,15 @@ class Vector3D:
         sides = ["s", "r"]
 
         positions = co.radii_names_list()
-        if "r_mean" in positions:
-            positions.remove("r_mean")
+        if "rmean" in positions:
+            positions.remove("rmean")
 
         instances = {}
+
         for side in sides:
             for position in positions:
                 instance_name = f"WS_{side}_{position}"
-                instances[instance_name] = vector_of_state.VectorOfState(instance_name)
+                instances[instance_name] = vector_of_state.VectorOfState()
         return instances
 
     @staticmethod
@@ -65,39 +66,27 @@ class Vector3D:
         Mach_rel3 = list(np.zeros(dg.N_RAD))
         
         ws_instances = Vector3D.ws_create_instances()
-        (
-            WS_s_rhub,
-            WS_s_r2,
-            WS_s_r4,
-            WS_s_rtip,
-            WS_r_rhub,
-            WS_r_r2,
-            WS_r_r4,
-            WS_r_rtip,
-        ) = ws_instances.values()
+        instances_list = list(ws_instances.values())
 
-        instances_list = [
-            WS_s_rhub,
-            WS_s_r2,
-            WS_s_r4,
-            WS_s_rtip,
-            WS_r_rhub,
-            WS_r_r2,
-            WS_r_r4,
-            WS_r_rtip,
-        ]
-
-        for instance in instances_list:
-            name = instance.get_instance_name()
-            instance.WS_get_data(turbine_assum, turbine_input, name)
+        for instance_name in ws_instances.keys():
+            instance = ws_instances[instance_name]
+            instance.WS_get_data(turbine_assum, turbine_input, instance_name)
 
         sre_output = Vector3D.sre_initialise(turbine_assum, turbine_input)
         radii_inst = Vector3D.radius_instances(sre_output)
 
-        stator_inst_list = [WS_s_rhub, WS_s_r2, WS_stator, WS_s_r4, WS_s_rtip]
-        rotor_inst_list = [WS_r_rhub, WS_r_r2, WS_rotor, WS_r_r4, WS_r_rtip]
-        for idx, stator in enumerate(stator_inst_list):
-            for rotor in rotor_inst_list:
+        #half_length = len(instances_list) // 2
+        #stator_inst_list = instances_list[:half_length]
+        #rotor_inst_list = instances_list[half_length:]
+
+        #stator_inst_list.insert(half_length // 2, WS_stator)
+
+        #rotor_inst_list.insert(half_length // 2, WS_rotor)
+
+        stator_inst_list = [instances_list[0], instances_list[1], WS_stator, instances_list[2], instances_list[3]]
+        rotor_inst_list = [instances_list[4], instances_list[5], WS_rotor, instances_list[6], instances_list[7]]
+
+        for idx, (stator, rotor) in enumerate(zip(stator_inst_list, rotor_inst_list)):
                 if idx == 2:
                     beta_in[idx] = stator.find_beta(turbine_assum.phi)
                     beta_out[idx] = rotor.find_beta(turbine_assum.phi)
