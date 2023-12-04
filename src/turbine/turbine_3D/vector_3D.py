@@ -64,7 +64,7 @@ class Vector3D:
         Mach_rel2 = list(np.zeros(dg.N_RAD))
         Mach3 = list(np.zeros(dg.N_RAD))
         Mach_rel3 = list(np.zeros(dg.N_RAD))
-        
+
         ws_instances = Vector3D.ws_create_instances()
         instances_list = list(ws_instances.values())
 
@@ -75,44 +75,56 @@ class Vector3D:
         sre_output = Vector3D.sre_initialise(turbine_assum, turbine_input)
         radii_inst = Vector3D.radius_instances(sre_output)
 
-        #half_length = len(instances_list) // 2
-        #stator_inst_list = instances_list[:half_length]
-        #rotor_inst_list = instances_list[half_length:]
+        # half_length = len(instances_list) // 2
+        # stator_inst_list = instances_list[:half_length]
+        # rotor_inst_list = instances_list[half_length:]
 
-        #stator_inst_list.insert(half_length // 2, WS_stator)
+        # stator_inst_list.insert(half_length // 2, WS_stator)
 
-        #rotor_inst_list.insert(half_length // 2, WS_rotor)
+        # rotor_inst_list.insert(half_length // 2, WS_rotor)
 
-        stator_inst_list = [instances_list[0], instances_list[1], WS_stator, instances_list[2], instances_list[3]]
-        rotor_inst_list = [instances_list[4], instances_list[5], WS_rotor, instances_list[6], instances_list[7]]
+        stator_inst_list = [
+            instances_list[0],
+            instances_list[1],
+            WS_stator,
+            instances_list[2],
+            instances_list[3],
+        ]
+        rotor_inst_list = [
+            instances_list[4],
+            instances_list[5],
+            WS_rotor,
+            instances_list[6],
+            instances_list[7],
+        ]
 
         for idx, (stator, rotor) in enumerate(zip(stator_inst_list, rotor_inst_list)):
-                if idx == 2:
-                    beta_in[idx] = stator.find_beta(turbine_assum.phi)
-                    beta_out[idx] = rotor.find_beta(turbine_assum.phi)
-                    alfa2[idx] = stator.find_alfa()
-                    alfa3[idx] = rotor.find_alfa()
-                    phi[idx] = turbine_assum.phi
-                    Rn[idx] = radii_inst[idx].Rn
-                    # Mach2[idx] = stator.find_Mach()
-                    # Mach_rel2[idx] = stator.find_Mach_rel(turbine_assum.phi)
-                    # Mach3[idx] = rotor.find_Mach()
-                    # Mach_rel3[idx] = rotor.find_Mach_rel(turbine_assum.phi)
-                else:
-                    alfa2[idx] = stator.find_alfa()
-                    alfa3[idx] = rotor.find_alfa()
-                    Rn[idx] = radii_inst[idx].Rn
-                    phi[idx] = (2 - 2 * Rn[idx]) / (
-                        np.tan(th.rad(alfa2[idx])) + np.tan(th.rad(alfa3[idx]))
-                    )
+            if idx == 2:
+                beta_in[idx] = stator.find_beta(turbine_assum.phi)
+                beta_out[idx] = rotor.find_beta(turbine_assum.phi)
+                alfa2[idx] = stator.find_alfa()
+                alfa3[idx] = rotor.find_alfa()
+                phi[idx] = turbine_assum.phi
+                Rn[idx] = radii_inst[idx].Rn
+                # Mach2[idx] = stator.find_Mach()
+                # Mach_rel2[idx] = stator.find_Mach_rel(turbine_assum.phi)
+                # Mach3[idx] = rotor.find_Mach()
+                # Mach_rel3[idx] = rotor.find_Mach_rel(turbine_assum.phi)
+            else:
+                alfa2[idx] = stator.find_alfa()
+                alfa3[idx] = rotor.find_alfa()
+                Rn[idx] = radii_inst[idx].Rn
+                phi[idx] = (2 - 2 * Rn[idx]) / (
+                    np.tan(th.rad(alfa2[idx])) + np.tan(th.rad(alfa3[idx]))
+                )
 
-                    beta_in[idx] = stator.find_beta(phi[idx])
-                    beta_out[idx] = rotor.find_beta(phi[idx])
+                beta_in[idx] = stator.find_beta(phi[idx])
+                beta_out[idx] = rotor.find_beta(phi[idx])
 
-                    # Mach2[idx] = stator.find_Mach()
-                    # Mach_rel2[idx] = stator.find_Mach_rel(phi[idx])
-                    # Mach3[idx] = rotor.find_Mach()
-                    # Mach_rel3[idx] = rotor.find_Mach_rel(phi[idx])
+                # Mach2[idx] = stator.find_Mach()
+                # Mach_rel2[idx] = stator.find_Mach_rel(phi[idx])
+                # Mach3[idx] = rotor.find_Mach()
+                # Mach_rel3[idx] = rotor.find_Mach_rel(phi[idx])
         if plot == True:
             return (
                 beta_in,
@@ -165,8 +177,15 @@ class Vector3D:
         geo_input_df.to_csv("./data/csv/geom_data_rotor.csv")
 
     @staticmethod
-    def create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor):
-        beta_in_list, beta_out_list, radii_inst, alfa_out_list = Vector3D.sre_to_geom_data(
+    def create_geom_data_csv_stator(
+        turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor
+    ):
+        (
+            beta_in_list,
+            beta_out_list,
+            radii_inst,
+            alfa_out_list,
+        ) = Vector3D.sre_to_geom_data(
             turbine_assum, turbine_input, WS_stator, WS_rotor, plot=False
         )
         alfa_in_list = list(np.zeros(dg.N_RAD))
@@ -204,7 +223,9 @@ class Vector3D:
     @staticmethod
     def geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor):
         Vector3D.create_geom_data_csv(turbine_assum, turbine_input, WS_stator, WS_rotor)
-        Vector3D.create_geom_data_csv_stator(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
+        Vector3D.create_geom_data_csv_stator(
+            turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor
+        )
 
         geo_data_r = pd.read_csv("./data/csv/geom_data_rotor.csv", index_col=0)
         geo_data_s = pd.read_csv("./data/csv/geom_data_stator.csv", index_col=0)

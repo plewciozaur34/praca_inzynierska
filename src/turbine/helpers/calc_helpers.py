@@ -36,7 +36,7 @@ class CalcOperations:
             turbine_input, turbine_assum
         )
         M_1 = c_1 / np.sqrt(dc.KAPPA * dc.R_COMB * T_1)
-        p_01 = p_1 * th.p_p0(M_1, dc.KAPPA)
+        p_01 = p_1 / th.p_p0(M_1, dc.KAPPA)
         return p_01
 
     @staticmethod
@@ -62,7 +62,7 @@ class CalcOperations:
         return dc.CP * d_T0
 
     @staticmethod
-    def find_T03_for_one_stage(turbine_input, turbine_assum) -> float:
+    def find_T03_for_one_stage(turbine_input) -> float:
         T_01 = turbine_input.T01
         d_T0 = CalcOperations.find_temperature_drop(turbine_input)
         T_03_stage = T_01 + d_T0
@@ -89,10 +89,10 @@ class CalcOperations:
             turbine_input, turbine_assum
         ) / th.p2_p1_is(turbine_input.T01 / T2_prim, dc.KAPPA)
         p_01 = CalcOperations.turbine_input_stagnation_pressure(
-            turbine_input, turbine_assum
+            turbine_input, turbine_assum 
         )
         # FIXME T3, p3 są dla jednego stopnia, ale w werji delta T0/6
-        T_03_stage = CalcOperations.find_T03_for_one_stage(turbine_input, turbine_assum)
+        T_03_stage = CalcOperations.find_T03_for_one_stage(turbine_input)
         PR_stage = th.p2_p1_is(turbine_input.T01 / T_03_stage, dc.KAPPA)
         p_03 = p_01 / PR_stage
         # T_03 = turbine_input.T01/(dc.ETA_IS * th.T2_T1_is(turbine_input.tpr, dc.KAPPA))
@@ -107,7 +107,7 @@ class CalcOperations:
         c_3 = np.sqrt(c_x**2 + c_u3**2)
         # FIXME T3, p3 T3, p3 są dla jednego stopnia, ale w werji delta T0/6
         # T_03 = turbine_input.T01/(dc.ETA_IS * th.T2_T1_is(turbine_input.tpr, dc.KAPPA))
-        T_03_stage = CalcOperations.find_T03_for_one_stage(turbine_input, turbine_assum)
+        T_03_stage = CalcOperations.find_T03_for_one_stage(turbine_input)
         T_3 = T_03_stage - (c_3**2) / (2 * dc.CP)
         T_02 = turbine_input.T01
         T_2 = T_02 - (c_2**2) / (2 * dc.CP)
@@ -159,7 +159,9 @@ class CalcOperations:
 
     @staticmethod
     def radius_prim_list(turbine_assum, turbine_input) -> list:
-        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(turbine_assum, turbine_input)
+        r_tip, r_mean, r_hub = CalcOperations.find_rtip_rhub_rmean(
+            turbine_assum, turbine_input
+        )
         r_tip_p = r_tip / r_mean
         r_mean_p = r_mean / r_mean
         r_hub_p = r_hub / r_mean
@@ -182,7 +184,7 @@ class CalcOperations:
         for idx, radius in enumerate(radius_prim_list):
             radius_prim_list[idx] = radius * r_mean
         return radius_prim_list
-    
+
     @staticmethod
     def radii_names_list() -> list:
         number_of_radii = dg.N_RAD
@@ -198,7 +200,7 @@ class CalcOperations:
         for i in range(1, number_of_radii // 2):
             radii_names[i] = f"r{i+1}"
 
-        for i in range(number_of_radii // 2 + 1, number_of_radii -1):
+        for i in range(number_of_radii // 2 + 1, number_of_radii - 1):
             radii_names[i] = f"r{i+1}"
 
         return radii_names

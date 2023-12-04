@@ -4,7 +4,7 @@
 
 # TODO kod dla statora!!
 
-#FIXME sre dla 50 promieni, pt 9.00, cgns dla turbiny i statora, np free vortex dla statora
+# FIXME sre dla 50 promieni, pt 9.00, cgns dla turbiny i statora, np free vortex dla statora
 
 import pandas as pd
 
@@ -75,18 +75,19 @@ def main():
     geo_params = gp.GeometryParameters()
     dep_params = gdpc.GeometryDependentParametersCalculation(geo_params)
 
-    
     radii = co.radii_names_list()
     radius_list = co.radius_list(turbine_assum, turbine_input)
     part = ["rotor", "stator"]
 
-    geo_data_list = v3d.geo_data_list(turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor)
+    geo_data_list = v3d.geo_data_list(
+        turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor
+    )
 
     Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
     otf = OutputTextFile()
-    
-    for idx, geo_data in enumerate(geo_data_list): 
-        otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number, part[idx])
+
+    for idx, geo_data in enumerate(geo_data_list):
+        otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number, WS_inlet, WS_stator, WS_rotor, part[idx])
         for i in range(0, dg.N_RAD):
             print(f"RATD model for {radii[i]} on {part[idx]}: ")
 
@@ -97,12 +98,12 @@ def main():
             itera, ttc = geo_params.def_values()
             rtd, pressure_and_suction_up = geo_params.chord_t_iteration(itera, ttc)
             print(
-                    f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times."
-                )
+                f"Remove throat discontinuity was iterated {geo_params.remove_throat_discontinuity.__defaults__[0][0]} times."
+            )
 
             otf.data_text_file_append_three(geo_params)
 
-            fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i , part[idx])
+            fig.airfoil_figure(rtd, pressure_and_suction_up, radii[i], i, part[idx])
 
             otf.turbogrid_profile(pressure_and_suction_up, i, radius_list[i], part[idx])
 
@@ -119,25 +120,25 @@ def main():
                     "blockage_out",
                     "camber_angle",
                     "lift_coefficient",
-                    ]
-                )
+                ]
+            )
             geo_dep_params = pd.concat(
-                    [geo_dep_params, params_dictionary], ignore_index=True
-                )
+                [geo_dep_params, params_dictionary], ignore_index=True
+            )
 
             mechanical_props = pressure_and_suction_up.mec_props()
             mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
             mechanical_props_df = pd.DataFrame(columns=["airfoil_csa", "xcg", "ycg"])
             mechanical_props_df = pd.concat(
-                    [mechanical_props_df, mechanical_props_dict], ignore_index=True
-                )
+                [mechanical_props_df, mechanical_props_dict], ignore_index=True
+            )
 
             max_thickness = pressure_and_suction_up.find_thickness_max()
             max_thickness_dict = pd.DataFrame([max_thickness.to_dict()])
             max_thickness_df = pd.DataFrame(columns=["max_thickness"])
             max_thickness_df = pd.concat(
-                    [max_thickness_df, max_thickness_dict], ignore_index=True
-                )
+                [max_thickness_df, max_thickness_dict], ignore_index=True
+            )
 
             geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
             geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
@@ -145,12 +146,12 @@ def main():
             print(geo_dep_params)
 
             calculated_parameters = pd.DataFrame(
-                    columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]
-                )
+                columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]
+            )
 
         tip_percentage_difference = co.is_rotor_rtip_change_needed(
-                turbine_input, turbine_assum
-            )
+            turbine_input, turbine_assum
+        )
         print(f"Tip percentage difference: {tip_percentage_difference}%")
         otf.data_text_file_append_four(tip_percentage_difference)
 
@@ -165,8 +166,6 @@ def main():
         otf.clear_output_text_file()
 
     plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)
-    
-    #cg.run_geometry(geo_params, dep_params, geo_data_list, radii, radius_list, part)
 
 
 if __name__ == "__main__":

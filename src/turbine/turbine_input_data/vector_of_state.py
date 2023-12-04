@@ -77,8 +77,10 @@ class VectorOfState:
 
         radii_names_list = co.radii_names_list()
 
-        #position_mapping = {"rhub": 0, "r2": 1, "r4": 3, "rtip": 4}
-        position_mapping = {name.lower(): index for index, name in enumerate(radii_names_list)}
+        # position_mapping = {"rhub": 0, "r2": 1, "r4": 3, "rtip": 4}
+        position_mapping = {
+            name.lower(): index for index, name in enumerate(radii_names_list)
+        }
         position_mapping.pop("rmean", None)
 
         position = name[5:]
