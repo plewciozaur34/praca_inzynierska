@@ -31,7 +31,7 @@ class OutputTextFile:
             self.buffer += (
                 f"   initial chord_t values = {dg.CHORD_T} (from r_hub to r_tip)\n"
             )
-        self.buffer += f"turbine_input = [m_dot: {turbine_input.m_dot}, p01: {round(turbine_input.p01,1)}, T01: {turbine_input.T01}, tpr: {turbine_input.tpr}, eta_is: {turbine_input.eta_is}, omega: {turbine_input.omega} rpm/{th.rpm_to_rad_s(turbine_input.omega)} rad/s]\n"
+        self.buffer += f"turbine_input = [m_dot: {turbine_input.m_dot}, p01: {round(turbine_input.p01,1)}, T01: {turbine_input.T01}, tpr: {turbine_input.tpr}, eta_is: {turbine_input.eta_is}, omega: {turbine_input.omega} rpm/{round(th.rpm_to_rad_s(turbine_input.omega),1)} rad/s]\n"
         self.buffer += f"turbine_assum = [alfa1: {turbine_assum.alfa1}, alfa3: {turbine_assum.alfa3}, phi: {turbine_assum.phi}, c_x: {turbine_assum.cx}, lambda_n: {turbine_assum.lambda_n}, r_hub/r_tip: {turbine_assum.rhub_rtip}] \n"
         self.buffer += f"Static temperatures: T_1: {round(WS_inlet.T,1)} K, T_2: {round(WS_stator.T,1)} K, T_3: {round(WS_rotor.T,1)} K\n"
         self.buffer += f"Stagnation temperatures: T_01: {round(turbine_input.T01,1)} K, T_02: {round(turbine_input.T01,1)} K, T_03: {round(T03,1)} K\n"

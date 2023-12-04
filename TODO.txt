@@ -1,2 +1,2 @@
 - sparwdzić dlaczego stagger angle i tmax nie działają
-- dodać dane do blade_text_file
+- journal files
