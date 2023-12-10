@@ -22,6 +22,7 @@ class OutputTextFile:
         T03 = co.find_T03_for_one_stage(turbine_input)
         PR_stage = th.p2_p1_is(turbine_input.T01 / T03, dc.KAPPA)
         p_03 = turbine_input.p01 / PR_stage
+        p_02 = co.find_inlet_rotor_stagnation_pressure(turbine_input, turbine_assum)  
 
         self.buffer += "Blade_Data_Sheet\n"
         self.buffer += f"Reynolds number for the turbine: {Reynolds_number}\n"
@@ -36,8 +37,8 @@ class OutputTextFile:
         self.buffer += f"Static temperatures: T_1: {round(WS_inlet.T,1)} K, T_2: {round(WS_stator.T,1)} K, T_3: {round(WS_rotor.T,1)} K\n"
         self.buffer += f"Stagnation temperatures: T_01: {round(turbine_input.T01,1)} K, T_02: {round(turbine_input.T01,1)} K, T_03: {round(T03,1)} K\n"
         self.buffer += f"Static pressures: p_1: {round(WS_inlet.p,1)} Pa, p_2: {round(WS_stator.p,1)} Pa, p_3: {round(WS_rotor.p,1)} Pa\n"
-        self.buffer += f"Stagnation pressures: p_01: {round(turbine_input.p01,1)} Pa, p_02: {round(turbine_input.p01,1)} Pa, p_03: {round(p_03,1)} Pa\n"
-        self.buffer += f"Combustion parameters: cp: {round(dc.CP,1)}, R: {round(dc.R_COMB,1)}, kappa: {round(dc.KAPPA,2)}\n"
+        self.buffer += f"Stagnation pressures: p_01: {round(turbine_input.p01,1)} Pa, p_02: {round(p_02,1)} Pa, p_03: {round(p_03,1)} Pa\n"
+        self.buffer += f"Combustion parameters: cp: {round(dc.CP,1)}, R: {round(dc.R_COMB,1)}, kappa: {round(dc.KAPPA,3)}\n"
         self.buffer += f"Number of elements: {dg.N_EL} (for one side of the airfoil)\n"
         self.buffer += f"data_geom input values => solidity: {dg.SOLIDITY_ASSUM}, ugt: {dg.UGT}, half_wedge_in: {dg.HALF_WEDGE_IN}, rte_multiplier: {dg.RTE_MULTIPLIER}, rle_multiplier: {dg.RLE_MULTIPLIER}\n"
         self.buffer += f"gap_bool = {dg.GAP_BOOL}\n"

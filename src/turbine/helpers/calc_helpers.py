@@ -112,6 +112,13 @@ class CalcOperations:
         T_02 = turbine_input.T01
         T_2 = T_02 - (c_2**2) / (2 * dc.CP)
         return T_2, T_3
+    
+    @staticmethod
+    def find_inlet_rotor_stagnation_pressure(turbine_input, turbine_assum) -> float:
+        p_2, p_3 = CalcOperations.find_pressure(turbine_input, turbine_assum)
+        T_2, T_3 = CalcOperations.find_temperature(turbine_input, turbine_assum)
+        p_02 = p_2 * th.p2_p1_is(turbine_input.T01 / T_2, dc.KAPPA)
+        return p_02
 
     @staticmethod
     def find_rotor_density(turbine_input, turbine_assum, outlet) -> float:
