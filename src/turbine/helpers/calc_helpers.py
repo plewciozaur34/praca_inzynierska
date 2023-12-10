@@ -89,7 +89,7 @@ class CalcOperations:
             turbine_input, turbine_assum
         ) / th.p2_p1_is(turbine_input.T01 / T2_prim, dc.KAPPA)
         p_01 = CalcOperations.turbine_input_stagnation_pressure(
-            turbine_input, turbine_assum 
+            turbine_input, turbine_assum
         )
         # FIXME T3, p3 są dla jednego stopnia, ale w werji delta T0/6
         T_03_stage = CalcOperations.find_T03_for_one_stage(turbine_input)
@@ -112,7 +112,7 @@ class CalcOperations:
         T_02 = turbine_input.T01
         T_2 = T_02 - (c_2**2) / (2 * dc.CP)
         return T_2, T_3
-    
+
     @staticmethod
     def find_inlet_rotor_stagnation_pressure(turbine_input, turbine_assum) -> float:
         p_2, p_3 = CalcOperations.find_pressure(turbine_input, turbine_assum)

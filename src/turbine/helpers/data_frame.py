@@ -1,5 +1,4 @@
 class DataFrame:
-
     def parameters_for_fluent(self, beta, beta_deg, alfa, mach, mach_rel):
         calculated_parameters = pd.DataFrame(
             columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]

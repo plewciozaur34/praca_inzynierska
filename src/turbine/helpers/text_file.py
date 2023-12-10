@@ -14,15 +14,21 @@ class OutputTextFile:
         self.hub = ""
         self.init = ""
 
-    
-
     def data_text_file_one(
-        self, turbine_assum, turbine_input, Reynolds_number, WS_inlet, WS_stator, WS_rotor, part, stage=dg.stage
+        self,
+        turbine_assum,
+        turbine_input,
+        Reynolds_number,
+        WS_inlet,
+        WS_stator,
+        WS_rotor,
+        part,
+        stage=dg.stage,
     ):
         T03 = co.find_T03_for_one_stage(turbine_input)
         PR_stage = th.p2_p1_is(turbine_input.T01 / T03, dc.KAPPA)
         p_03 = turbine_input.p01 / PR_stage
-        p_02 = co.find_inlet_rotor_stagnation_pressure(turbine_input, turbine_assum)  
+        p_02 = co.find_inlet_rotor_stagnation_pressure(turbine_input, turbine_assum)
 
         self.buffer += "Blade_Data_Sheet\n"
         self.buffer += f"Reynolds number for the turbine: {Reynolds_number}\n"

@@ -87,7 +87,15 @@ def main():
     otf = OutputTextFile()
 
     for idx, geo_data in enumerate(geo_data_list):
-        otf.data_text_file_one(turbine_assum, turbine_input, Reynolds_number, WS_inlet, WS_stator, WS_rotor, part[idx])
+        otf.data_text_file_one(
+            turbine_assum,
+            turbine_input,
+            Reynolds_number,
+            WS_inlet,
+            WS_stator,
+            WS_rotor,
+            part[idx],
+        )
         for i in range(0, dg.N_RAD):
             print(f"RATD model for {radii[i]} on {part[idx]}: ")
 
