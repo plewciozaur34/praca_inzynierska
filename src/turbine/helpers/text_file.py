@@ -173,7 +173,7 @@ class OutputTextFile:
         x = 0.0
         if part == "rotor":
             if dg.GAP_BOOL == True:
-            #FIXME poprawić to na x_max + ileś tam 
+                # FIXME poprawić to na x_max + ileś tam
                 y = np.linspace(0.08, 0.40, dg.N_EL)
             else:
                 y = np.linspace(-0.07, 0.20, dg.N_EL)
