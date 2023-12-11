@@ -4,7 +4,7 @@ import numpy as np
 class TempHelpers:
     @staticmethod
     def celsius_to_kelvin(celsius: float) -> float:
-        return celsius - 273.15
+        return celsius + 273.15
 
     @staticmethod
     def p2_p1_is(T2_T1: float, kappa: float) -> float:
