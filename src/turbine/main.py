@@ -83,7 +83,7 @@ def main():
         turbine_assum, turbine_input, WS_inlet, WS_stator, WS_rotor
     )
 
-    Reynolds_number = co.find_reynolds(turbine_input.omega, radius_list[4], dc.MU)
+    Reynolds_number = co.find_reynolds(radius_list[4], dc.MU, turbine_assum, turbine_input)
     otf = OutputTextFile()
 
     for idx, geo_data in enumerate(geo_data_list):
@@ -95,6 +95,24 @@ def main():
             WS_stator,
             WS_rotor,
             part[idx],
+        )
+
+        geo_dep_params = pd.DataFrame(
+        columns=[
+            "pitch",
+            "stagger_angle",
+            "chord",
+            "zweifel_coefficient",
+            "solidity",
+            "blockage_in",
+            "blockage_out",
+            "camber_angle",
+            "lift_coefficient",
+            "airfoil_csa",
+            "xcg",
+            "ycg",
+            "max_thickness"
+            ]
         )
         for i in range(0, dg.N_RAD):
             print(f"RATD model for {radii[i]} on {part[idx]}: ")
@@ -117,51 +135,34 @@ def main():
 
             get_params = dep_params.find_geometry_dependent_parameters()
             params_dictionary = pd.DataFrame([get_params.to_dict()])
-            geo_dep_params = pd.DataFrame(
-                columns=[
-                    "pitch",
-                    "stagger_angle",
-                    "chord",
-                    "zweifel_coefficient",
-                    "solidity",
-                    "blockage_in",
-                    "blockage_out",
-                    "camber_angle",
-                    "lift_coefficient",
-                ]
-            )
-            geo_dep_params = pd.concat(
-                [geo_dep_params, params_dictionary], ignore_index=True
-            )
 
             mechanical_props = pressure_and_suction_up.mec_props()
             mechanical_props_dict = pd.DataFrame([mechanical_props.to_dict()])
-            mechanical_props_df = pd.DataFrame(columns=["airfoil_csa", "xcg", "ycg"])
-            mechanical_props_df = pd.concat(
-                [mechanical_props_df, mechanical_props_dict], ignore_index=True
-            )
 
             max_thickness = pressure_and_suction_up.find_thickness_max()
             max_thickness_dict = pd.DataFrame([max_thickness.to_dict()])
-            max_thickness_df = pd.DataFrame(columns=["max_thickness"])
-            max_thickness_df = pd.concat(
-                [max_thickness_df, max_thickness_dict], ignore_index=True
-            )
 
-            geo_dep_params = pd.concat([geo_dep_params, mechanical_props_df], axis=1)
-            geo_dep_params = pd.concat([geo_dep_params, max_thickness_df], axis=1)
-            geo_dep_params.to_csv(f"./data/csv/geometry_dep_params_{part[idx]}.csv")
+    # Create a temporary DataFrame for this iteration
+            temp_df = pd.concat([params_dictionary, mechanical_props_dict, max_thickness_dict], axis=1)
+
+    # Append the temporary DataFrame to geo_dep_params
+            geo_dep_params = pd.concat([geo_dep_params, temp_df], ignore_index=True)
+            
             print(geo_dep_params)
 
             calculated_parameters = pd.DataFrame(
                 columns=["beta", "beta_deg", "alfa", "mach", "mach_rel"]
             )
 
+        mean_chord = co.calculate_mean_chord(geo_dep_params, column_name="chord")
+        Reynolds_chord = co.find_reynolds_chord(mean_chord, dc.MU, turbine_assum, turbine_input, part[idx])
+        geo_dep_params.to_csv(f"./data/csv/geometry_dep_params_{part[idx]}.csv")
+
         tip_percentage_difference = co.is_rotor_rtip_change_needed(
             turbine_input, turbine_assum
         )
         print(f"Tip percentage difference: {tip_percentage_difference}%")
-        otf.data_text_file_append_four(tip_percentage_difference)
+        otf.data_text_file_append_four(tip_percentage_difference, Reynolds_chord)
 
         otf.turbogrid_init(part[idx])
         otf.turbogrid_shroud(radius_list[4], part[idx])
@@ -178,3 +179,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

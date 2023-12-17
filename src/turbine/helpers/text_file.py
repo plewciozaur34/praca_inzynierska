@@ -76,8 +76,9 @@ class OutputTextFile:
         self.buffer += f"half_wedge_out= {round(geo_params.half_wedge_out,4)} \n"
         self.buffer += f"   \n"
 
-    def data_text_file_append_four(self, tip_percentage_difference):
-        self.buffer += f"Tip percentage difference: {tip_percentage_difference}%"
+    def data_text_file_append_four(self, tip_percentage_difference, reynolds_chord):
+        self.buffer += f"Tip percentage difference: {tip_percentage_difference}% \n"
+        self.buffer += f"Reynolds number for the chord: {reynolds_chord}"
 
     def turbogrid_profile(self, ps, idx, radius, part):
         yp_max = max(ps.yp)

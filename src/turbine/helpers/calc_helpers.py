@@ -231,5 +231,19 @@ class CalcOperations:
         return np.abs(x1 * y2 + y1 * x3 + y3 * x2 - y2 * x3 - y1 * x2 - x1 * y3) / 2
 
     @staticmethod
-    def find_reynolds(omega: float, radius: float, mu: float) -> float:
-        return (th.rpm_to_rad_s(omega) * (2 * radius) ** 2) / mu
+    def find_reynolds(radius: float, mu: float, turbine_assum, turbine_input) -> float:
+        rho = CalcOperations.find_rotor_density(turbine_input, turbine_assum, outlet=False)
+        D = 2 * radius
+        return (th.rpm_to_rad_s(turbine_input.omega) * ((D) ** 2) * rho) / mu
+    
+    @staticmethod
+    def find_reynolds_chord(chord: float, mu: float, turbine_assum, turbine_input, part) -> float: 
+        if part == "stator":
+            rho = CalcOperations.find_rotor_density(turbine_input, turbine_assum, outlet=False)
+        else:
+            rho = CalcOperations.find_rotor_density(turbine_input, turbine_assum, outlet=True)
+        return (th.rpm_to_rad_s(turbine_input.omega) * ((chord) ** 2) * rho) / mu
+    
+    @staticmethod
+    def calculate_mean_chord(df, column_name):
+        return df[column_name].mean()
