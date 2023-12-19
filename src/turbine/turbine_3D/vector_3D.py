@@ -8,6 +8,7 @@ from helpers.data_interpolation import DataInterpolation as di
 from . import sre_input as sre_in
 from . import sre_output as sre_out
 from initial_turbine_settings import data_geom as dg
+from initial_turbine_settings import data_calc as dc
 
 
 class Vector3D:
@@ -163,9 +164,9 @@ class Vector3D:
             )
             geo_input_df.loc[idx, "Nb"] = dg.NB_r
             pitch = (2 * np.pi * r_list[idx]) / dg.NB_r
-            geo_input_df.loc[idx, "Rle"] = dg.RLE_MULTIPLIER * pitch
+            geo_input_df.loc[idx, "Rle"] = dg.RLE_MULTIPLIER[idx] * pitch
             # FIXME jak przyjdzie mi lepszy pomysł na oszacowanie solidity
-            geo_input_df.loc[idx, "Rte"] = dg.RTE_MULTIPLIER * pitch * dg.SOLIDITY_ASSUM
+            geo_input_df.loc[idx, "Rte"] = dg.RTE_MULTIPLIER[idx] * pitch * dg.SOLIDITY_ASSUM
             # FIXME wartości dla ugt i half_wedge_in
             geo_input_df.loc[idx, "ugt"] = dg.UGT[idx]
             geo_input_df.loc[idx, "half_wedge_in"] = dg.HALF_WEDGE_IN[idx]
@@ -190,7 +191,7 @@ class Vector3D:
         )
         alfa_in_list = list(np.zeros(dg.N_RAD))
         for i in range(len(alfa_in_list)):
-            alfa_in_list[i] = WS_inlet.find_alfa()
+            alfa_in_list[i] = dc.ALFA1
 
         geo_input_df = pd.read_csv("./data/csv/geom_data_stator.csv")
 
@@ -198,7 +199,7 @@ class Vector3D:
         rp_names = co.radii_names_list()
         r_list = co.radius_list(turbine_assum, turbine_input)
         for idx, rp in enumerate(rp_list):
-            geo_input_df.loc[idx, "beta_in"] = alfa_in_list[idx]
+            geo_input_df.loc[idx, "beta_in"] = -alfa_in_list[idx]
             geo_input_df.loc[idx, "beta_out"] = -alfa_out_list[idx]
             geo_input_df.loc[idx, "R"] = r_list[idx]
             geo_input_df.loc[idx, "chord_x"] = 0
@@ -208,9 +209,9 @@ class Vector3D:
             # geo_input_df.loc[idx, 'chord_t'] = di.chord_t_intialization(dg.chord_init, alfa_in_list[idx], alfa_out_list[idx], idx)
             geo_input_df.loc[idx, "Nb"] = dg.NB_s
             pitch = (2 * np.pi * r_list[idx]) / dg.NB_s
-            geo_input_df.loc[idx, "Rle"] = dg.RLE_MULTIPLIER * pitch
+            geo_input_df.loc[idx, "Rle"] = dg.RLE_MULTIPLIER[idx] * pitch
             # FIXME jak przyjdzie mi lepszy pomysł na oszacowanie solidity
-            geo_input_df.loc[idx, "Rte"] = dg.RTE_MULTIPLIER * pitch * dg.SOLIDITY_ASSUM
+            geo_input_df.loc[idx, "Rte"] = dg.RTE_MULTIPLIER[idx] * pitch * dg.SOLIDITY_ASSUM
             # FIXME wartości dla ugt i half_wedge_in
             geo_input_df.loc[idx, "ugt"] = dg.UGT[idx]
             geo_input_df.loc[idx, "half_wedge_in"] = dg.HALF_WEDGE_IN[idx]

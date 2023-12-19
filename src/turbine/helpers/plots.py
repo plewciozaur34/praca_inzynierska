@@ -3,6 +3,7 @@ import numpy as np
 
 from helpers.saving import SaveFigText
 from turbine_3D.vector_3D import Vector3D as v3d
+from initial_turbine_settings import data_calc as dc
 
 
 class DrawPlots:
@@ -25,8 +26,7 @@ class DrawPlots:
             turbine_assum, turbine_input, WS_stator, WS_rotor, plot=True
         )
         alfa1 = list(np.zeros(5))
-        for alfa in alfa1:
-            alfa = turbine_assum.alfa1
+        alfa1 = [dc.ALFA1 for _ in range(5)]
 
         fig1, ax1 = plt.subplots(1, 1, figsize=(6, 5))
         ax1.plot(radii, beta_in, color="#FB5607")
@@ -39,7 +39,7 @@ class DrawPlots:
         fig2, ax2 = plt.subplots(1, 1, figsize=(6, 5))
         ax2.plot(radii, phi, color="#FFBE0B")
         ax2.plot(radii, Rn, color="#FF006E")
-        ax2.set_title(r"Flow coefficient $\phi$ and reaction Rn for each radii")
+        ax2.set_title(r"Flow coefficient $\phi$ and reaction Rn for each radii of rotor")
         ax2.legend([r"$\phi$", r"$R_n$"])
 
         fig3, ax3 = plt.subplots(1, 1, figsize=(6, 5))

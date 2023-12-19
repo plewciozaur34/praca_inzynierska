@@ -154,7 +154,7 @@ cython_debug/
 
 # working file
 src/turbine/xd
-
+src/00_latex
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore

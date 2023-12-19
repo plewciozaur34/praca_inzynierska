@@ -21,55 +21,6 @@ class SurfacePoints:
         self.ys: list = ys
         self.yp: list = yp
 
-    # TODO jeśli pojawią się problemy: poprawić aplikację paramteric1 w surface_points (duża nieciągłość geometrii) i dodać beziera jako kolejną opcję?
-    # wszystko zależy od tego jak to będzie wyglądać przy innych danych wejściowych
-    @staticmethod
-    def Parametric1(X1, X2, nEL=10, endpoint=False):
-        tanFi1 = math.tan(X1[2])
-        npts = nEL + 1
-        tanFi2 = math.tan(X2[2])
-        bx = 2 * ((X2[0] - X1[0]) * tanFi2 - (X2[1] - X1[1])) / (tanFi2 - tanFi1)
-        by = bx * tanFi1
-        ax = (X2[0] - X1[0]) - bx
-        cx = X1[0]
-        ay = (X2[1] - X1[1]) - by
-        cy = X1[1]
-        Y = np.zeros((npts, 3))
-        for i in range(npts):
-            if endpoint:
-                t = i / (nEL)
-            else:
-                t = i / (npts)
-            Y[i, 0] = ax * t * t + bx * t + cx
-            Y[i, 1] = ay * t * t + by * t + cy
-        for i in range(1, npts - 1):
-            dx1 = Y[i, 0] - Y[i - 1, 0]
-            dx2 = Y[i + 1, 0] - Y[i, 0]
-            dy1 = Y[i, 1] - Y[i - 1, 1]
-            dy2 = Y[i + 1, 1] - Y[i, 1]
-            if dx1 > 0.0:
-                fi1 = math.atan(dy1 / dx1)
-            elif dx1 < 0.0:
-                fi1 = math.pi - math.atan(-dy1 / dx1)
-            elif dy1 > 0.0:
-                fi1 = math.pi / 2
-            else:
-                fi1 = -math.pi / 2
-
-            if dx2 > 0.0:
-                fi2 = math.atan(dy2 / dx2)
-            elif dx2 < 0.0:
-                fi2 = math.pi - math.atan(-dy2 / dx2)
-                Y[i, 2] = 0.5 * (fi1 + fi2)
-            elif dy2 > 0.0:
-                fi2 = math.pi / 2
-            else:
-                fi2 = -math.pi / 2
-            Y[i, 2] = 0.5 * (fi1 + fi2)
-            Y[-1, 2] = Y[-2, 2] + (Y[-2, 2] - Y[-3, 2])
-            Y[0, 2] = Y[1, 2] + (Y[1, 2] - Y[2, 2])
-        return Y
-
     def surface_points(self, geo_params, rtd, nEL=dg.N_EL) -> "SurfacePoints":
         one_fifth = round(nEL / 5)
         three_fifths = round(3 * (nEL / 5))
@@ -104,14 +55,6 @@ class SurfacePoints:
                 + self.xs[i] * (rtd.suction_surf.c + self.xs[i] * rtd.suction_surf.d)
             )
         dxs = (rtd.point1.x - rtd.point2.x) / (four_fifths - three_fifths)
-        ys_parametric = self.Parametric1(
-            [rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)],
-            [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)],
-        )[:, 1]
-        xs_parametric = self.Parametric1(
-            [rtd.point2.x, rtd.point2.y, th.rad(rtd.point2.b)],
-            [rtd.point1.x, rtd.point1.y, th.rad(rtd.point1.b)],
-        )[:, 0]
         for i in range(three_fifths, four_fifths):
             self.xp[i] = self.xp[i - 1] + dxp
             self.yp[i] = rtd.pressure_surf.a + self.xp[i] * (
@@ -119,8 +62,6 @@ class SurfacePoints:
                 + self.xp[i] * (rtd.pressure_surf.c + self.xp[i] * rtd.pressure_surf.d)
             )
             self.xs[i] = self.xs[i - 1] + dxs
-            # self.xs[i] = xs_parametric[i-30]
-            # self.ys[i] = ys_parametric[i-30]
             self.ys[i] = rtd.point0.y + np.sqrt(
                 rtd.point0.r**2 - (self.xs[i] - rtd.point0.x) ** 2
             )

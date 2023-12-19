@@ -9,18 +9,20 @@ TPR = 30.2
 ETA_IS = 0.9
 OMEGA = 3800
 H = 10700
-PHI = 0.7
+PHI = 0.8
 # PHI = 0.8
 # C_X = 230
-C_X = 250
+C_X = 270
 RH_RT = 0.8
 LAMBDA_N = 0.05
+ALFA1 = 0
+ALFA2 = 0
 
 KAPPA = fp.CombustionHelpers.find_kappa_combust()
 CP = fp.CombustionHelpers.find_cp_combust()
 R_COMB = fp.CombustionHelpers.find_R_combust()
 
-MU = 4.7627e-05  # FIXME wartość dla powietrza, nie dla spalin
+MU = 4.7627e-05  #wartość dla powietrza, nie dla spalin
 
 T_01 = th.celsius_to_kelvin(TIT_celsius)  # K
 

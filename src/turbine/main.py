@@ -34,7 +34,7 @@ WS_rotor = vector_of_state.VectorOfState()
 turbine_input = ti.TurbineInput(dc.M_DOT, 0, dc.T_01, dc.TPR, dc.ETA_IS, dc.OMEGA)
 
 # turbine_assum = [alfa1, alfa3, phi, c_x, lambda_n, r_hub/r_tip]
-turbine_assum = ta.TurbineAssum(0, 0, dc.PHI, dc.C_X, dc.LAMBDA_N, dc.RH_RT)
+turbine_assum = ta.TurbineAssum(dc.ALFA1, dc.ALFA2, dc.PHI, dc.C_X, dc.LAMBDA_N, dc.RH_RT)
 
 turbine_input.p01 = co.turbine_input_stagnation_pressure(turbine_input, turbine_assum)
 
@@ -172,6 +172,7 @@ def main():
         sft.save_turbogrid_shroud(otf, part[idx])
         sft.save_turbogrid_hub(otf, part[idx])
         sft.save_turbogrid_init(otf, part[idx])
+        sft.save_dependent_params_csv(geo_dep_params, part[idx])
         otf.clear_output_text_file()
 
     plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)

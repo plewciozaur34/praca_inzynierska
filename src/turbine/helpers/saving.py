@@ -57,6 +57,12 @@ class SaveFigText:
             f.write(otf.hub)
 
     @staticmethod
+    def save_dependent_params_csv(geo_dep_params, part):
+        SaveFigText.ensure_directory_initialized()
+        filename = f"{SaveFigText.directory}/geometry_dep_params_{part}.csv"
+        geo_dep_params.to_csv(filename)
+
+    @staticmethod
     def save_turbogrid_init(otf, part):
         SaveFigText.ensure_directory_initialized()
         filename = f"{SaveFigText.directory}/turbine_design_blade_{part}_init.inf"
