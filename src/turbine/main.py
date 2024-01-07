@@ -172,7 +172,7 @@ def main():
         sft.save_turbogrid_shroud(otf, part[idx])
         sft.save_turbogrid_hub(otf, part[idx])
         sft.save_turbogrid_init(otf, part[idx])
-        sft.save_dependent_params_csv(geo_dep_params, part[idx])
+        sft.save_dependent_params_csv(geo_dep_params, part[idx]) 
         otf.clear_output_text_file()
 
     plots.airfoil_plots(turbine_assum, turbine_input, WS_stator, WS_rotor)

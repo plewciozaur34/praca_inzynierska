@@ -49,7 +49,7 @@ class CalcOperations:
             dc.ETA_IS * th.T2_T1_is(turbine_input.tpr, dc.KAPPA)
         )
         D_T0 = T_03 - turbine_input.T01
-        # FIXME podział tmeperatury na stopnie ze względu na podział TPR na stopnie - znaleźć w literaturze
+        # FIXME podział tmeperatury na stopnie ze względu na podz iał TPR na stopnie - znaleźć w literaturze
         d_T0 = D_T0 / 6  # 2HP+4LP, ale trzeba znaleźć ten podział procentowy na stopnie
         d_T0_prim = (
             -120
