@@ -1,48 +1,8 @@
-﻿#TODO update readme
+# praca_inzynierska -> Bachelor Thesis:
+### Abstract:
+This thesis paper presents the creation of a stage design for an axial turbine using Python programming language, Ansys TurboGrid, Ansys Fluent and ParaView software. The mentioned processes included generating the geometry, preparing a domain mesh, conducting a numerical analysis, and visualising and studying the results. The geometry model has been based on the model created by L. J. Pritchard called Rapid Axial Turbine Desing (RATD). The original FORTRAN code has been rewritten into Python programming language, and some improvements have been incorporated to suit the project better. For all the prepared geometries structural grids have been generated using the TurboGrid software. Then, a CFD numerical analysis of the five most promising cases with different geometries based on the general assumptions has been performed to obtain the best result. Finally, the finest geometry model has been chosen, and its flow phenomena have been examined.
 
-# praca_inzynierska
-
----------------------------------------------POLISH----------------------------------------------------
-
-Część projektowa z kodem znajduje się w folderze praca_inzynierska/scr/turbine. W celu dokonania obliczeń należy uruchmić plik main.py znajdujący się w tym folderze. 
-W folderze turbine znajdują się foldery: 
-- initial_turbine_settings (zawierający pliki z danymi wejściowymi do obliczeń, które można zmienić)
-- airfoil_geometry (zawierający pliki dotyczące obliczeń związanych z wygenerowaniem profili łopatek)       podzielony na podfoldery:
-    - dep_geometry_parameters (zwirający pliki do obliczeń parametrów zależnych geometrii)
-    - geom_parameters (zawierający pliki do obliczeń związanych z geometrią łopatki)
-- combustion_params (zawierający obliczenia kappy, R oraz cp)
-- helpers (zawierający funkcje pomocnicze)
-- turbine_input_data (zawierający wstępne obliczenia 2D dla wektorów stanu)
-- turbine_3D (zawierający obliczenia związane z simple radial equilibrium)
-
-W folderze praca_inzynierska/data/csv znajdują się pliki csv z danymi wejściowymi oraz wyjściowymi. 
-Zawiera on podfoldery:
-- check (zawierający pliki z danymi sprawdzającymi dla modelu RATD oraz SRE)
-- interpolate_data (zawierający pliki z danymi do interpolacji pierszej wartości chord_t)
-
-Do folderu praca_inzynierska/data/airfoils zapisywane są katalogi oznaczone numer stopnia+rotor/stator_data_godzina (na przykład: 1r_20231109_102018), w których znajdują się pliki blade_data_sheet.txt (wszystkie dane wejścowe i wyjściowe dla łopatki), pliki png z profilami łopatki dla róznych promieni oraz pliki wejściowe do TurboGrida. Katalog check zawiera dane sprawdzające dla modelu RATD. 
-
-Kod opisujacy geometrię łopatki powstał na podstawie modelu RATD (Rapid Axial Turbine Design) autorstwa L. J. Pritcharda. Przyjmuje on wartości wartości 11 niezależnych parametrów oraz dla części z nich jest w stanie generować wartości domyślne/początkowe.
-Wartości wejściowe:
-- R - promień, na którym znajduje się profil łopatki (bez wartości początkowej)
-- chord_x - cięciwa w kierunku osiowym (wartośc początkowa równa 0, obliczane w def_values z założenia zweifel_coefficient=0.8)
-- chord_t - cięciwa w kierunku obwodowym (generowanie wartości początkowej opisane poniżej*)
-- ugt - unguided turning angle (wartość ustawiana w initial_turbine_settings, bez wartości początkowej)
-- beta_in - kąt wlotowy łopatki (wartość na podstawie obliczeń termodynamicznych)
-- beta_out - kąt wylotowy łopatki (wartość na podstawie obliczeń termodynamicznych)
-- half_wedge_in - (wartość ustawiana w initial_turbine_settings, bez wartości początkowej)
-- Rle - promień krawędzi natarcia (wartość początkowa to ułamek pitch, wartość ustawiana w initial_turbine_settings)
-- Rte - promień krawędzi sływu (wartość początkowa to ułamek cięciwy, wartość ustawiana w initial_turbine_settings)
-- Nb - liczba łopatek (wartość ustawiana w initial_turbine_settings, bez wartości początkowej)
-- throat - (wartośc początkowa równa 0, obliczane w def_values)
-
-Dodatkowy 12 parametr (zależny od pozostałych 11)
-- half_wedge_out - (wartość początkowa ugt/2, przeliczana w remove_throat_discontinuity)
-
-*Generowanie wartości początkowej dla chord_t: 
-
----------------------------------------------ENGLISH----------------------------------------------------
-
+### Code Structure
 The part of project with the code can be found in the folder praca_inzynierska/scr/turbine. To perform calculations, run the main.py file located in this folder. 
 The turbine folder contains the folders: 
 - initial_turbine_settings (containing files with input data for calculations that can be changed)
@@ -61,21 +21,26 @@ It contains subfolders:
 
 Directories labeled degree number+rotor/stator_date_time (for example: 1r_20231109_102018) are written to the praca_inzynierska/data/airfoils folder, which contains blade_data_sheet.txt files (all input and output data for the blade), png files with blade profiles for different radii, and TurboGrid input files. The check directory contains check data for the RATD model. 
 
-The code describing the blade geometry is based on the Rapid Axial Turbine Design (RATD) model by L. J. Pritchard. It accepts values of 11 independent parameters and for some of them is able to generate default/initial values.
-Input values:
-- R - the radius at which the blade profile is located (no initial value)
-- chord_x - chord in the axial direction (initial value equal to 0, calculated in def_values with the assumption zweifel_coefficient=0.8)
-- chord_t - chord in tangential direction (initial value generation described below*)
-- ugt - unguided turning angle (value set in initial_turbine_settings, no initial value)
-- beta_in - blade inlet angle (value based on thermodynamic calculations)
-- beta_out - blade exit angle (value based on thermodynamic calculations)
-- half_wedge_in - (value set in initial_turbine_settings, no initial value)
-- Rle - leading edge radius (initial value is a fraction of pitch, value set in initial_turbine_settings)
-- Rte - the radius of the edge of the slab (initial value is a fraction of the chord, value set in initial_turbine_settings)
-- Nb - number of blades (value set in initial_turbine_settings, no initial value)
-- throat - (initial value equal to 0, calculated in def_values)
+### Code Flow and Conceptual Overview
+![image](https://github.com/user-attachments/assets/5721288b-6523-40a5-b485-ffe32e31a4b3)
 
-Additional 12 parameter (dependent on the other 11)
-- half_wedge_out - (initial value ugt/2, recalculated in remove_throat_discontinuity)
+As mentioned, all the calculations and geometry generation have been written in a Python project. Beyond the Python standard library, it uses NumPy, Pandas, Matplotlib and SciPy. The general flow of the program can be seen in the figure above. This program has been based on the Fortran code from Pritchard’s article (https://doi.org/10.1115/85-GT-219). However, changes have been made to adapt the code flow to this project. The main additions include:
+- thermodynamic calculation for the mean radius
+- improved default values generation for eleven input parameters
+- generation of multiple airfoils (using SRE equations) for one blade
+- generation of both stator and rotor airfoils in one program run
+- generation of TurboGrid input files
+- generation of additional output files
 
-*Generates initial value for chord_t:
+From the user’s perspective, the program is straightforward. They’re given two files with initial settings for the turbine - one for thermodynamics calculations and one for the geometry. All of the data in there should be set for mean radius parameters. In the first one, the user can set the values of parameters for two essential classes: turbine_input and turbine_assum. The first one contains data for the engine, such as turbine inlet temperature and pressure, mass flow, total pressure ratio, isentropic efficiency, and rotational speed. Therefore, the part of input data that will not be changed in the project. The second one, turbine_assum, contains data like blade angles, flow coefficient, axial velocity or rotor blade loss.
+That data can be changed to achieve a different blade geometry. The file with input geometry parameters allows the user to change some of the 11 parameters for geometry RATD modelling and the method by which the default value for tangential chord should be derived. The user can also set the number of profiles from which the 3D model is created, the number of points that generate each airfoil, or the values of the gap between the rotor and stator. There is also an option to omit the shift of the rotor in regard to the stator if the user wants to do that part in the simulation software. After all those parameters are set, the user only has to run the program. It will create output files that can be used for TurboGrid meshing software and to check if the geometry is satisfying in terms of flow parameters. 
+
+However, the most crucial part is what happens during the program run. As shown in the figure above, the thermodynamic calculation for mean radius is first made. That way, tangential and axial velocity values and static temperatures and pressures are obtained for all stage stations at the mean radius. Next, the simple radial equilibrium is used on the rotor to obtain the inlet and outlet blade angles for each radius. The outlet blade angle for the stator is considered equal to the rotor inlet blade angle, while the inlet stator angle is considered constant and can be set in the initial settings file.
+
+In the next stage, two CSV files are generated, each containing values for 11 parameters corresponding to different radii, with one file designated for the rotor and the other for the stator. Some of these values are the initial values, i.e., that would trigger the conditions to generate the default values of those parameters. The rest is considered equal to those parameters’ final values. Additionally, the first guess values of the
+half wedge out angle are calculated, as they would be essential for creating geometry.
+
+The following steps are placed inside a loop, ensuring that the stator and rotor will be generated in one program run. Inside that loop is an additional one that ensures the process will happen for all the radii so the 3D model can be created. The first step is to generate the values for 5 points and five slopes that make a profile. It is essential to mention that slopes are generated in the form of n number of points, including the five main points generated at the start. A check is conducted to see if there is a throat discontinuity. If so, the value of the half wedge angle is recalculated, and the points and slopes are generated again. That process happens until the throat discontinuity is removed. After that, the value of the tangential chord is recalculated based on the method chosen in the initial settings. Another check is conducted to see if the value of the tangential chord falls within the conditions. If not, the process comes back to the point of generating the 5 points and slopes. After the satisfying value is obtained, points and slopes are calculated for the last time. This would be the data that is saved in output files. This process executes for each radius of the rotor and stator.
+
+The output data consists of many different types of files. The most important ones are init and curve files for TurboGrid software. They let the 
+user open the model in TurboGrid and create a mesh from it. The program also creates text files with blade input data for the stator and rotor to simplify the process of generating the same geometry again. There are also plots with parameter distribution for different radii and plots with blade airfoil profiles for each radii of the stator and rotor. On top of that, the output data folder includes CSV files with values of dependent parameters that can be derived from 11 input parameters. To ensure that the output data will not be overwritten, the name of the output folder consists of the date and time the program was started and the word gap if the rotor is shifted in the axial direction. An example folder name would be turbine_stage_20231219_221409_gap.
